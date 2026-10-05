@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "name": "Attach to Server Process (Docker)",
+      "request": "attach",
+      "port": 9229,
+      "localRoot": "${workspaceFolder}/server",
+      "sourceMapPathOverrides": {
+        "app/*": "${workspaceFolder}/server/*"
+      },
+      "remoteRoot": "/app/"
+    }
+  ]
+}

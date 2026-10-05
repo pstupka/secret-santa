@@ -1,0 +1,13 @@
+{
+  "name": "@secret-santa/client",
+  "description": "Vue web client for creating and participating in Secret Santa events.",
+  "private": true,
+  "version": "0.0.0",
+  "keywords": [
+    "secret-santa",
+    "gift-exchange",
+    "vue",
+    "vite",
+    "web-client"
+  ]
+}

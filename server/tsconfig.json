@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "types": ["jest", "node"],
+    "typeRoots": ["node_modules/@types", "../node_modules/@types", "typings"],
+    "lib": ["ESNext", "DOM"],
+    "module": "nodenext",
+    "sourceMap": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "isolatedModules": true,
+    "removeComments": false,
+    "strict": true,
+    "noImplicitAny": false,
+    "allowJs": false,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "paths": {
+      "@app": ["./src/app.ts"],
+      "api": ["./src/api.ts"],
+      "core/*": ["./src/core/*"],
+      "@core/*": ["./src/core/*"],
+      "@components/*": ["./src/components/*"],
+      "@config/*": ["./src/config/*"]
+    },
+    "plugins": [{ "transform": "ts-optchain/transform" }]
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "test/**/*",
+    "ci/**/*",
+    "scripts/**/*",
+    "__mocks__/**/*",
+    "**/node_modules/**/*",
+    "**/dts/**/*",
+    "**/dist/**/*",
+    "**/*.(spec|test).ts"
+  ],
+  "compileOnSave": true,
+  "typeAcquisition": {
+    "enable": true
+  }
+}
