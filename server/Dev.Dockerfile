@@ -1,16 +1,18 @@
-# Development Dockerfile used with docker-compose 
+# Development Dockerfile used with docker-compose
 FROM node:24-alpine
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json files first
-COPY package*.json ./
+COPY package.json yarn.lock ./
+COPY server/package.json ./server/package.json
 
-# Install dependencies
-RUN npm install
+RUN yarn install --frozen-lockfile
 
-COPY . .
+COPY server ./server
+COPY eslint.config.mjs ./
 
-RUN chmod +x /app/scripts/docker/local-run.sh
+WORKDIR /app/server
+
+RUN chmod +x scripts/docker/local-run.sh
 
 EXPOSE 8080

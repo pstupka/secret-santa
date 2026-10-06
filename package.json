@@ -12,6 +12,10 @@
     "server",
     "client"
   ],
+  "scripts": {
+    "server:dev": "yarn workspace @secret-santa/server server:dev",
+    "docker:server:dev": "docker compose -f server/docker-compose.yaml up --build"
+  },
   "devDependencies": {
     "typescript": "^6.0.3"
   }

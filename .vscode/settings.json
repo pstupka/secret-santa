@@ -1,6 +1,9 @@
 {
   "editor.formatOnSave": true,
   "eslint.useFlatConfig": true,
+  "files.associations": {
+    ".dockerignore": "plaintext"
+  },
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true
 }
