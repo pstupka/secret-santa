@@ -32,7 +32,7 @@ const validationSchemaPropertyPollution: ValidationSchema = {
   }),
 };
 
-const skip = null;
+const skip = undefined;
 
 describe('Validate middleware', () => {
   test('should call next middleware in the stack with no errors if validation passes', () => {
@@ -58,13 +58,32 @@ describe('Validate middleware', () => {
     expect(next).toHaveBeenCalled();
   });
 
-  test.each`
-    body                        | params                     | query                  | validationErr
-    ${{ input: {} }}            | ${skip}                    | ${skip}                | ${'"name" is required'}
-    ${{ input: { name: 123 } }} | ${skip}                    | ${skip}                | ${'"name" must be a string'}
-    ${skip}                     | ${{ action: 'incorrect' }} | ${skip}                | ${'"action" must be one of [update, add]'}
-    ${skip}                     | ${skip}                    | ${{ id: 'string-id' }} | ${'"id" must be a number'}
-  `(
+  test.each([
+    {
+      body: { input: {} },
+      params: skip,
+      query: skip,
+      validationErr: '"name" is required',
+    },
+    {
+      body: { input: { name: 123 } },
+      params: skip,
+      query: skip,
+      validationErr: '"name" must be a string',
+    },
+    {
+      body: skip,
+      params: { action: 'incorrect' },
+      query: skip,
+      validationErr: '"action" must be one of [update, add]',
+    },
+    {
+      body: skip,
+      params: skip,
+      query: { id: 'string-id' },
+      validationErr: '"id" must be a number',
+    },
+  ])(
     'should throw an app error with error message=$validationErr when request body= $body params=$params and query=$query',
     ({ body, params, query, validationErr }) => {
       const next = jest.fn();
@@ -102,6 +121,7 @@ describe('Validate middleware', () => {
     validate(validationSchemaPropertyPollution)(req, res, next);
 
     // check if prototype pollution was successful
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(({} as any).ok_to_be_empty_field).toBeUndefined();
 
     // ensure the next middleware is called without any errors

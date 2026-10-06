@@ -18,6 +18,7 @@ const validate =
       Keys.reduce((o, k) => ((o[k] = Object[k]), o), {});
     /* eslint-enable */
     // sanitization function to prevent prototype pollution
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sanitizeRequestBody = (obj: any): any =>
       Object.keys(obj).reduce((acc, key) => {
         if (!['__proto__', 'constructor', 'prototype'].includes(key)) {

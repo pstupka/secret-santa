@@ -5,6 +5,7 @@ import normalizePackageData from 'normalize-package-data';
 const readPackage = (cwd = '.', normalize = false) => {
   try {
     const packagePath = resolve(cwd, 'package.json');
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- cwd is supplied by trusted application code.
     const packageFile = readFileSync(packagePath, 'utf8'); // Use readFileSync instead of readFile
     const packageData = JSON.parse(packageFile);
 

@@ -15,7 +15,7 @@ const createUser = (req: Request, res: Response) => {
   res.send({ message: 'Created' });
 };
 
-const readUser = (req: Request, res: Response) => {
+const readUser = (req: Request<{ id: string }>, res: Response) => {
   res.status(httpStatus.OK);
   res.send({ message: 'Read', output: read(req.params.id) });
 };
@@ -27,7 +27,7 @@ const updateUser = (req: Request, res: Response) => {
   res.send({ message: 'Updated' });
 };
 
-const deleteUser = (req: Request, res: Response) => {
+const deleteUser = (req: Request<{ email: string }>, res: Response) => {
   deleteById(req.params.email);
   res.status(httpStatus.ACCEPTED);
   res.send({ message: 'Removed' });

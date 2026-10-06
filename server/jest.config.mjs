@@ -3,7 +3,9 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';
 import { pathsToModuleNameMapper } from 'ts-jest';
 
-dotenv.config({ path: fileURLToPath(new URL('./.env.local', import.meta.url)) });
+dotenv.config({
+  path: fileURLToPath(new URL('./.env.local', import.meta.url)),
+});
 process.env.NODE_ENV = 'development';
 
 const { compilerOptions } = JSON.parse(

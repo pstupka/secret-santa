@@ -13,7 +13,7 @@ const server: Server = app.listen(port, (): void => {
 const exitHandler = (): void => {
   server.close(() => {
     logger.info('Server closed');
-    process.exit(1);
+    process.exitCode = 1;
   });
 };
 

@@ -57,7 +57,7 @@ Please scroll down to "How to work with NET.ts" section.
 ## Getting started, standard way (no containerization)
 
 If you want to run NET.ts "standard way" using the `npm` instead of `docker-compose`.
-You are free to do it just keep in mind that I develop the NET.ts project on node version 16.
+You are free to do it just keep in mind that I develop the NET.ts project on node version 24.
 Note: you need to set env variables defined in `.env.local` file.
 On mac OS you can use `export $(cat .env.local)` to export all env variables from the .env.local file.
 
@@ -97,6 +97,10 @@ docker-compose run web npm run test
 ```
 
 ## Code linting
+
+ESLint uses the workspace-root `eslint.config.mjs` flat configuration. Existing
+Airbnb and plugin presets are loaded through `FlatCompat`, with TypeScript rules
+scoped to this server's source files.
 
 Run code quality analysis using
 
