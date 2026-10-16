@@ -1,14 +1,19 @@
 import type {
+  AddParticipantInput,
   CreateEventInput,
   CreateWishlistInput,
+  DrawDone,
   Event,
   EventDetails,
+  Exclusion,
+  InvitationSent,
   MyAssignment,
   MyClaim,
   MyEvent,
   OrganizerParticipant,
   ParticipantSummary,
   Person,
+  UpdateEventInput,
   UpdateWishlistInput,
   Wishlist,
 } from './types';
@@ -288,6 +293,87 @@ export const createApiClient = ({
         `/events/${encodeURIComponent(eventId)}/my-claims`,
         { headers: actingAsHeaders(actingAs) },
       ),
+
+    // Organizer: partial update; `409` once the event is finished.
+    updateEvent: (eventId: string, input: UpdateEventInput) =>
+      request<Event>('PATCH', `/events/${encodeURIComponent(eventId)}`, {
+        body: input,
+      }),
+
+    // Organizer: deletes the event and all its data; `409` once finished.
+    deleteEvent: (eventId: string) =>
+      request<void>('DELETE', `/events/${encodeURIComponent(eventId)}`),
+
+    // Organizer: adds a participant silently (no email) while the event is
+    // open.
+    addParticipant: (eventId: string, input: AddParticipantInput) =>
+      request<OrganizerParticipant>(
+        'POST',
+        `/events/${encodeURIComponent(eventId)}/participants`,
+        { body: input },
+      ),
+
+    // Organizer: removes a participant while the event is open.
+    removeParticipant: (eventId: string, participantId: string) =>
+      request<void>(
+        'DELETE',
+        `/events/${encodeURIComponent(
+          eventId,
+        )}/participants/${encodeURIComponent(participantId)}`,
+      ),
+
+    // Organizer: invites everyone not invited yet; never re-sends.
+    sendPendingInvitations: (eventId: string) =>
+      request<{ sent: number }>(
+        'POST',
+        `/events/${encodeURIComponent(eventId)}/invitations/send`,
+      ),
+
+    // Organizer: sends or resends one participant's invitation with a fresh
+    // personal link. `422` for a managed participant.
+    sendInvitation: (eventId: string, participantId: string) =>
+      request<InvitationSent>(
+        'POST',
+        `/events/${encodeURIComponent(
+          eventId,
+        )}/participants/${encodeURIComponent(participantId)}/invitation`,
+      ),
+
+    // Organizer: every exclusion, built-in caretaker pairs included.
+    listExclusions: (eventId: string) =>
+      request<Exclusion[]>(
+        'GET',
+        `/events/${encodeURIComponent(eventId)}/exclusions`,
+      ),
+
+    // Organizer: excludes two participants from drawing each other (open
+    // events only).
+    addExclusion: (
+      eventId: string,
+      participantAId: string,
+      participantBId: string,
+    ) =>
+      request<Exclusion>(
+        'POST',
+        `/events/${encodeURIComponent(eventId)}/exclusions`,
+        { body: { participantAId, participantBId } },
+      ),
+
+    removeExclusion: (
+      eventId: string,
+      participantAId: string,
+      participantBId: string,
+    ) =>
+      request<void>(
+        'DELETE',
+        `/events/${encodeURIComponent(eventId)}/exclusions/${encodeURIComponent(
+          participantAId,
+        )}/${encodeURIComponent(participantBId)}`,
+      ),
+
+    // Organizer: runs the draw, or redoes it (new pairs, everyone re-emailed).
+    runDraw: (eventId: string) =>
+      request<DrawDone>('POST', `/events/${encodeURIComponent(eventId)}/draw`),
   };
 };
 

@@ -7,6 +7,7 @@ import {
 
 import { useAuthStore } from '@/stores/auth';
 import LandingView from '@/views/LandingView.vue';
+import { requireOrganizer } from './requireOrganizer';
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -66,11 +67,12 @@ export const routes: RouteRecordRaw[] = [
         name: 'event-claims',
         component: () => import('@/views/ClaimsView.vue'),
       },
-      // Placeholder until #14 (manage) replaces it.
       {
+        // Organizer only; the Manage tab is shown only to the organizer too.
         path: 'manage',
         name: 'event-manage',
-        component: () => import('@/views/EventSectionPlaceholderView.vue'),
+        component: () => import('@/views/ManageEventView.vue'),
+        beforeEnter: requireOrganizer,
       },
     ],
   },

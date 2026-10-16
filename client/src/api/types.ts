@@ -153,3 +153,44 @@ export interface MyClaim {
   claimedAt: string;
   item: WishlistItem;
 }
+
+// `PATCH /api/events/:eventId` (organizer): only the given fields change. The
+// budget is set or cleared (both null) as a pair; empty text clears it.
+export interface UpdateEventInput {
+  title?: string;
+  description?: string | null;
+  budgetAmount?: number | null;
+  budgetCurrency?: string | null;
+  rules?: string | null;
+  timezone?: string;
+  exchangeOn?: string;
+}
+
+// `POST /api/events/:eventId/participants` (organizer): a participant with an
+// email, or a managed participant looked after by a caretaker.
+export type AddParticipantInput = { displayName: string } & (
+  | { email: string; managedByParticipantId?: undefined }
+  | { email?: undefined; managedByParticipantId: string }
+);
+
+// `POST /api/events/:eventId/participants/:participantId/invitation`.
+export interface InvitationSent {
+  participantId: string;
+  inviteSentAt: string;
+}
+
+// An exclusion: neither participant may draw the other. Normalised so that
+// `participantAId` < `participantBId`.
+export interface Exclusion {
+  participantAId: string;
+  participantBId: string;
+  // A caretaker and their managed participant: always excluded, not removable.
+  builtIn: boolean;
+}
+
+// `POST /api/events/:eventId/draw`: never contains pairs (ADR-0005).
+export interface DrawDone {
+  event: Event;
+  // How many participants were drawn (each gets a draw-result email).
+  participantCount: number;
+}

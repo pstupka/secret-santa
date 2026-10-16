@@ -323,5 +323,128 @@
     "rateLimitedRetry": "Zbyt wiele prób. Spróbuj ponownie za {minutes} min.",
     "server": "Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę.",
     "network": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie."
+  },
+  "manage": {
+    "loading": "Wczytywanie panelu organizatora…",
+    "notOrganizer": "Tę stronę widzi tylko organizator wydarzenia.",
+    "lifecycle": {
+      "open": "Dodaj uczestników, wyślij zaproszenia, a gdy wszyscy będą gotowi – rozlosuj pary.",
+      "drawn": "Losowanie już się odbyło. Lista uczestników i wykluczenia są zablokowane. Możesz jeszcze zmienić szczegóły wydarzenia albo powtórzyć losowanie.",
+      "finished": "Wydarzenie się zakończyło i nie można go już zmieniać."
+    },
+    "edit": {
+      "title": "Szczegóły wydarzenia",
+      "timezone": "Strefa czasowa",
+      "timezoneHint": "Daty wydarzenia liczymy w tej strefie czasowej.",
+      "submit": "Zapisz zmiany",
+      "saving": "Zapisywanie…",
+      "saved": "Zapisano zmiany.",
+      "noChanges": "Nie wprowadzono żadnych zmian.",
+      "exchangeOnPast": "Data wymiany prezentów nie może być w przeszłości.",
+      "drawnNote": "Zmiany nie trafią do wysłanych już wiadomości z wynikami losowania."
+    },
+    "participants": {
+      "title": "Uczestnicy ({count})",
+      "empty": "Na liście jest tylko organizator. Dodaj pozostałych uczestników.",
+      "you": "Ty",
+      "noEmail": "bez adresu e-mail",
+      "caretaker": "Opiekun: {name}",
+      "wishlist": "Lista życzeń",
+      "wishlistFilled": "Lista życzeń uzupełniona",
+      "wishlistEmpty": "Lista życzeń pusta",
+      "inviteState": {
+        "managed": "Pod opieką – bez zaproszenia",
+        "notInvited": "Bez zaproszenia",
+        "invited": "Zaproszenie wysłane",
+        "opened": "Link otwarty",
+        "declined": "Nie bierze udziału"
+      },
+      "send": "Wyślij zaproszenie",
+      "resend": "Wyślij ponownie",
+      "sendingOne": "Wysyłanie…",
+      "sentOne": "Wysłano zaproszenie do: {name}.",
+      "remove": "Usuń",
+      "confirmRemove": "Usunąć z wydarzenia osobę {name}? Jej listy życzeń i wykluczenia też zostaną usunięte.",
+      "confirmRemoveYes": "Tak, usuń",
+      "removing": "Usuwanie…",
+      "removed": "Usunięto: {name}.",
+      "removeBlocked": {
+        "caretaker": "Aby usunąć tę osobę, najpierw usuń osoby pod jej opieką."
+      }
+    },
+    "invitations": {
+      "title": "Zaproszenia",
+      "lead": "Dodanie uczestnika niczego nie wysyła. Zaproszenia z osobistym linkiem wyślesz, kiedy lista będzie gotowa.",
+      "pending": "Do wysłania: {count}",
+      "send": "Wyślij zaproszenia ({count})",
+      "sending": "Wysyłanie…",
+      "sent": "Wysłano zaproszenia: {count}.",
+      "nonePending": "Wszyscy uczestnicy z adresem e-mail mają już zaproszenie. Aby wysłać je ponownie, użyj przycisku przy uczestniku."
+    },
+    "add": {
+      "title": "Dodaj uczestnika",
+      "kind": "Rodzaj uczestnika",
+      "withEmail": "Z adresem e-mail",
+      "managed": "Pod opieką (bez e-maila)",
+      "managedHint": "Dla osoby bez e-maila, np. babci. Opiekun uzupełni za nią listę życzeń i przekaże jej wynik losowania. Opiekun i osoba pod opieką nigdy nie wylosują siebie nawzajem.",
+      "displayName": "Imię",
+      "displayNamePlaceholder": "np. Babcia Zosia",
+      "email": "Adres e-mail",
+      "caretaker": "Opiekun",
+      "chooseCaretaker": "Wybierz opiekuna",
+      "submit": "Dodaj",
+      "adding": "Dodawanie…",
+      "added": "Dodano: {name}. Pamiętaj o wysłaniu zaproszenia.",
+      "addedManaged": "Dodano: {name}.",
+      "duplicate": "Ta osoba już jest na liście albo osiągnięto limit 50 uczestników.",
+      "badCaretaker": "Wybierz opiekuna spośród uczestników z adresem e-mail.",
+      "locked": "Listy uczestników nie można już zmieniać."
+    },
+    "exclusions": {
+      "title": "Wykluczenia",
+      "lead": "Para osób, które nie mogą wylosować siebie nawzajem – np. małżonkowie.",
+      "first": "Pierwsza osoba",
+      "second": "Druga osoba",
+      "choose": "Wybierz osobę",
+      "submit": "Dodaj wykluczenie",
+      "adding": "Dodawanie…",
+      "alreadyExcluded": "Te osoby są już wykluczone.",
+      "empty": "Brak wykluczeń.",
+      "builtIn": "opiekun i osoba pod opieką",
+      "builtInHint": "Wykluczenie automatyczne – nie można go usunąć.",
+      "remove": "Usuń wykluczenie {a} – {b}",
+      "locked": "Wykluczeń nie można już zmieniać."
+    },
+    "draw": {
+      "title": "Losowanie",
+      "lead": "Każda osoba, która nie zrezygnowała, wylosuje jedną inną osobę. Nikt – także organizator – nie zobaczy cudzych par.",
+      "run": "Rozlosuj pary",
+      "redo": "Powtórz losowanie",
+      "running": "Losowanie…",
+      "confirmRun": "Rozlosować pary? Każdy dostanie e-mail z wylosowaną osobą, a lista uczestników i wykluczenia zostaną zablokowane.",
+      "confirmRunYes": "Tak, losuj",
+      "confirmRedo": "Powtórzyć losowanie? Wszystkie dotychczasowe pary przepadną, a każdy uczestnik dostanie nowy e-mail z nową wylosowaną osobą.",
+      "confirmRedoYes": "Tak, losuj od nowa",
+      "done": "Gotowe! Wylosowano pary dla {count} osób. Każda dostanie e-mail z wynikiem.",
+      "drawnAt": "Ostatnie losowanie: {date}.",
+      "redoUntil": "Losowanie można powtórzyć do dnia przed wymianą prezentów.",
+      "redoClosed": "Losowania nie można już powtórzyć.",
+      "blockedTitle": "Zanim rozlosujesz pary:",
+      "reason": {
+        "tooFewParticipants": "Potrzeba co najmniej 3 osób biorących udział (teraz: {count}).",
+        "notEveryoneInvited": "Wyślij zaproszenia wszystkim uczestnikom. Bez zaproszenia: {names}.",
+        "impossibleExclusions": "Przy obecnych wykluczeniach nie da się rozlosować par. Usuń część wykluczeń i spróbuj ponownie.",
+        "redoTooLate": "Losowania nie można już powtórzyć – wymiana prezentów jest dziś albo już się odbyła."
+      }
+    },
+    "delete": {
+      "title": "Usuń wydarzenie",
+      "lead": "Usunięcie jest nieodwracalne: znikną uczestnicy, listy życzeń, wykluczenia i wyniki losowania.",
+      "submit": "Usuń wydarzenie",
+      "confirm": "Na pewno usunąć wydarzenie „{title}” i wszystkie jego dane? Tego nie da się cofnąć.",
+      "confirmYes": "Tak, usuń na zawsze",
+      "deleting": "Usuwanie…"
+    },
+    "cancel": "Anuluj"
   }
 }
