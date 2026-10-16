@@ -99,3 +99,27 @@ export const decline = async (
     .set('Authorization', `Bearer ${token}`)
     .expect(httpStatus.OK);
 };
+
+// Sends every pending invitation through the organizer's API, so the event
+// can be drawn.
+export const inviteAll = async (
+  ctx: TestContext,
+  { eventId, organizerToken }: OrganizedEvent,
+): Promise<void> => {
+  await request(ctx.app)
+    .post(`/api/events/${eventId}/invitations/send`)
+    .set('Authorization', `Bearer ${organizerToken}`)
+    .expect(httpStatus.OK);
+};
+
+// Runs (or redoes) the draw through the organizer's API; every participant
+// must already be invited.
+export const runDraw = async (
+  ctx: TestContext,
+  { eventId, organizerToken }: OrganizedEvent,
+): Promise<void> => {
+  await request(ctx.app)
+    .post(`/api/events/${eventId}/draw`)
+    .set('Authorization', `Bearer ${organizerToken}`)
+    .expect(httpStatus.OK);
+};

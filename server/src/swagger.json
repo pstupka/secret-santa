@@ -914,7 +914,7 @@
         "tags": [
           "wishlists"
         ],
-        "summary": "Wishlists the participant may read: their own wishlist (first) and every child wishlist of the event. Items of child wishlists carry claim info (claimedByMe, claimedBy), except on the caller's own children's wishlists. A caretaker may act for a managed participant with X-Acting-As.",
+        "summary": "Wishlists the participant may read: their own wishlist (first), once drawn their recipient's own wishlist, and every child wishlist of the event. Items of child wishlists carry claim info (claimedByMe, claimedBy), except on the caller's own children's wishlists. A caretaker may act for a managed participant with X-Acting-As.",
         "security": [
           {
             "magicToken": []
@@ -931,7 +931,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Own wishlist first, then child wishlists oldest first",
+            "description": "Own wishlist first, then the recipient's own wishlist (once drawn), then child wishlists oldest first",
             "schema": {
               "type": "array",
               "items": {
@@ -1326,6 +1326,121 @@
           },
           "404": {
             "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/draw": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": [
+          "draw"
+        ],
+        "summary": "Run the draw (open → drawn) or redo it (drawn, before the exchange date), replacing every assignment (organizer). Draws all non-declined participants, respecting exclusions and the built-in caretaker / managed participant pairs, and queues a draw-result email per drawn participant (a managed participant's goes to their caretaker). The response never contains assignments.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Drawn",
+            "schema": {
+              "$ref": "#/definitions/DrawDone"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is finished, or a redo on or after the exchange date",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "Fewer than 3 non-declined participants, a non-managed participant not invited yet, or exclusions make the draw impossible",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/my-assignment": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "draw"
+        ],
+        "summary": "The participant's own assignment: their recipient and the recipient's own wishlist. Never anyone else's, also not for the organizer. A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/MyAssignment"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "X-Acting-As names someone the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, the person is not a participant, or no assignment (not drawn yet, or declined before the draw)",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -1895,6 +2010,52 @@
         },
         "item": {
           "$ref": "#/definitions/WishlistItem"
+        }
+      }
+    },
+    "DrawDone": {
+      "type": "object",
+      "required": [
+        "event",
+        "participantCount"
+      ],
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/Event"
+        },
+        "participantCount": {
+          "type": "integer",
+          "description": "How many participants were drawn and emailed"
+        }
+      }
+    },
+    "MyAssignment": {
+      "type": "object",
+      "required": [
+        "recipient",
+        "wishlist"
+      ],
+      "properties": {
+        "recipient": {
+          "type": "object",
+          "required": [
+            "id",
+            "displayName"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The recipient's participant id"
+            },
+            "displayName": {
+              "type": "string"
+            }
+          }
+        },
+        "wishlist": {
+          "$ref": "#/definitions/Wishlist",
+          "x-nullable": true,
+          "description": "The recipient's own wishlist; null if they have none"
         }
       }
     }

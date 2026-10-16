@@ -170,7 +170,8 @@ export const findOwnWishlist = async (
   return wishlist && (await withItems(db, [wishlist]))[0];
 };
 
-// What `viewer` may read: their own wishlist first, then every child
+// What `viewer` may read: their own wishlist first, then once drawn their
+// recipient's own wishlist (the viewer is their Santa), then every child
 // wishlist of the event, oldest first. Child wishlist items carry claim info
 // unless the reader counts as the child's parent (see `ClaimReader`);
 // `caretaker` is set when acting as a managed participant.
@@ -179,12 +180,21 @@ export const listVisibleWishlists = async (
   viewer: ParticipantRow,
   caretaker?: ParticipantRow,
 ): Promise<WishlistDto[]> => {
+  const recipientId = (
+    await db
+      .selectFrom('assignments')
+      .select('receiver_id')
+      .where('event_id', '=', viewer.event_id)
+      .where('giver_id', '=', viewer.id)
+      .executeTakeFirst()
+  )?.receiver_id;
+  const ownWishlistsOf = [viewer.id, ...(recipientId ? [recipientId] : [])];
   const wishlists = await selectWishlistsWithOwner(db)
     .where('wishlists.event_id', '=', viewer.event_id)
     .where((eb) =>
       eb.or([
         eb.and([
-          eb('wishlists.participant_id', '=', viewer.id),
+          eb('wishlists.participant_id', 'in', ownWishlistsOf),
           eb('wishlists.child_name', 'is', null),
         ]),
         eb('wishlists.child_name', 'is not', null),
@@ -193,10 +203,13 @@ export const listVisibleWishlists = async (
     .orderBy('wishlists.created_at')
     .orderBy('wishlists.id')
     .execute();
-  // Stable: the own wishlist moves first, children keep creation order.
-  wishlists.sort(
-    (a, b) => Number(a.child_name !== null) - Number(b.child_name !== null),
-  );
+  // Stable: the viewer's own wishlist, then the recipient's, then children
+  // in creation order.
+  const rank = (wishlist: WishlistWithOwner) => {
+    if (wishlist.child_name !== null) return 2;
+    return wishlist.participant_id === viewer.id ? 0 : 1;
+  };
+  wishlists.sort((a, b) => rank(a) - rank(b));
   return withItems(db, wishlists, await claimReaderOf(db, viewer, caretaker));
 };
 
