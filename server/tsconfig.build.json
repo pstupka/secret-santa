@@ -1,0 +1,11 @@
+{
+  // Production build: compiles src/ to dist/ without tests or the test harness.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/test/**/*"]
+}

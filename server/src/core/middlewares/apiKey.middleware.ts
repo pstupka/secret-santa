@@ -7,7 +7,7 @@ import logger from '@core/utils/logger';
 
 const protectedByApiKey = (req: Request, res: Response, next: NextFunction) => {
   const xApiKey = req.header('x-api-key')?.trim();
-  const token: string = config.xApiKey;
+  const token = config.xApiKey;
   if (token && xApiKey === token.trim()) {
     return next();
   }

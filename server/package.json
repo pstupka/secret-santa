@@ -3,22 +3,24 @@
   "version": "0.0.0",
   "description": "Express and TypeScript API for creating and managing Secret Santa events.",
   "main": "dist/server.js",
+  "type": "module",
   "private": true,
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths && cp src/swagger.json dist/",
     "server:prod": "node dist/server.js",
-    "server:dev": "DOTENV_CONFIG_PATH=.env.local TS_NODE_BASEURL=. ts-node-dev --inspect=0.0.0.0:9229 --exit-child --respawn -r dotenv/config -r tsconfig-paths/register src/server.ts",
-    "test": "jest -c jest.config.mjs --env=node",
-    "test:cov": "jest -c jest.config.mjs --coverage --env=node",
-    "test:watch": "jest -c jest.config.mjs -i --watchAll",
+    "server:dev": "tsx watch --inspect=0.0.0.0:9229 --env-file=.env.local src/server.ts",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:watch": "vitest",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "prettier": "prettier --check \"{*.js,!(node*)**/*.ts}\"",
     "prettier:fix": "prettier --write \"{*.js,!(node*)**/*.ts}\"",
-    "loglevel:change": "runtime-node-refresh"
+    "loglevel:change": "runtime-node-refresh",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "secret-santa",
@@ -32,15 +34,15 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^5.0.6",
-    "@types/jest": "^27.0.3",
     "@types/morgan": "^1.9.3",
     "apicache": "^1.6.3",
-    "dotenv": "^14.3.2",
+    "better-sqlite3": "^13.0.3",
     "express": "^5.2.1",
     "express-http-context": "^2.0.1",
     "fs": "^0.0.1-security",
     "http-status": "^1.5.0",
     "joi": "^17.5.0",
+    "kysely": "^0.29.6",
     "md5": "^2.3.0",
     "morgan": "^1.10.0",
     "node-mocks-http": "^1.11.0",
@@ -49,7 +51,6 @@
     "runtime-node-refresh": "^1.0.6",
     "supertest": "^7.3.1",
     "swagger-ui-express": "^4.3.0",
-    "ts-jest": "^29.4.14",
     "tslib": "^2.8.1",
     "uuid": "^11.1.1",
     "winston": "^3.6.0"
@@ -58,7 +59,9 @@
     "@eslint/eslintrc": "^2.1.4",
     "@eslint/js": "^8.57.1",
     "@types/apicache": "^1.6.0",
-    "@types/node": "^16.11.11",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^24.0.0",
+    "@types/supertest": "^7.2.1",
     "@typescript-eslint/eslint-plugin": "^8.71.1",
     "@typescript-eslint/parser": "^8.71.1",
     "eslint": "^8.57.0",
@@ -66,15 +69,14 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jest": "^25.3.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-security": "^1.4.0",
-    "jest": "^30.5.2",
     "prettier": "^2.5.1",
-    "ts-node-dev": "^1.1.8",
     "tsc-alias": "^1.5.0",
-    "tsconfig-paths": "^3.12.0",
-    "typescript": "^6.0.3"
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
   }
 }

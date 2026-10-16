@@ -13,7 +13,7 @@ Inside of this repoistory you will find fully configured and ready to use **expr
 - ✏️ Linting via [ESLint](https://eslint.org) with Airbnb configuration
 - 🚑 Code Formatter with [Prettier](https://prettier.io)
 - 📘 VSCode configuration: Debug, Settings, Tasks and extension for ESLint, Prettier, TypeScript
-- 🚧 Jest for unit testing
+- 🚧 [Vitest](https://vitest.dev) for unit and integration testing (in-memory SQLite)
 - 🏄 And many more...
 
 ### Additional features:
@@ -84,7 +84,7 @@ There are few rules that you have to obey to enjoy NET.ts fully.
 
 ## Testing
 
-The Jest test suites are run by executing
+The Vitest suites are run by executing
 
 ```sh
 npm test
@@ -182,7 +182,7 @@ For the sake of readability, you may build an image with custom name i.e. **net.
 
 When done, execute the docker run command to create a container from a net.ts image and starts the container with all the required environment variables:
 
-`docker run --rm -it -e NODE_ENV='production' -e API_KEY_TOKEN='token' -p 8080:8080 net.ts`
+`docker run --rm -it -e NODE_ENV='production' -e PUBLIC_URL='https://santa.example.com' -e DATABASE_PATH='/data/secret-santa.db' -e SMTP_URL='smtp://user:pass@smtp.example.com:587' -e MAIL_FROM='Secret Santa <santa@example.com>' -v santa-data:/data -p 8080:8080 net.ts`
 
 That's it, you just ran the app in production mode.
 

@@ -18,9 +18,6 @@ export default [
   },
   ...compat
     .config({
-      env: {
-        "jest/globals": true,
-      },
       extends: [
         "airbnb-base",
         "plugin:@typescript-eslint/recommended",
@@ -37,10 +34,13 @@ export default [
         sourceType: "module",
         tsconfigRootDir: serverDirectory,
       },
-      plugins: ["@typescript-eslint", "jest", "security"],
+      plugins: ["@typescript-eslint", "security"],
       rules: {
         "max-len": ["error", { code: 128 }],
         "import/extensions": "off",
+        // The base rule misreports TS type signatures; the TS-aware one covers it.
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
         "node/no-missing-import": "off",
         "react/jsx-filename-extension": "off",
         "node/file-extension-in-import": "off",
@@ -69,6 +69,20 @@ export default [
         },
       },
     })
+    .concat(
+      compat.config({
+        overrides: [
+          {
+            // Tests and the test harness may use dev dependencies (vitest, supertest).
+            files: ["**/*.test.ts", "src/test/**/*.ts"],
+            rules: {
+              "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+              "node/no-unpublished-import": "off",
+            },
+          },
+        ],
+      }),
+    )
     .map((config) => ({
       ...config,
       files: config.files

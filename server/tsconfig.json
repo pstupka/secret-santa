@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "types": ["jest", "node"],
+    "types": ["node"],
     "typeRoots": ["node_modules/@types", "../node_modules/@types", "typings"],
     "lib": ["ESNext", "DOM"],
-    "module": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "declaration": true,
     "esModuleInterop": true,
@@ -19,30 +20,22 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "importHelpers": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": ".",
+    "noEmit": true,
     "paths": {
       "@app": ["./src/app.ts"],
       "api": ["./src/api.ts"],
       "core/*": ["./src/core/*"],
       "@core/*": ["./src/core/*"],
       "@components/*": ["./src/components/*"],
-      "@config/*": ["./src/config/*"]
-    },
-    "plugins": [{ "transform": "ts-optchain/transform" }]
+      "@config/*": ["./src/config/*"],
+      "@db/*": ["./src/db/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@test/*": ["./src/test/*"]
+    }
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "test/**/*",
-    "ci/**/*",
-    "scripts/**/*",
-    "__mocks__/**/*",
-    "**/node_modules/**/*",
-    "**/dts/**/*",
-    "**/dist/**/*",
-    "**/*.(spec|test).ts"
-  ],
+  "include": ["src/**/*", "vitest.config.ts"],
+  "exclude": ["dist", "node_modules"],
   "compileOnSave": true,
   "typeAcquisition": {
     "enable": true
