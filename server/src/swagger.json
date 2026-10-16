@@ -729,6 +729,177 @@
           }
         }
       }
+    },
+    "/api/events/{eventId}/exclusions": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "exclusions"
+        ],
+        "summary": "List exclusion pairs (organizer): the organizer's pairs and the built-in caretaker / managed participant pairs (builtIn: true), ordered by participant ids",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Exclusion"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "exclusions"
+        ],
+        "summary": "Exclude two participants from drawing each other, in either order (organizer, open events). Stored with participantAId < participantBId.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewExclusion"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Exclusion"
+            }
+          },
+          "400": {
+            "description": "Invalid input, the same participant twice, or not both participants of this event",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished, the pair is already excluded, or it is a caretaker and their managed participant (always excluded)",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/exclusions/{aId}/{bId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "in": "path",
+          "name": "aId",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "in": "path",
+          "name": "bId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "delete": {
+        "tags": [
+          "exclusions"
+        ],
+        "summary": "Remove an exclusion pair, ids in either order (organizer, open events)",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event or exclusion, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished, or the pair is a built-in caretaker pair",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1070,6 +1241,38 @@
         "inviteSentAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "NewExclusion": {
+      "type": "object",
+      "required": [
+        "participantAId",
+        "participantBId"
+      ],
+      "properties": {
+        "participantAId": {
+          "type": "string"
+        },
+        "participantBId": {
+          "type": "string"
+        }
+      }
+    },
+    "Exclusion": {
+      "type": "object",
+      "properties": {
+        "participantAId": {
+          "type": "string",
+          "description": "The lower of the two participant ids"
+        },
+        "participantBId": {
+          "type": "string",
+          "description": "The higher of the two participant ids"
+        },
+        "builtIn": {
+          "type": "boolean",
+          "description": "A caretaker and their managed participant: always excluded, cannot be added or removed"
         }
       }
     }
