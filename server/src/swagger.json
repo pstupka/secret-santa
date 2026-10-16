@@ -914,7 +914,7 @@
         "tags": [
           "wishlists"
         ],
-        "summary": "Wishlists the participant may read: their own wishlist (first) and every child wishlist of the event. A caretaker may act for a managed participant with X-Acting-As.",
+        "summary": "Wishlists the participant may read: their own wishlist (first) and every child wishlist of the event. Items of child wishlists carry claim info (claimedByMe, claimedBy), except on the caller's own children's wishlists. A caretaker may act for a managed participant with X-Acting-As.",
         "security": [
           {
             "magicToken": []
@@ -1150,6 +1150,182 @@
           },
           "409": {
             "description": "The event is finished",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/wishlist-items/{itemId}/claim": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "in": "path",
+          "name": "itemId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "put": {
+        "tags": [
+          "claims"
+        ],
+        "summary": "Claim an item of a child wishlist (\"I'll buy this\"), open or drawn events. Not by the child's parent: the wishlist owner or their caretaker, also when acting via X-Acting-As. Repeating one's own claim changes nothing. A caretaker may claim for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claimed (or already claimed by the participant)",
+            "schema": {
+              "$ref": "#/definitions/MyClaim"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The caller is the child's parent, or X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event or item, an item not on a child wishlist of this event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The item is claimed by someone else, or the event is finished",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "claims"
+        ],
+        "summary": "Release one's own claim on a child wishlist item (the claimer, open or drawn events). Releasing an unclaimed item changes nothing. A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Released"
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The item is claimed by someone else, the caller is the child's parent, or X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event or item, an item not on a child wishlist of this event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is finished",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/my-claims": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "claims"
+        ],
+        "summary": "My claims: the participant's shopping list of claimed child wishlist items. A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "By child wishlist (oldest first), items in the owner's order",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MyClaim"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -1552,6 +1728,15 @@
           "type": "string",
           "x-nullable": true,
           "maxLength": 1000
+        },
+        "claimedByMe": {
+          "type": "boolean",
+          "description": "Only on child wishlists, never for the child's parent: whether the participant holds the claim"
+        },
+        "claimedBy": {
+          "type": "string",
+          "x-nullable": true,
+          "description": "Only on child wishlists, never for the child's parent: the claimer's name; null = unclaimed"
         }
       }
     },
@@ -1688,6 +1873,28 @@
           "items": {
             "$ref": "#/definitions/WishlistItemUpdate"
           }
+        }
+      }
+    },
+    "MyClaim": {
+      "type": "object",
+      "properties": {
+        "wishlistId": {
+          "type": "string"
+        },
+        "childName": {
+          "type": "string"
+        },
+        "parentName": {
+          "type": "string",
+          "description": "The child's parent: the owner of the child wishlist"
+        },
+        "claimedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "item": {
+          "$ref": "#/definitions/WishlistItem"
         }
       }
     }

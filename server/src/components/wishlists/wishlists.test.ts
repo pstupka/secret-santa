@@ -290,7 +290,13 @@ describe('Wishlists API', () => {
         httpStatus.OK,
       );
 
-      expect(res.body).toEqual([stas]);
+      // Ola is not Staś's parent, so the items carry claim info.
+      expect(res.body).toEqual([
+        {
+          ...stas,
+          items: [{ ...stas.items[0], claimedByMe: false, claimedBy: null }],
+        },
+      ]);
     });
 
     test('a caretaker sees the managed participant’s own wishlist with X-Acting-As', async () => {
