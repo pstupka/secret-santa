@@ -30,6 +30,7 @@
       "@components/*": ["./src/components/*"],
       "@config/*": ["./src/config/*"],
       "@db/*": ["./src/db/*"],
+      "@email/*": ["./src/email/*"],
       "@shared/*": ["./src/shared/*"],
       "@test/*": ["./src/test/*"]
     }

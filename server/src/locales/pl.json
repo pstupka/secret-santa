@@ -1,0 +1,39 @@
+{
+  "email": {
+    "layout": {
+      "greeting": "Cześć {name}!",
+      "greetingAnonymous": "Cześć!",
+      "signature": "Wesołych Świąt!\nTwój Mikołaj",
+      "linkFallback": "Jeśli przycisk nie działa, skopiuj ten adres do przeglądarki:",
+      "confidential": "Ten link jest tylko dla Ciebie — nie przekazuj go nikomu."
+    },
+    "organizer-link": {
+      "subject": "Twoje wydarzenie „{eventTitle}” zostało utworzone",
+      "body": "Utworzyłeś(-aś) wydarzenie „{eventTitle}”. Pod poniższym linkiem możesz dodać uczestników, wysłać zaproszenia i przeprowadzić losowanie.",
+      "cta": "Zarządzaj wydarzeniem"
+    },
+    "access-link": {
+      "subject": "Twój osobisty link do Mikołajek",
+      "body": "Poproszono o nowy osobisty link. Wszystkie Twoje wydarzenia znajdziesz pod poniższym adresem.",
+      "ignore": "Jeśli to nie Ty, zignoruj tę wiadomość — Twoje dotychczasowe linki nadal działają.",
+      "cta": "Moje wydarzenia"
+    },
+    "invitation": {
+      "subject": "{organizerName} zaprasza Cię na Mikołajki „{eventTitle}”",
+      "body": "{organizerName} zaprasza Cię do wspólnych Mikołajek „{eventTitle}”. Każdy uczestnik wylosuje jedną osobę, dla której przygotuje prezent.",
+      "exchangeOn": "Wymiana prezentów: {date}",
+      "budget": "Budżet na prezent: {amount}",
+      "rulesHeading": "Zasady od organizatora:",
+      "instructions": "Pod swoim osobistym linkiem dodaj listę życzeń, żeby Twój Mikołaj wiedział, co Cię ucieszy. Możesz też dodać listy życzeń dla swoich dzieci. Jeśli nie możesz wziąć udziału, zrezygnuj tam przed losowaniem — domyślnie bierzesz udział.",
+      "cta": "Przejdź do wydarzenia"
+    },
+    "draw-result": {
+      "subject": "Losowanie w „{eventTitle}” zakończone",
+      "body": "Losowanie w wydarzeniu „{eventTitle}” zostało przeprowadzone. Kupujesz prezent dla: {recipientName}.",
+      "bodyCaretaker": "Losowanie w wydarzeniu „{eventTitle}” zostało przeprowadzone. {giverName} kupuje prezent dla: {recipientName}. Przekaż tę informację osobie, którą się opiekujesz.",
+      "exchangeOn": "Wymiana prezentów: {date}",
+      "secret": "Zachowaj to w tajemnicy!",
+      "cta": "Zobacz listę życzeń"
+    }
+  }
+}

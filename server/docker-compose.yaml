@@ -8,5 +8,16 @@ services:
       - '8080:8080'
       - '9229:9229'
     env_file: .env.local
+    environment:
+      SMTP_URL: smtp://mailpit:1025
+    depends_on:
+      - mailpit
     volumes:
       - './src:/app/server/src'
+
+  # Catches all outgoing email in dev. Web UI: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.31
+    ports:
+      - '8025:8025'
+      - '1025:1025'

@@ -4,13 +4,20 @@ import { dirname } from 'node:path';
 import createApp from '@app';
 import config from '@config/config';
 import { migrateToLatest, openDatabase } from '@db/database';
+import { createSmtpMailer } from '@email/mailer';
+import { createEmailSender, EmailSender } from '@email/sender';
 import { systemClock } from '@shared/clock';
 import logger from '@core/utils/logger';
 import errorHandler from 'core/utils/errorHandler';
 
-const { port, projectName, databasePath } = config;
+const { port, projectName, databasePath, publicUrl, smtpUrl, mailFrom } =
+  config;
+
+const EMAIL_SEND_INTERVAL_MS = 10_000;
+const EMAIL_THROTTLE_MS = 1_000;
 
 let server: Server | undefined;
+let emailSender: EmailSender | undefined;
 
 const start = async (): Promise<void> => {
   // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -18,6 +25,15 @@ const start = async (): Promise<void> => {
   const db = openDatabase(databasePath);
   await migrateToLatest(db);
   logger.info(`Database ready at ${databasePath}`);
+
+  emailSender = createEmailSender({
+    db,
+    clock: systemClock,
+    mailer: createSmtpMailer(smtpUrl, mailFrom),
+    publicUrl,
+    throttleMs: EMAIL_THROTTLE_MS,
+  });
+  emailSender.start(EMAIL_SEND_INTERVAL_MS);
 
   const app = createApp({ db, clock: systemClock });
   server = app.listen(port, (): void => {
@@ -50,6 +66,7 @@ process.on('unhandledRejection', (reason: Error) => {
 
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received');
+  emailSender?.stop();
   if (server) {
     server.close();
   }

@@ -51,7 +51,10 @@ If you see the following response in the browser:
 {"status":"OK","data":"2022-02-13T20:05:13.965Z"}
 ```
 
-It means that everything work as expected. You may start to develop your business logic.
+It means that everything work as expected.
+
+Outgoing email is caught by [Mailpit](https://mailpit.axllent.org): open http://localhost:8025 to read it.
+The app queues emails in the `email_outbox` table and an in-process sender delivers them every ~10 s. You may start to develop your business logic.
 Please scroll down to "How to work with NET.ts" section.
 
 ## Getting started, standard way (no containerization)

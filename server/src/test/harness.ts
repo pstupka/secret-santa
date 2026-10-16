@@ -2,8 +2,12 @@ import { Application } from 'express';
 
 import createApp from '@app';
 import { Db, migrateToLatest, openDatabase } from '@db/database';
+import { createEmailSender } from '@email/sender';
 import { Clock } from '@shared/clock';
 import { AppDeps } from '../deps';
+import { createFakeMailer, FakeMailer } from './fakeMailer';
+
+export const TEST_PUBLIC_URL = 'https://santa.test';
 
 // A clock tests can move: `clock.set('2026-12-01T10:00:00Z')`.
 export interface TestClock extends Clock {
@@ -32,6 +36,9 @@ export const createTestDb = async (): Promise<Db> => {
 export interface TestContext extends AppDeps {
   app: Application;
   clock: TestClock;
+  mailer: FakeMailer;
+  // Drains the outbox once through the fake mailer; returns how many were sent.
+  sendEmails(): Promise<number>;
   close(): Promise<void>;
 }
 
@@ -40,5 +47,20 @@ export const createTestContext = async (): Promise<TestContext> => {
   const db = await createTestDb();
   const clock = createTestClock();
   const app = createApp({ db, clock });
-  return { app, db, clock, close: () => db.destroy() };
+  const mailer = createFakeMailer();
+  const sender = createEmailSender({
+    db,
+    clock,
+    mailer,
+    publicUrl: TEST_PUBLIC_URL,
+    throttleMs: 0,
+  });
+  return {
+    app,
+    db,
+    clock,
+    mailer,
+    sendEmails: sender.sendDue,
+    close: () => db.destroy(),
+  };
 };
