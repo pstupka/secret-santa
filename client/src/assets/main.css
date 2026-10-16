@@ -32,6 +32,17 @@
   h3 {
     @apply font-display text-pine-900;
   }
+
+  /* Paper is white; pages hide their own screen-only parts with `print:`. */
+  @media print {
+    @page {
+      margin: 15mm;
+    }
+
+    body {
+      @apply bg-white;
+    }
+  }
 }
 
 /* Shared building blocks; compose with regular utilities in templates. */

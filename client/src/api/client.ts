@@ -2,6 +2,7 @@ import type {
   CreateEventInput,
   Event,
   EventDetails,
+  MyAssignment,
   MyEvent,
   OrganizerParticipant,
   ParticipantSummary,
@@ -187,6 +188,16 @@ export const createApiClient = ({
       request<ParticipantSummary>(
         'POST',
         `/events/${encodeURIComponent(eventId)}/participation/rejoin`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
+
+    // The acting participant's assignment and their recipient's wishlist.
+    // `404` before the draw or when they declined before it; still readable
+    // once the event is finished.
+    getMyAssignment: (eventId: string, actingAs?: string | null) =>
+      request<MyAssignment>(
+        'GET',
+        `/events/${encodeURIComponent(eventId)}/my-assignment`,
         { headers: actingAsHeaders(actingAs) },
       ),
   };

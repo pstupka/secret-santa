@@ -83,3 +83,37 @@ export interface EventDetails extends MyEvent {
   // The caller's managed participants, whom they can act as (`X-Acting-As`).
   managedParticipants: ParticipantSummary[];
 }
+
+// One gift idea on a wishlist.
+export interface WishlistItem {
+  id: string;
+  title: string;
+  url: string | null;
+  notes: string | null;
+  // Claim info, only on child wishlists and never for the child's parent:
+  // whether the reader holds the claim, and the claimer's name (null =
+  // unclaimed).
+  claimedByMe?: boolean;
+  claimedBy?: string | null;
+}
+
+export interface Wishlist {
+  id: string;
+  // The owner: the participant whose wishlist it is, or the parent of a child.
+  participantId: string;
+  participantName: string;
+  // null = the participant's own wishlist; otherwise a child wishlist.
+  childName: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  // In the owner's order.
+  items: WishlistItem[];
+}
+
+// `GET /api/events/:eventId/my-assignment`: whom the acting participant gives
+// a gift to, with the recipient's own wishlist (null until they write one).
+export interface MyAssignment {
+  recipient: { id: string; displayName: string };
+  wishlist: Wishlist | null;
+}

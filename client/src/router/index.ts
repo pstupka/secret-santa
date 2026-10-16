@@ -46,9 +46,14 @@ export const routes: RouteRecordRaw[] = [
         name: 'event',
         component: () => import('@/views/EventDashboardView.vue'),
       },
-      // Placeholders until #14 (manage), #15 (wishlists, kids, claims) and
-      // #16 (assignment) replace them.
-      ...(['wishlists', 'kids', 'claims', 'assignment', 'manage'] as const).map(
+      {
+        path: 'assignment',
+        name: 'event-assignment',
+        component: () => import('@/views/AssignmentView.vue'),
+      },
+      // Placeholders until #14 (manage) and #15 (wishlists, kids, claims)
+      // replace them.
+      ...(['wishlists', 'kids', 'claims', 'manage'] as const).map(
         (section) => ({
           path: section,
           name: `event-${section}`,
@@ -56,6 +61,14 @@ export const routes: RouteRecordRaw[] = [
         }),
       ),
     ],
+  },
+  {
+    // Print-friendly draw result, outside the event layout. `?as=` names the
+    // managed participant a caretaker prints for.
+    path: '/events/:eventId/assignment/print',
+    name: 'event-assignment-print',
+    component: () => import('@/views/AssignmentPrintView.vue'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/:pathMatch(.*)*',

@@ -22,7 +22,7 @@ const signOut = async () => {
 <template>
   <div class="flex min-h-dvh flex-col">
     <header
-      class="sticky top-0 z-10 border-b border-stone-200/70 bg-snow/90 backdrop-blur"
+      class="sticky top-0 z-10 border-b border-stone-200/70 bg-snow/90 backdrop-blur print:hidden"
     >
       <div
         class="mx-auto flex h-16 max-w-3xl items-center justify-between gap-2 px-4"
@@ -52,11 +52,13 @@ const signOut = async () => {
       </div>
     </header>
 
-    <main class="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:py-12">
+    <main
+      class="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:py-12 print:max-w-none print:p-0"
+    >
       <RouterView />
     </main>
 
-    <footer class="py-8 text-center text-sm text-stone-500">
+    <footer class="py-8 text-center text-sm text-stone-500 print:hidden">
       {{ $t('app.name') }} · {{ $t('app.tagline') }}
     </footer>
   </div>
