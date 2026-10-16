@@ -900,6 +900,262 @@
           }
         }
       }
+    },
+    "/api/events/{eventId}/wishlists": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "wishlists"
+        ],
+        "summary": "Wishlists the participant may read: their own wishlist (first) and every child wishlist of the event. A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Own wishlist first, then child wishlists oldest first",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Wishlist"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "wishlists"
+        ],
+        "summary": "Create the participant's own wishlist (at most one) or a child wishlist (open or drawn events). A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewWishlist"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Wishlist"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is finished, the participant already has their own wishlist, or already has 10 child wishlists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/wishlists/{wishlistId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "in": "path",
+          "name": "wishlistId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "patch": {
+        "tags": [
+          "wishlists"
+        ],
+        "summary": "Update a wishlist (owner, open or drawn events). Given items replace the list in order: items passed with their id keep it (and any claim), items without an id are new, items left out are removed. A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/WishlistUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated wishlist",
+            "schema": {
+              "$ref": "#/definitions/Wishlist"
+            }
+          },
+          "400": {
+            "description": "Invalid input, an item id not on this wishlist, or a child name for an own wishlist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "A child wishlist of another participant, or X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event or wishlist, someone else's own wishlist, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is finished",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "wishlists"
+        ],
+        "summary": "Delete a wishlist with its items (owner, open or drawn events). A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "A child wishlist of another participant, or X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event or wishlist, someone else's own wishlist, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is finished",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1273,6 +1529,165 @@
         "builtIn": {
           "type": "boolean",
           "description": "A caretaker and their managed participant: always excluded, cannot be added or removed"
+        }
+      }
+    },
+    "WishlistItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 2000,
+          "description": "http or https link"
+        },
+        "notes": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 1000
+        }
+      }
+    },
+    "Wishlist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "participantId": {
+          "type": "string",
+          "description": "The owner: the participant, or the parent of the child"
+        },
+        "participantName": {
+          "type": "string"
+        },
+        "childName": {
+          "type": "string",
+          "x-nullable": true,
+          "description": "null = the participant's own wishlist"
+        },
+        "notes": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WishlistItem"
+          }
+        }
+      }
+    },
+    "NewWishlistItem": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 2000,
+          "description": "http or https link"
+        },
+        "notes": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 1000
+        }
+      }
+    },
+    "NewWishlist": {
+      "type": "object",
+      "properties": {
+        "childName": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 100,
+          "description": "Absent or null = the participant's own wishlist"
+        },
+        "notes": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 2000
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/NewWishlistItem"
+          }
+        }
+      }
+    },
+    "WishlistItemUpdate": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "An item of this wishlist to keep; omit for a new item"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 2000,
+          "description": "http or https link"
+        },
+        "notes": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 1000
+        }
+      }
+    },
+    "WishlistUpdate": {
+      "type": "object",
+      "description": "Partial update: at least one field; absent fields stay unchanged",
+      "properties": {
+        "childName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Child wishlists only"
+        },
+        "notes": {
+          "type": "string",
+          "x-nullable": true,
+          "maxLength": 2000,
+          "description": "Empty or null clears"
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 100,
+          "description": "Replaces all items, in order",
+          "items": {
+            "$ref": "#/definitions/WishlistItemUpdate"
+          }
         }
       }
     }

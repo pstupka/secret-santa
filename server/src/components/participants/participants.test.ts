@@ -443,7 +443,7 @@ describe('Participants API', () => {
       ]);
     });
 
-    test('counts notes but not child wishlists as a filled wishlist', async () => {
+    test('counts neither notes alone nor child wishlists as a filled wishlist', async () => {
       const event = await organizeEvent();
       const tomek = await addMember(event, 'tomek@example.com', 'Tomek');
       const ola = await addMember(event, 'ola@example.com', 'Ola');
@@ -482,7 +482,7 @@ describe('Participants API', () => {
         ]),
       ).toEqual([
         ['Ania', false],
-        ['Tomek', true],
+        ['Tomek', false],
         ['Ola', false],
       ]);
     });

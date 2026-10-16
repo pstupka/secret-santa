@@ -6,6 +6,7 @@ import createEventsRouter from '@components/events/events.router';
 import createParticipantsRouter from '@components/participants/participants.router';
 import createInvitationsRouter from '@components/invitations/invitations.router';
 import createExclusionsRouter from '@components/exclusions/exclusions.router';
+import createWishlistsRouter from '@components/wishlists/wishlists.router';
 import { AppDeps } from './deps';
 
 const createApi = (deps: AppDeps): Router => {
@@ -16,6 +17,7 @@ const createApi = (deps: AppDeps): Router => {
   router.use(createParticipantsRouter(deps));
   router.use(createInvitationsRouter(deps));
   router.use(createExclusionsRouter(deps));
+  router.use(createWishlistsRouter(deps));
   return router;
 };
 

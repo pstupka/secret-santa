@@ -27,8 +27,8 @@ export interface OrganizerParticipantDto extends ParticipantSummaryDto {
   managedByParticipantId: string | null;
   inviteSentAt: string | null;
   firstOpenedAt: string | null;
-  // Whether the participant's own wishlist has items or notes; nothing else
-  // about the wishlist is shown to the organizer.
+  // Whether the participant's own wishlist has at least one item; nothing
+  // else about the wishlist is shown to the organizer.
   wishlistFilled: boolean;
 }
 
@@ -61,19 +61,12 @@ const listParticipantsForOrganizer = async (
             .whereRef('wishlists.participant_id', '=', 'participants.id')
             .where('wishlists.child_name', 'is', null)
             .where((wishlist) =>
-              wishlist.or([
-                wishlist(sql`trim(wishlists.notes)`, '<>', ''),
-                wishlist.exists(
-                  wishlist
-                    .selectFrom('wishlist_items')
-                    .select(sql.lit(1).as('one'))
-                    .whereRef(
-                      'wishlist_items.wishlist_id',
-                      '=',
-                      'wishlists.id',
-                    ),
-                ),
-              ]),
+              wishlist.exists(
+                wishlist
+                  .selectFrom('wishlist_items')
+                  .select(sql.lit(1).as('one'))
+                  .whereRef('wishlist_items.wishlist_id', '=', 'wishlists.id'),
+              ),
             ),
         )
         .as('wishlistFilled'),
