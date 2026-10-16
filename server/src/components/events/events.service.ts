@@ -2,7 +2,13 @@ import httpStatus from 'http-status';
 
 import AppError from '@core/utils/appError';
 import { Db } from '@db/database';
-import { EventRow } from '@db/schema';
+import {
+  EventRow,
+  EventUpdate,
+  ParticipantRole,
+  ParticipantRow,
+  ParticipantStatus,
+} from '@db/schema';
 import { enqueueEmail } from '@email/outbox';
 import { Clock, nowUtc } from '@shared/clock';
 import { todayIn } from '@shared/dates';
@@ -49,6 +55,19 @@ export const toEventDto = (event: EventRow, clock: Clock): EventDto => ({
   updatedAt: event.updated_at,
 });
 
+const assertExchangeOnNotPast = (
+  exchangeOn: string,
+  timezone: string,
+  clock: Clock,
+) => {
+  if (exchangeOn < todayIn(timezone, clock)) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      '"exchangeOn" must not be in the past',
+    );
+  }
+};
+
 export interface CreateEventInput {
   title: string;
   description: string | null;
@@ -69,12 +88,7 @@ export const createEvent = async (
   clock: Clock,
   input: CreateEventInput,
 ): Promise<EventRow> => {
-  if (input.exchangeOn < todayIn(input.timezone, clock)) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      '"exchangeOn" must not be in the past',
-    );
-  }
+  assertExchangeOnNotPast(input.exchangeOn, input.timezone, clock);
 
   return db.transaction().execute(async (trx) => {
     const now = nowUtc(clock);
@@ -126,4 +140,147 @@ export const createEvent = async (
 
     return event;
   });
+};
+
+// The caller's own participant in an event.
+export interface MyParticipantDto {
+  id: string;
+  role: ParticipantRole;
+  status: ParticipantStatus;
+}
+
+export interface MyEventDto extends EventDto {
+  myParticipant: MyParticipantDto;
+}
+
+const toMyEventDto = (
+  event: EventRow,
+  participant: Pick<ParticipantRow, 'id' | 'role' | 'status'>,
+  clock: Clock,
+): MyEventDto => ({
+  ...toEventDto(event, clock),
+  myParticipant: {
+    id: participant.id,
+    role: participant.role,
+    status: participant.status,
+  },
+});
+
+// Every event the person participates in (any status), soonest exchange
+// date first.
+export const listEventsOf = async (
+  db: Db,
+  clock: Clock,
+  personId: string,
+): Promise<MyEventDto[]> => {
+  const rows = await db
+    .selectFrom('participants')
+    .innerJoin('events', 'events.id', 'participants.event_id')
+    .selectAll('events')
+    .select([
+      'participants.id as participantId',
+      'participants.role as participantRole',
+      'participants.status as participantStatus',
+    ])
+    .where('participants.person_id', '=', personId)
+    .orderBy('events.exchange_on')
+    .orderBy('events.created_at')
+    .execute();
+
+  return rows.map(
+    ({ participantId, participantRole, participantStatus, ...event }) =>
+      toMyEventDto(
+        event,
+        { id: participantId, role: participantRole, status: participantStatus },
+        clock,
+      ),
+  );
+};
+
+// What every participant may see about the others: names and statuses.
+export interface ParticipantSummaryDto {
+  id: string;
+  displayName: string;
+  role: ParticipantRole;
+  status: ParticipantStatus;
+}
+
+export interface EventDetailsDto extends MyEventDto {
+  participants: ParticipantSummaryDto[];
+}
+
+export const getEventDetails = async (
+  db: Db,
+  clock: Clock,
+  event: EventRow,
+  myParticipant: ParticipantRow,
+): Promise<EventDetailsDto> => {
+  const participants = await db
+    .selectFrom('participants')
+    .select(['id', 'display_name', 'role', 'status'])
+    .where('event_id', '=', event.id)
+    .orderBy('added_at')
+    .orderBy('id')
+    .execute();
+
+  return {
+    ...toMyEventDto(event, myParticipant, clock),
+    participants: participants.map((participant) => ({
+      id: participant.id,
+      displayName: participant.display_name,
+      role: participant.role,
+      status: participant.status,
+    })),
+  };
+};
+
+// Fields the organizer can edit; absent fields are left unchanged.
+export interface UpdateEventInput {
+  title?: string;
+  description?: string | null;
+  budgetAmount?: number | null;
+  budgetCurrency?: string | null;
+  rules?: string | null;
+  timezone?: string;
+  exchangeOn?: string;
+}
+
+export const updateEvent = async (
+  db: Db,
+  clock: Clock,
+  event: EventRow,
+  input: UpdateEventInput,
+): Promise<EventRow> => {
+  // Checked whenever either changes: moving the event to a timezone where the
+  // exchange date has already passed would finish it.
+  if (input.exchangeOn !== undefined || input.timezone !== undefined) {
+    assertExchangeOnNotPast(
+      input.exchangeOn ?? event.exchange_on,
+      input.timezone ?? event.timezone,
+      clock,
+    );
+  }
+
+  const update: EventUpdate = {
+    title: input.title,
+    description: input.description,
+    budget_amount: input.budgetAmount,
+    budget_currency: input.budgetCurrency,
+    rules: input.rules,
+    timezone: input.timezone,
+    exchange_on: input.exchangeOn,
+    updated_at: nowUtc(clock),
+  };
+  return db
+    .updateTable('events')
+    .set(update)
+    .where('id', '=', event.id)
+    .returningAll()
+    .executeTakeFirstOrThrow();
+};
+
+// Hard delete: participants, wishlists, exclusions and assignments go with
+// the event (ON DELETE CASCADE).
+export const deleteEvent = async (db: Db, eventId: string): Promise<void> => {
+  await db.deleteFrom('events').where('id', '=', eventId).execute();
 };

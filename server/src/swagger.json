@@ -76,6 +76,174 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Events the person participates in (any status), with their own participant, soonest exchange date first",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MyEvent"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Event details with participant names and statuses (participant)",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/EventDetails"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Edit details and dates (organizer). Only the given fields change.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EventUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is finished (read-only)",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Delete the event and all its data (organizer)",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is finished (read-only)",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
       }
     },
     "/api/access-links": {
@@ -289,6 +457,129 @@
           "format": "date-time"
         }
       }
+    },
+    "EventUpdate": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "Partial update: absent fields are unchanged; null or blank text clears description/rules; budgetAmount and budgetCurrency are set or cleared (null) together",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 5000,
+          "x-nullable": true
+        },
+        "budgetAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "x-nullable": true,
+          "description": "Minor units; requires budgetCurrency"
+        },
+        "budgetCurrency": {
+          "type": "string",
+          "example": "PLN",
+          "x-nullable": true,
+          "description": "ISO 4217; requires budgetAmount"
+        },
+        "rules": {
+          "type": "string",
+          "maxLength": 5000,
+          "x-nullable": true
+        },
+        "timezone": {
+          "type": "string",
+          "example": "Europe/Warsaw"
+        },
+        "exchangeOn": {
+          "type": "string",
+          "format": "date",
+          "description": "Not in the past in the (new) event timezone"
+        }
+      }
+    },
+    "MyParticipant": {
+      "type": "object",
+      "description": "The caller's own participant in the event",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "organizer",
+            "member"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "declined"
+          ]
+        }
+      }
+    },
+    "MyEvent": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Event"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "myParticipant": {
+              "$ref": "#/definitions/MyParticipant"
+            }
+          }
+        }
+      ]
+    },
+    "ParticipantSummary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "organizer",
+            "member"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "declined"
+          ]
+        }
+      }
+    },
+    "EventDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MyEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "participants": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ParticipantSummary"
+              }
+            }
+          }
+        }
+      ]
     }
   },
   "securityDefinitions": {
