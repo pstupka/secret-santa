@@ -9,7 +9,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "build": "tsc && tsc-alias --resolve-full-paths && cp src/swagger.json dist/",
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths && cp src/swagger.json dist/",
     "server:prod": "node dist/server.js",
     "server:dev": "tsx watch --inspect=0.0.0.0:9229 --env-file=.env.local src/server.ts",
     "test": "vitest run",
@@ -20,7 +20,7 @@
     "prettier": "prettier --check \"{*.js,!(node*)**/*.ts}\"",
     "prettier:fix": "prettier --write \"{*.js,!(node*)**/*.ts}\"",
     "loglevel:change": "runtime-node-refresh",
-    "typecheck": "tsc --noEmit -p tsconfig.test.json"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "secret-santa",
@@ -61,6 +61,7 @@
     "@types/apicache": "^1.6.0",
     "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^24.0.0",
+    "@types/supertest": "^7.2.1",
     "@typescript-eslint/eslint-plugin": "^8.71.1",
     "@typescript-eslint/parser": "^8.71.1",
     "eslint": "^8.57.0",

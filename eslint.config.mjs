@@ -30,7 +30,7 @@ export default [
       parser: "@typescript-eslint/parser",
       parserOptions: {
         ecmaVersion: 2017,
-        project: ["tsconfig.test.json"],
+        project: ["tsconfig.json"],
         sourceType: "module",
         tsconfigRootDir: serverDirectory,
       },
@@ -58,7 +58,7 @@ export default [
         "import/resolver": {
           typescript: {
             project: fileURLToPath(
-              new URL("./server/tsconfig.test.json", import.meta.url)
+              new URL("./server/tsconfig.json", import.meta.url)
             ),
           },
           node: {
