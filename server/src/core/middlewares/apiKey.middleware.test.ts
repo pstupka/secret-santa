@@ -2,9 +2,9 @@ import httpMocks from 'node-mocks-http';
 import { Response, Request, NextFunction } from 'express';
 
 import config from '@config/config';
-import apiKey from './apiKey.middleware';
+import protectedByApiKey from './apiKey.middleware';
 
-describe('ApiKey middleware', () => {
+describe('protectedByApiKey middleware', () => {
   test('should call next middleware in the stack if provided correct api key in the headers', () => {
     const next: NextFunction = jest.fn();
     const res: Response = httpMocks.createResponse();
@@ -12,7 +12,7 @@ describe('ApiKey middleware', () => {
       headers: { 'x-api-key': config.xApiKey },
     });
 
-    apiKey(req, res, next);
+    protectedByApiKey(req, res, next);
 
     expect(next).toHaveBeenCalled();
   });
@@ -22,9 +22,9 @@ describe('ApiKey middleware', () => {
     const res: Response = httpMocks.createResponse();
     const req: Request = httpMocks.createRequest();
 
-    const executeApiKey = () => apiKey(req, res, next);
+    const executeProtectedByApiKey = () => protectedByApiKey(req, res, next);
 
-    expect(executeApiKey).toThrow('Access forbidden');
+    expect(executeProtectedByApiKey).toThrow('Access forbidden');
   });
 
   test('should throw Acccess forbiden exception if wrong api key in the headers', () => {
@@ -34,8 +34,8 @@ describe('ApiKey middleware', () => {
       headers: { 'x-api-key': 'incorrect-token' },
     });
 
-    const executeApiKey = () => apiKey(req, res, next);
+    const executeProtectedByApiKey = () => protectedByApiKey(req, res, next);
 
-    expect(executeApiKey).toThrow('Access forbidden');
+    expect(executeProtectedByApiKey).toThrow('Access forbidden');
   });
 });
