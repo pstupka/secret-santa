@@ -26,6 +26,9 @@ const envsSchema = Joi.object()
       .uri({ scheme: ['smtp', 'smtps'] })
       .required(),
     MAIL_FROM: Joi.string().required(),
+    CLIENT_DIST_PATH: Joi.string()
+      .optional()
+      .description('Built client to serve; defaults to client/dist'),
     // Only used by protectedByApiKey, which is not mounted on business routes.
     API_KEY_TOKEN: Joi.string().optional(),
   })
@@ -46,6 +49,11 @@ const packageData = readPackage(
   true,
 );
 
+// The monorepo's `client/dist`, from both src/config and dist/config.
+const defaultClientDistPath = fileURLToPath(
+  new URL('../../../client/dist', import.meta.url),
+);
+
 // map env vars and make it visible outside module
 export default {
   env: envVars.NODE_ENV,
@@ -54,6 +62,8 @@ export default {
   databasePath: envVars.DATABASE_PATH as string,
   smtpUrl: envVars.SMTP_URL as string,
   mailFrom: envVars.MAIL_FROM as string,
+  clientDistPath:
+    (envVars.CLIENT_DIST_PATH as string | undefined) ?? defaultClientDistPath,
   xApiKey: envVars.API_KEY_TOKEN as string | undefined,
   projectName: packageData.name,
   projectVersion: packageData.version,

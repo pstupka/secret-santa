@@ -1,0 +1,46 @@
+# Production stack on the VPS: the app behind Caddy (automatic HTTPS).
+#   cp .env.example .env   # then fill it in
+#   docker compose -f compose.prod.yaml up -d --build
+# See README.md, "Deployment".
+
+# Shared by every service running the app image (the daily job in #18 reuses
+# it with its own command and the same /data volume).
+x-app: &app
+  image: secret-santa:latest
+  env_file: .env
+  environment:
+    NODE_ENV: production
+    DATABASE_PATH: /data/secret-santa.db
+  volumes:
+    - santa-data:/data
+  restart: unless-stopped
+
+services:
+  app:
+    <<: *app
+    build: .
+    # Not published: only Caddy reaches it, over the compose network.
+    expose:
+      - '8080'
+
+  caddy:
+    image: caddy:2.11.7-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      # The site address is the app's public origin, e.g. https://santa.example.com.
+      PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  santa-data:
+  caddy-data:
+  caddy-config:

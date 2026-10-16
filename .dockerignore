@@ -1,8 +1,15 @@
+# Build context is the repo root (Dockerfile, server/docker-compose.yaml).
 **/node_modules/
 **/dist
-client/
 .git
+.claude
+.agents
+.vscode
+docs
 **/.env*
+**/data/
+**/*.db
+**/*.db-*
 **/npm-debug.log
 **/yarn-error.log
 **/coverage

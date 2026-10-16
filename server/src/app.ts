@@ -8,9 +8,16 @@ import errorHandling from '@core/middlewares/errorHandling.middleware';
 import uniqueReqId from '@core/middlewares/uniqueReqId.middleware';
 import http404 from '@components/404/404.router';
 import swaggerApiDocs from '@components/swagger-ui/swagger.router';
+import serveClientApp from '@core/middlewares/clientApp.middleware';
 import { AppDeps } from './deps';
 
-const createApp = (deps: AppDeps): Application => {
+export interface AppOptions {
+  // Built client (`client/dist`) to serve with an SPA fallback; omitted in
+  // dev (Vite serves the client) and in API tests.
+  clientDir?: string;
+}
+
+const createApp = (deps: AppDeps, options: AppOptions = {}): Application => {
   const app: Application = express();
 
   // Behind Caddy (docker network) req.ip must be the client, not the proxy,
@@ -24,6 +31,9 @@ const createApp = (deps: AppDeps): Application => {
   app.use(express.json());
   app.use(consts.API_ROOT_PATH, createApi(deps));
   app.use(swaggerApiDocs);
+  if (options.clientDir) {
+    app.use(serveClientApp(options.clientDir));
+  }
   app.use(http404);
 
   app.use(errorHandling);

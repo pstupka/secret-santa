@@ -179,15 +179,9 @@ Important: swaggerUI is disabled for the production env
 
 ## Running in production with Docker
 
-For the sake of readability, you may build an image with custom name i.e. **net.ts**, go to the root project (where the Dockerfile is) and execute:
-
-`docker build -t net.ts .`
-
-When done, execute the docker run command to create a container from a net.ts image and starts the container with all the required environment variables:
-
-`docker run --rm -it -e NODE_ENV='production' -e PUBLIC_URL='https://santa.example.com' -e DATABASE_PATH='/data/secret-santa.db' -e SMTP_URL='smtp://user:pass@smtp.example.com:587' -e MAIL_FROM='Secret Santa <santa@example.com>' -v santa-data:/data -p 8080:8080 net.ts`
-
-That's it, you just ran the app in production mode.
+The production image is built from the repo root (`Dockerfile`) and bundles the
+client; see "Deployment" in the root `README.md` for building and running it
+with `compose.prod.yaml` and Caddy.
 
 ## Contributing
 

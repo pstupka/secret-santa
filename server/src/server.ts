@@ -1,6 +1,6 @@
 import { Server } from 'http';
-import { mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { existsSync, mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import createApp from '@app';
 import config from '@config/config';
 import { migrateToLatest, openDatabase } from '@db/database';
@@ -10,8 +10,15 @@ import { systemClock } from '@shared/clock';
 import logger from '@core/utils/logger';
 import errorHandler from 'core/utils/errorHandler';
 
-const { port, projectName, databasePath, publicUrl, smtpUrl, mailFrom } =
-  config;
+const {
+  port,
+  projectName,
+  databasePath,
+  publicUrl,
+  smtpUrl,
+  mailFrom,
+  clientDistPath,
+} = config;
 
 const EMAIL_SEND_INTERVAL_MS = 10_000;
 const EMAIL_THROTTLE_MS = 1_000;
@@ -35,7 +42,18 @@ const start = async (): Promise<void> => {
   });
   emailSender.start(EMAIL_SEND_INTERVAL_MS);
 
-  const app = createApp({ db, clock: systemClock });
+  // In dev the client is served by Vite; only serve a build that exists.
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  const clientDir = existsSync(join(clientDistPath, 'index.html'))
+    ? clientDistPath
+    : undefined;
+  logger.info(
+    clientDir
+      ? `Serving client from ${clientDir}`
+      : `No client build at ${clientDistPath}, serving the API only`,
+  );
+
+  const app = createApp({ db, clock: systemClock }, { clientDir });
   server = app.listen(port, (): void => {
     logger.info(`Application '${projectName}' listens on PORT: ${port}`);
   });
