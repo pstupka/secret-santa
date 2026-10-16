@@ -29,7 +29,7 @@ describe('Email templates', () => {
     expect(email.text).toContain('/auth#token=tok');
   });
 
-  test('invitation includes exchange date, budget and rules', () => {
+  test('invitation includes description, exchange date, budget and rules', () => {
     const email = renderEmail(
       'invitation',
       {
@@ -37,6 +37,7 @@ describe('Email templates', () => {
         participantName: 'Kasia',
         organizerName: 'Ania',
         eventTitle: 'Wigilia',
+        description: 'Spotykamy się u babci.',
         exchangeOn: '2026-12-24',
         budget: { amount: 15000, currency: 'PLN' },
         rules: 'Bez skarpetek.\nTylko rękodzieło.',
@@ -45,6 +46,7 @@ describe('Email templates', () => {
     );
 
     expect(email.subject).toBe('Ania zaprasza Cię na Mikołajki „Wigilia”');
+    expect(email.text).toContain('Spotykamy się u babci.');
     expect(email.text).toContain('24 grudnia 2026');
     expect(email.text).toMatch(/150,00\s*zł/);
     expect(email.text).toContain('Bez skarpetek.\nTylko rękodzieło.');
@@ -59,6 +61,7 @@ describe('Email templates', () => {
         participantName: 'Kasia',
         organizerName: 'Ania',
         eventTitle: 'Wigilia',
+        description: null,
         exchangeOn: '2026-12-24',
         budget: null,
         rules: null,

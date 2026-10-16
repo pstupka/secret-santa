@@ -479,6 +479,133 @@
         }
       }
     },
+    "/api/events/{eventId}/participants/{participantId}/invitation": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "in": "path",
+          "name": "participantId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": [
+          "invitations"
+        ],
+        "summary": "Send or resend the invitation to one participant with a new personal link (organizer, open events)",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation queued",
+            "schema": {
+              "$ref": "#/definitions/InvitationSent"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event or participant, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The participant is a managed participant, who never receives emails",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/invitations/send": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": [
+          "invitations"
+        ],
+        "summary": "Send invitations to every non-managed participant not invited yet (organizer, open events). Never re-sends.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number of invitations queued",
+            "schema": {
+              "type": "object",
+              "required": [
+                "sent"
+              ],
+              "properties": {
+                "sent": {
+                  "type": "integer",
+                  "example": 2
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/api/events/{eventId}/participation/decline": {
       "parameters": [
         {
@@ -929,6 +1056,22 @@
           }
         }
       ]
+    },
+    "InvitationSent": {
+      "type": "object",
+      "required": [
+        "participantId",
+        "inviteSentAt"
+      ],
+      "properties": {
+        "participantId": {
+          "type": "string"
+        },
+        "inviteSentAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     }
   },
   "securityDefinitions": {

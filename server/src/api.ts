@@ -4,6 +4,7 @@ import healthCheck from '@components/healthcheck/healthCheck.router';
 import createAccessRouter from '@components/auth/access.router';
 import createEventsRouter from '@components/events/events.router';
 import createParticipantsRouter from '@components/participants/participants.router';
+import createInvitationsRouter from '@components/invitations/invitations.router';
 import { AppDeps } from './deps';
 
 const createApi = (deps: AppDeps): Router => {
@@ -12,6 +13,7 @@ const createApi = (deps: AppDeps): Router => {
   router.use(createAccessRouter(deps));
   router.use(createEventsRouter(deps));
   router.use(createParticipantsRouter(deps));
+  router.use(createInvitationsRouter(deps));
   return router;
 };
 

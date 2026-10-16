@@ -20,6 +20,7 @@ export interface InvitationPayload {
   participantName: string;
   organizerName: string;
   eventTitle: string;
+  description: string | null;
   exchangeOn: string; // YYYY-MM-DD
   budget: { amount: number; currency: string } | null; // amount in minor units
   rules: string | null;
@@ -190,6 +191,7 @@ const renderers: Renderers = {
       greetingName: p.participantName,
       paragraphs: [
         t('invitation', 'body', names),
+        ...(p.description ? [p.description] : []),
         t('invitation', 'exchangeOn', { date: formatDate(p.exchangeOn) }),
         ...(p.budget
           ? [
