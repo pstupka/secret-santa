@@ -54,7 +54,7 @@ If you see the following response in the browser:
 It means that everything work as expected.
 
 Outgoing email is caught by [Mailpit](https://mailpit.axllent.org): open http://localhost:8025 to read it.
-The app queues emails in the `email_outbox` table and an in-process sender delivers them every ~10 s. You may start to develop your business logic.
+The app queues emails in the `email_outbox` table and an in-process sender delivers them every ~10 s (`EMAIL_SEND_INTERVAL_MS`, with `EMAIL_THROTTLE_MS` between messages). You may start to develop your business logic.
 Please scroll down to "How to work with NET.ts" section.
 
 ## Getting started, standard way (no containerization)

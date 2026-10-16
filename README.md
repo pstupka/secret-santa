@@ -90,3 +90,35 @@ docker build -t secret-santa .                        # build the image alone
 
 See `server/README.md`: `yarn docker:server:dev` runs the API with Mailpit,
 `yarn client:dev` runs the Vite dev server (proxying `/api` to the API).
+
+## End-to-end tests
+
+`e2e/` holds one Playwright spec, the happy path driven through the UI as
+several people (one browser context each): create an event, read the
+organizer's personal link from Mailpit, add participants (one managed), send
+invitations, add wishlists and a child wishlist, claim an item, run the draw,
+then check every assignment (the caretaker's via the profile switcher) and
+that the draw is valid: everyone gives and gets exactly one gift, nobody
+draws themselves.
+
+```sh
+yarn e2e:install   # once: Playwright's Chromium
+yarn e2e           # needs Docker
+```
+
+The global setup runs `docker compose -f e2e/compose.yaml up --build --wait`:
+the production image (the API serving the built client) on
+http://localhost:18080 with a scratch database, and Mailpit (UI and API on
+http://localhost:18025). The teardown removes both. The image is rebuilt on
+every run, so the spec tests the current code. The app's email sender runs
+every 200 ms there (`EMAIL_SEND_INTERVAL_MS`, `EMAIL_THROTTLE_MS`; production
+defaults 10 s and 1 s).
+
+- `E2E_KEEP=1 yarn e2e` leaves the environment running afterwards, e.g. to
+  look at the emails in Mailpit.
+- `E2E_REUSE=1 yarn e2e` runs the spec against an environment that is already
+  up, without building or removing it (the per-IP rate limit on creating
+  events, 5 per hour, then applies across runs; restart the app to reset it).
+- Remove a kept environment with `docker compose -f e2e/compose.yaml down`.
+- Failures leave a trace and screenshots in `e2e/test-results/`; open the
+  report with `yarn workspace @secret-santa/e2e playwright show-report`.

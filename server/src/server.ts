@@ -18,10 +18,9 @@ const {
   smtpUrl,
   mailFrom,
   clientDistPath,
+  emailSendIntervalMs,
+  emailThrottleMs,
 } = config;
-
-const EMAIL_SEND_INTERVAL_MS = 10_000;
-const EMAIL_THROTTLE_MS = 1_000;
 
 let server: Server | undefined;
 let emailSender: EmailSender | undefined;
@@ -38,9 +37,9 @@ const start = async (): Promise<void> => {
     clock: systemClock,
     mailer: createSmtpMailer(smtpUrl, mailFrom),
     publicUrl,
-    throttleMs: EMAIL_THROTTLE_MS,
+    throttleMs: emailThrottleMs,
   });
-  emailSender.start(EMAIL_SEND_INTERVAL_MS);
+  emailSender.start(emailSendIntervalMs);
 
   // In dev the client is served by Vite; only serve a build that exists.
   // eslint-disable-next-line security/detect-non-literal-fs-filename

@@ -16,3 +16,6 @@ docs
 **/.coverage
 **/.coverage.*
 **/.aws
+**/test-results
+**/playwright-report
+**/blob-report

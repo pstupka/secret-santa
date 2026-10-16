@@ -1,0 +1,48 @@
+# End-to-end test environment: the production image (API serving the built
+# client) and Mailpit catching its email. Started and removed by the
+# Playwright global setup/teardown (see e2e/global-setup.ts):
+#   docker compose -f e2e/compose.yaml up -d --build --wait
+name: secret-santa-e2e
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: secret-santa:e2e
+    ports:
+      - '18080:8080'
+    environment:
+      NODE_ENV: production
+      # The origin the browser uses, so links in emails open the same app.
+      PUBLIC_URL: http://localhost:18080
+      DATABASE_PATH: /data/secret-santa.db
+      SMTP_URL: smtp://mailpit:1025
+      MAIL_FROM: Secret Santa <santa@example.com>
+      # Deliver the outbox quickly instead of every 10 s.
+      EMAIL_SEND_INTERVAL_MS: 200
+      EMAIL_THROTTLE_MS: 0
+    # A scratch database for every run: nothing outlives the container.
+    tmpfs:
+      - /data:uid=1000,gid=1000,mode=0755
+    depends_on:
+      - mailpit
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '-q',
+          '-O',
+          '/dev/null',
+          'http://127.0.0.1:8080/api/health',
+        ]
+      interval: 1s
+      timeout: 5s
+      retries: 30
+
+  mailpit:
+    image: axllent/mailpit:v1.31
+    ports:
+      # Web UI and API; SMTP stays on the compose network.
+      - '18025:8025'

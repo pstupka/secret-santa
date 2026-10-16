@@ -10,7 +10,8 @@
   ],
   "workspaces": [
     "server",
-    "client"
+    "client",
+    "e2e"
   ],
   "scripts": {
     "server:dev": "yarn workspace @secret-santa/server server:dev",
@@ -19,7 +20,9 @@
     "client:test": "yarn workspace @secret-santa/client test",
     "client:typecheck": "yarn workspace @secret-santa/client typecheck",
     "client:lint": "yarn workspace @secret-santa/client lint",
-    "docker:server:dev": "docker compose -f server/docker-compose.yaml up --build"
+    "docker:server:dev": "docker compose -f server/docker-compose.yaml up --build",
+    "e2e": "yarn workspace @secret-santa/e2e e2e",
+    "e2e:install": "yarn workspace @secret-santa/e2e e2e:install"
   },
   "devDependencies": {
     "typescript": "^6.0.3"

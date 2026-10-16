@@ -27,6 +27,16 @@ const envsSchema = Joi.object()
       .uri({ scheme: ['smtp', 'smtps'] })
       .required(),
     MAIL_FROM: Joi.string().required(),
+    EMAIL_SEND_INTERVAL_MS: Joi.number()
+      .integer()
+      .min(100)
+      .default(10_000)
+      .description('How often the outbox sender looks for due emails'),
+    EMAIL_THROTTLE_MS: Joi.number()
+      .integer()
+      .min(0)
+      .default(1_000)
+      .description('Pause between two emails, for SMTP provider limits'),
     CLIENT_DIST_PATH: Joi.string()
       .optional()
       .description('Built client to serve; defaults to client/dist'),
@@ -79,6 +89,8 @@ export default {
     (envVars.BACKUP_RCLONE_REMOTE as string | undefined) || undefined,
   smtpUrl: envVars.SMTP_URL as string,
   mailFrom: envVars.MAIL_FROM as string,
+  emailSendIntervalMs: envVars.EMAIL_SEND_INTERVAL_MS as number,
+  emailThrottleMs: envVars.EMAIL_THROTTLE_MS as number,
   clientDistPath:
     (envVars.CLIENT_DIST_PATH as string | undefined) ?? defaultClientDistPath,
   xApiKey: envVars.API_KEY_TOKEN as string | undefined,
