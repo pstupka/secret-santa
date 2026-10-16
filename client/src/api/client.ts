@@ -1,4 +1,12 @@
-import type { CreateEventInput, Event, Person } from './types';
+import type {
+  CreateEventInput,
+  Event,
+  EventDetails,
+  MyEvent,
+  OrganizerParticipant,
+  ParticipantSummary,
+  Person,
+} from './types';
 
 // What went wrong, independent of the server's (English) error text. Views
 // show `errors.<kind>` from the message catalog.
@@ -65,6 +73,15 @@ export interface RequestOptions {
   // Extra headers, e.g. `X-Acting-As` for a caretaker.
   headers?: Record<string, string>;
 }
+
+// Header a caretaker sends to act as one of their managed participants.
+export const ACTING_AS_HEADER = 'X-Acting-As';
+
+// Request headers for acting as a managed participant; none when acting as
+// oneself (`actingAs` null or undefined).
+export const actingAsHeaders = (
+  actingAs?: string | null,
+): Record<string, string> => (actingAs ? { [ACTING_AS_HEADER]: actingAs } : {});
 
 export interface ApiClientOptions {
   // The stored magic token, sent as `Authorization: Bearer <token>`.
@@ -140,6 +157,38 @@ export const createApiClient = ({
       request<void>('POST', '/access-links', { body: { email } }),
 
     getMe: () => request<Person>('GET', '/me'),
+
+    // The person's events, soonest exchange date first.
+    listMyEvents: () => request<MyEvent[]>('GET', '/events'),
+
+    // `404` unless the person participates in the event.
+    getEvent: (eventId: string) =>
+      request<EventDetails>('GET', `/events/${encodeURIComponent(eventId)}`),
+
+    // The organizer gets `OrganizerParticipant`s, everyone else summaries.
+    listParticipants: (eventId: string) =>
+      request<ParticipantSummary[] | OrganizerParticipant[]>(
+        'GET',
+        `/events/${encodeURIComponent(eventId)}/participants`,
+      ),
+
+    // Leaves the draw while the event is open. `actingAs` is a managed
+    // participant's id when a caretaker acts for them. The organizer cannot
+    // decline (`409`).
+    declineParticipation: (eventId: string, actingAs?: string | null) =>
+      request<ParticipantSummary>(
+        'POST',
+        `/events/${encodeURIComponent(eventId)}/participation/decline`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
+
+    // Undoes a decline while the event is open.
+    rejoinParticipation: (eventId: string, actingAs?: string | null) =>
+      request<ParticipantSummary>(
+        'POST',
+        `/events/${encodeURIComponent(eventId)}/participation/rejoin`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
   };
 };
 

@@ -88,7 +88,91 @@
   "events": {
     "title": "Moje wydarzenia",
     "signedInAs": "Zalogowano jako {email}",
-    "comingSoon": "Lista Twoich wydarzeń pojawi się tutaj."
+    "loading": "Wczytywanie wydarzeń…",
+    "empty": "Nie bierzesz jeszcze udziału w żadnym wydarzeniu.",
+    "emptyLead": "Utwórz własne wydarzenie albo poczekaj na zaproszenie od organizatora.",
+    "createEvent": "Utwórz wydarzenie",
+    "exchangeOn": "Wymiana prezentów: {date}",
+    "declined": "Nie bierzesz udziału"
+  },
+  "event": {
+    "loading": "Wczytywanie wydarzenia…",
+    "notFound": "Nie znaleziono wydarzenia. Mogło zostać usunięte albo nie jesteś jego uczestnikiem.",
+    "backToEvents": "Moje wydarzenia",
+    "status": {
+      "open": "Przed losowaniem",
+      "drawn": "Po losowaniu",
+      "finished": "Zakończone"
+    },
+    "role": {
+      "organizer": "Organizator",
+      "member": "Uczestnik"
+    },
+    "countdown": {
+      "days": "za {days} dni",
+      "tomorrow": "jutro",
+      "today": "dziś",
+      "past": "zakończone"
+    },
+    "nav": {
+      "label": "Sekcje wydarzenia",
+      "dashboard": "Wydarzenie",
+      "wishlists": "Listy życzeń",
+      "kids": "Listy dzieci",
+      "claims": "Moje zakupy",
+      "assignment": "Wylosowana osoba",
+      "manage": "Zarządzaj"
+    },
+    "profile": {
+      "label": "Działasz jako",
+      "self": "Ty",
+      "actingAs": "Działasz w imieniu: {name}. Zmiany list życzeń i udziału w losowaniu dotyczą tej osoby."
+    },
+    "comingSoon": "Ta sekcja jeszcze powstaje."
+  },
+  "dashboard": {
+    "countdown": {
+      "days": "dni do wymiany prezentów",
+      "tomorrow": "Wymiana prezentów już jutro!",
+      "today": "Dziś wymiana prezentów!",
+      "past": "Wymiana prezentów już się odbyła."
+    },
+    "details": {
+      "title": "Szczegóły",
+      "exchangeOn": "Data wymiany prezentów",
+      "budget": "Budżet na prezent",
+      "noBudget": "Nie ustalono",
+      "description": "Opis",
+      "rules": "Zasady",
+      "timezone": "Daty liczymy w strefie czasowej {timezone}."
+    },
+    "participation": {
+      "title": "Udział w losowaniu",
+      "active": "Bierzesz udział w losowaniu.",
+      "declined": "Nie bierzesz udziału w losowaniu.",
+      "managedActive": "{name} bierze udział w losowaniu.",
+      "managedDeclined": "{name} nie bierze udziału w losowaniu.",
+      "organizer": "Jako organizator zawsze bierzesz udział w losowaniu.",
+      "canChangeUntilDraw": "Możesz to zmienić do czasu losowania.",
+      "locked": "Losowanie już się odbyło – udziału nie można już zmienić.",
+      "finished": "Wydarzenie się zakończyło.",
+      "decline": "Rezygnuję z udziału",
+      "managedDecline": "Wypisz z losowania",
+      "confirmDecline": "Na pewno? Nie weźmiesz udziału w losowaniu. Możesz wrócić, dopóki losowanie się nie odbyło.",
+      "managedConfirmDecline": "Na pewno? {name} nie weźmie udziału w losowaniu.",
+      "confirm": "Tak, rezygnuję",
+      "cancel": "Anuluj",
+      "rejoin": "Wracam do losowania",
+      "managedRejoin": "Przywróć do losowania",
+      "saving": "Zapisywanie…",
+      "seeAssignment": "Zobacz wylosowaną osobę"
+    },
+    "participants": {
+      "title": "Uczestnicy ({count})",
+      "you": "Ty",
+      "managed": "pod Twoją opieką",
+      "declined": "nie bierze udziału"
+    }
   },
   "notFound": {
     "title": "Nie znaleziono strony",

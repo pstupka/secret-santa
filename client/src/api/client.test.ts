@@ -118,6 +118,28 @@ describe('api client', () => {
       });
     });
 
+    test('declines as oneself without X-Acting-As', async () => {
+      const { api, fetch } = setup({ token: 'magic-token' });
+
+      await api.declineParticipation('e1');
+
+      const [url, init] = fetch.mock.calls[0]!;
+      expect(url).toBe('/api/events/e1/participation/decline');
+      expect(init?.method).toBe('POST');
+      expect(requestHeaders(fetch)).not.toHaveProperty('X-Acting-As');
+    });
+
+    test('a caretaker rejoins for a managed participant with X-Acting-As', async () => {
+      const { api, fetch } = setup({ token: 'magic-token' });
+
+      await api.rejoinParticipation('e1', 'babcia');
+
+      expect(fetch.mock.calls[0]![0]).toBe(
+        '/api/events/e1/participation/rejoin',
+      );
+      expect(requestHeaders(fetch)['X-Acting-As']).toBe('babcia');
+    });
+
     test('resolves with undefined for a response without a body', async () => {
       const { api } = setup({ responses: [{ status: 204 }] });
 

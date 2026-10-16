@@ -35,6 +35,29 @@ export const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    // The event layout (header, profile switcher, section nav) loads the
+    // event into the `events` store; its sections render inside it.
+    path: '/events/:eventId',
+    component: () => import('@/views/EventView.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'event',
+        component: () => import('@/views/EventDashboardView.vue'),
+      },
+      // Placeholders until #14 (manage), #15 (wishlists, kids, claims) and
+      // #16 (assignment) replace them.
+      ...(['wishlists', 'kids', 'claims', 'assignment', 'manage'] as const).map(
+        (section) => ({
+          path: section,
+          name: `event-${section}`,
+          component: () => import('@/views/EventSectionPlaceholderView.vue'),
+        }),
+      ),
+    ],
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('@/views/NotFoundView.vue'),

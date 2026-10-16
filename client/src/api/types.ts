@@ -40,3 +40,46 @@ export interface CreateEventInput {
   organizerName: string;
   organizerEmail: string;
 }
+
+export type ParticipantRole = 'organizer' | 'member';
+
+// Participants are in by default (ADR-0004) until they decline.
+export type ParticipantStatus = 'active' | 'declined';
+
+// The caller's own participant in an event.
+export interface MyParticipant {
+  id: string;
+  role: ParticipantRole;
+  status: ParticipantStatus;
+}
+
+// What every participant may see about the others: names and statuses.
+export interface ParticipantSummary {
+  id: string;
+  displayName: string;
+  role: ParticipantRole;
+  status: ParticipantStatus;
+}
+
+// The organizer's view of a participant (`GET /events/:id/participants`).
+export interface OrganizerParticipant extends ParticipantSummary {
+  // null for a managed participant.
+  email: string | null;
+  // The caretaker of a managed participant, otherwise null.
+  managedByParticipantId: string | null;
+  inviteSentAt: string | null;
+  firstOpenedAt: string | null;
+  wishlistFilled: boolean;
+}
+
+// One of the person's events (`GET /api/events`).
+export interface MyEvent extends Event {
+  myParticipant: MyParticipant;
+}
+
+// `GET /api/events/:eventId`.
+export interface EventDetails extends MyEvent {
+  participants: ParticipantSummary[];
+  // The caller's managed participants, whom they can act as (`X-Acting-As`).
+  managedParticipants: ParticipantSummary[];
+}
