@@ -1,0 +1,33 @@
+import { Clock } from './clock';
+
+// Event dates are dates only (YYYY-MM-DD) interpreted in the event's IANA timezone.
+
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+// True for a real calendar date in YYYY-MM-DD form (rejects e.g. 2026-02-30).
+export const isCalendarDate = (value: string): boolean => {
+  if (!DATE_PATTERN.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value);
+};
+
+// True for a timezone the runtime knows, e.g. 'Europe/Warsaw' or 'UTC'.
+export const isValidTimezone = (timezone: string): boolean => {
+  try {
+    // eslint-disable-next-line no-new
+    new Intl.DateTimeFormat('en-US', { timeZone: timezone });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// Today's date (YYYY-MM-DD) in the given IANA timezone.
+export const todayIn = (timezone: string, clock: Clock): string =>
+  // en-CA formats dates as YYYY-MM-DD.
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(clock.now());

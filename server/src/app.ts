@@ -13,6 +13,10 @@ import { AppDeps } from './deps';
 const createApp = (deps: AppDeps): Application => {
   const app: Application = express();
 
+  // Behind Caddy (docker network) req.ip must be the client, not the proxy,
+  // for per-IP rate limits. Only loopback/private-network proxies are trusted.
+  app.set('trust proxy', 'loopback, uniquelocal');
+
   app.use(httpContext.middleware);
   app.use(httpLogger.successHandler);
   app.use(httpLogger.errorHandler);

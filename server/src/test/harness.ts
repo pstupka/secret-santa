@@ -2,8 +2,11 @@ import { Application } from 'express';
 
 import createApp from '@app';
 import { Db, migrateToLatest, openDatabase } from '@db/database';
+import { EmailMessage } from '@email/mailer';
 import { createEmailSender } from '@email/sender';
 import { Clock } from '@shared/clock';
+import { issueMagicToken } from '@components/auth/magicToken';
+import { findOrCreatePerson } from '@components/persons/persons';
 import { AppDeps } from '../deps';
 import { createFakeMailer, FakeMailer } from './fakeMailer';
 
@@ -63,4 +66,24 @@ export const createTestContext = async (): Promise<TestContext> => {
     sendEmails: sender.sendDue,
     close: () => db.destroy(),
   };
+};
+
+// The raw magic token from a personal link in a captured email.
+export const magicTokenFrom = (email: EmailMessage): string => {
+  const match = /\/auth#token=([\w-]+)/.exec(email.text);
+  if (!match) {
+    throw new Error(`No personal link in email "${email.subject}"`);
+  }
+  return decodeURIComponent(match[1]);
+};
+
+// Creates (or finds) a person and issues them a magic token, without email.
+// Use as `Authorization: Bearer ${token}`.
+export const signIn = async (
+  ctx: TestContext,
+  email: string,
+): Promise<{ personId: string; token: string }> => {
+  const person = await findOrCreatePerson(ctx.db, ctx.clock, email);
+  const token = await issueMagicToken(ctx.db, ctx.clock, person.id);
+  return { personId: person.id, token };
 };

@@ -39,6 +39,118 @@
           }
         }
       }
+    },
+    "/api/events": {
+      "post": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Create an event (public). Emails the organizer their personal link.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewEvent"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded (5/hour per IP, 3/hour per organizer email)",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/access-links": {
+      "post": {
+        "tags": [
+          "access"
+        ],
+        "summary": "Email an additional personal link if the email is known. Always 202.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "email"
+              ],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted (same response for unknown emails)",
+            "schema": {
+              "$ref": "#/definitions/ResponseWithMessage"
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded (5/hour per IP, 3/hour per email)",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "tags": [
+          "access"
+        ],
+        "summary": "The person identified by the magic token",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -49,6 +161,142 @@
           "type": "string"
         }
       }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "Person": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "NewEvent": {
+      "type": "object",
+      "required": [
+        "title",
+        "timezone",
+        "exchangeOn",
+        "organizerName",
+        "organizerEmail"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 5000,
+          "x-nullable": true
+        },
+        "budgetAmount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minor units, e.g. 15000 = 150.00 PLN; requires budgetCurrency"
+        },
+        "budgetCurrency": {
+          "type": "string",
+          "example": "PLN",
+          "description": "ISO 4217; requires budgetAmount"
+        },
+        "rules": {
+          "type": "string",
+          "maxLength": 5000,
+          "x-nullable": true
+        },
+        "timezone": {
+          "type": "string",
+          "example": "Europe/Warsaw"
+        },
+        "exchangeOn": {
+          "type": "string",
+          "format": "date",
+          "example": "2026-12-24",
+          "description": "Not in the past in the event timezone"
+        },
+        "organizerName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "organizerEmail": {
+          "type": "string",
+          "format": "email"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "budgetAmount": {
+          "type": "integer",
+          "x-nullable": true
+        },
+        "budgetCurrency": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "rules": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "exchangeOn": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "drawn",
+            "finished"
+          ]
+        },
+        "drawnAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-nullable": true
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "magicToken": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "`Bearer <magic token>` from a personal link"
     }
   }
 }
