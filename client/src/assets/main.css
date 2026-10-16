@@ -100,3 +100,8 @@
 @utility alert-info {
   @apply rounded-xl border border-pine-100 bg-pine-50 px-4 py-3 text-sm text-pine-700;
 }
+
+/* A small square button with an icon, e.g. reordering wishlist items. */
+@utility icon-btn {
+  @apply inline-flex size-10 items-center justify-center rounded-lg text-stone-600 transition hover:bg-stone-200/60 focus-visible:outline-2 focus-visible:outline-pine-600 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent;
+}

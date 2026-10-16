@@ -88,18 +88,21 @@ export interface EventDetails extends MyEvent {
 export interface WishlistItem {
   id: string;
   title: string;
+  // http(s) only, so it is safe to render as a link.
   url: string | null;
   notes: string | null;
-  // Claim info, only on child wishlists and never for the child's parent:
-  // whether the reader holds the claim, and the claimer's name (null =
-  // unclaimed).
+  // Claim info, present only on child wishlists of other parents (a claim is
+  // hidden from the child's parent and their caretaker): whether the acting
+  // participant holds the claim, and the claimer's name (null = unclaimed).
   claimedByMe?: boolean;
   claimedBy?: string | null;
 }
 
+// `GET /api/events/:eventId/wishlists` entry: the acting participant's own
+// wishlist, a child wishlist, or (after the draw) their recipient's.
 export interface Wishlist {
   id: string;
-  // The owner: the participant whose wishlist it is, or the parent of a child.
+  // The owner: whose wishlist it is, or the parent of the child.
   participantId: string;
   participantName: string;
   // null = the participant's own wishlist; otherwise a child wishlist.
@@ -116,4 +119,37 @@ export interface Wishlist {
 export interface MyAssignment {
   recipient: { id: string; displayName: string };
   wishlist: Wishlist | null;
+}
+
+export interface WishlistItemInput {
+  title: string;
+  url?: string | null;
+  notes?: string | null;
+}
+
+// `POST /api/events/:eventId/wishlists`: without `childName` the
+// participant's own wishlist (at most one), otherwise a child wishlist.
+export interface CreateWishlistInput {
+  childName?: string;
+  notes?: string | null;
+  items?: WishlistItemInput[];
+}
+
+// `PATCH /api/events/:eventId/wishlists/:wishlistId`: only given fields
+// change. `items` replace the list in order; an item sent with its `id` is
+// kept (with its claim), items left out are removed.
+export interface UpdateWishlistInput {
+  childName?: string;
+  notes?: string | null;
+  items?: (WishlistItemInput & { id?: string })[];
+}
+
+// `GET /api/events/:eventId/my-claims` entry: a claimed child wishlist item.
+export interface MyClaim {
+  wishlistId: string;
+  childName: string;
+  // The child's parent.
+  parentName: string;
+  claimedAt: string;
+  item: WishlistItem;
 }

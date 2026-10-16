@@ -51,15 +51,27 @@ export const routes: RouteRecordRaw[] = [
         name: 'event-assignment',
         component: () => import('@/views/AssignmentView.vue'),
       },
-      // Placeholders until #14 (manage) and #15 (wishlists, kids, claims)
-      // replace them.
-      ...(['wishlists', 'kids', 'claims', 'manage'] as const).map(
-        (section) => ({
-          path: section,
-          name: `event-${section}`,
-          component: () => import('@/views/EventSectionPlaceholderView.vue'),
-        }),
-      ),
+      {
+        path: 'wishlists',
+        name: 'event-wishlists',
+        component: () => import('@/views/WishlistsView.vue'),
+      },
+      {
+        path: 'kids',
+        name: 'event-kids',
+        component: () => import('@/views/KidsView.vue'),
+      },
+      {
+        path: 'claims',
+        name: 'event-claims',
+        component: () => import('@/views/ClaimsView.vue'),
+      },
+      // Placeholder until #14 (manage) replaces it.
+      {
+        path: 'manage',
+        name: 'event-manage',
+        component: () => import('@/views/EventSectionPlaceholderView.vue'),
+      },
     ],
   },
   {

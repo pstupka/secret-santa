@@ -140,6 +140,36 @@ describe('api client', () => {
       expect(requestHeaders(fetch)['X-Acting-As']).toBe('babcia');
     });
 
+    test('updates a wishlist with its items as a caretaker', async () => {
+      const { api, fetch } = setup({ token: 'magic-token' });
+      const input = { items: [{ id: 'i1', title: 'Szalik' }] };
+
+      await api.updateWishlist('e1', 'w1', input, 'babcia');
+
+      const [url, init] = fetch.mock.calls[0]!;
+      expect(url).toBe('/api/events/e1/wishlists/w1');
+      expect(init?.method).toBe('PATCH');
+      expect(JSON.parse(String(init?.body))).toEqual(input);
+      expect(requestHeaders(fetch)['X-Acting-As']).toBe('babcia');
+    });
+
+    test('claims and releases a child wishlist item', async () => {
+      const { api, fetch } = setup({
+        token: 'magic-token',
+        responses: [{ body: {} }, { status: 204 }],
+      });
+
+      await api.claimWishlistItem('e1', 'i1');
+      await api.releaseClaim('e1', 'i1');
+
+      expect(
+        fetch.mock.calls.map(([url, init]) => [url, init?.method]),
+      ).toEqual([
+        ['/api/events/e1/wishlist-items/i1/claim', 'PUT'],
+        ['/api/events/e1/wishlist-items/i1/claim', 'DELETE'],
+      ]);
+    });
+
     test('resolves with undefined for a response without a body', async () => {
       const { api } = setup({ responses: [{ status: 204 }] });
 

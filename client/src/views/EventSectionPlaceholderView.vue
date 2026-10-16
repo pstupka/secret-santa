@@ -1,6 +1,5 @@
 <script setup lang="ts">
-// Placeholder for event sections built later: wishlists, kids and claims
-// (#15) and manage (#14).
+// Placeholder for event sections built later: manage (#14).
 </script>
 
 <template>

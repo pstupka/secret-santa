@@ -1,12 +1,16 @@
 import type {
   CreateEventInput,
+  CreateWishlistInput,
   Event,
   EventDetails,
   MyAssignment,
+  MyClaim,
   MyEvent,
   OrganizerParticipant,
   ParticipantSummary,
   Person,
+  UpdateWishlistInput,
+  Wishlist,
 } from './types';
 
 // What went wrong, independent of the server's (English) error text. Views
@@ -198,6 +202,90 @@ export const createApiClient = ({
       request<MyAssignment>(
         'GET',
         `/events/${encodeURIComponent(eventId)}/my-assignment`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
+
+    // The acting participant's own wishlist first, then every child
+    // wishlist of the event (+ their recipient's once drawn).
+    listWishlists: (eventId: string, actingAs?: string | null) =>
+      request<Wishlist[]>(
+        'GET',
+        `/events/${encodeURIComponent(eventId)}/wishlists`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
+
+    // `409` for a second own wishlist, too many child wishlists or once the
+    // event is finished.
+    createWishlist: (
+      eventId: string,
+      input: CreateWishlistInput,
+      actingAs?: string | null,
+    ) =>
+      request<Wishlist>(
+        'POST',
+        `/events/${encodeURIComponent(eventId)}/wishlists`,
+        { body: input, headers: actingAsHeaders(actingAs) },
+      ),
+
+    // Owner only; `409` once the event is finished.
+    updateWishlist: (
+      eventId: string,
+      wishlistId: string,
+      input: UpdateWishlistInput,
+      actingAs?: string | null,
+    ) =>
+      request<Wishlist>(
+        'PATCH',
+        `/events/${encodeURIComponent(eventId)}/wishlists/${encodeURIComponent(
+          wishlistId,
+        )}`,
+        { body: input, headers: actingAsHeaders(actingAs) },
+      ),
+
+    // Owner only, with the items and their claims; `409` once finished.
+    deleteWishlist: (
+      eventId: string,
+      wishlistId: string,
+      actingAs?: string | null,
+    ) =>
+      request<void>(
+        'DELETE',
+        `/events/${encodeURIComponent(eventId)}/wishlists/${encodeURIComponent(
+          wishlistId,
+        )}`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
+
+    // Claims a child wishlist item: `409` if someone else holds the claim,
+    // `403` for the child's parent.
+    claimWishlistItem: (
+      eventId: string,
+      itemId: string,
+      actingAs?: string | null,
+    ) =>
+      request<MyClaim>(
+        'PUT',
+        `/events/${encodeURIComponent(
+          eventId,
+        )}/wishlist-items/${encodeURIComponent(itemId)}/claim`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
+
+    // Releases one's own claim.
+    releaseClaim: (eventId: string, itemId: string, actingAs?: string | null) =>
+      request<void>(
+        'DELETE',
+        `/events/${encodeURIComponent(
+          eventId,
+        )}/wishlist-items/${encodeURIComponent(itemId)}/claim`,
+        { headers: actingAsHeaders(actingAs) },
+      ),
+
+    // The acting participant's shopping list.
+    listMyClaims: (eventId: string, actingAs?: string | null) =>
+      request<MyClaim[]>(
+        'GET',
+        `/events/${encodeURIComponent(eventId)}/my-claims`,
         { headers: actingAsHeaders(actingAs) },
       ),
   };
