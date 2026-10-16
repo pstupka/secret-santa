@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPackage } from '@core/utils/package';
 
@@ -29,6 +30,16 @@ const envsSchema = Joi.object()
     CLIENT_DIST_PATH: Joi.string()
       .optional()
       .description('Built client to serve; defaults to client/dist'),
+    BACKUP_DIR: Joi.string()
+      .allow('')
+      .optional()
+      .description(
+        'Daily snapshots; defaults to backups/ next to the database',
+      ),
+    BACKUP_RCLONE_REMOTE: Joi.string()
+      .allow('')
+      .optional()
+      .description('rclone destination for offsite copies, e.g. b2:santa'),
     // Only used by protectedByApiKey, which is not mounted on business routes.
     API_KEY_TOKEN: Joi.string().optional(),
   })
@@ -60,6 +71,12 @@ export default {
   port: envVars.PORT,
   publicUrl: (envVars.PUBLIC_URL as string).replace(/\/+$/, ''),
   databasePath: envVars.DATABASE_PATH as string,
+  backupDir:
+    (envVars.BACKUP_DIR as string | undefined) ||
+    join(dirname(envVars.DATABASE_PATH as string), 'backups'),
+  // Empty means no offsite copy.
+  backupRcloneRemote:
+    (envVars.BACKUP_RCLONE_REMOTE as string | undefined) || undefined,
   smtpUrl: envVars.SMTP_URL as string,
   mailFrom: envVars.MAIL_FROM as string,
   clientDistPath:

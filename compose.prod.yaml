@@ -3,8 +3,8 @@
 #   docker compose -f compose.prod.yaml up -d --build
 # See README.md, "Deployment".
 
-# Shared by every service running the app image (the daily job in #18 reuses
-# it with its own command and the same /data volume).
+# Shared by every service running the app image (app, and cron with its own
+# command on the same /data volume).
 x-app: &app
   image: secret-santa:latest
   env_file: .env
@@ -22,6 +22,20 @@ services:
     # Not published: only Caddy reaches it, over the compose network.
     expose:
       - '8080'
+
+  # Daily retention and backups (server/src/jobs/daily.ts) at 03:00 UTC, see
+  # crontab. Same image and /data volume as the app; backups go to
+  # /data/backups and, when BACKUP_RCLONE_REMOTE is set, offsite via rclone.
+  cron:
+    <<: *app
+    # The image is built by the app service.
+    pull_policy: never
+    depends_on:
+      - app
+    command: ['supercronic', '/app/crontab']
+    # The image's HEALTHCHECK probes the HTTP server, which this service lacks.
+    healthcheck:
+      disable: true
 
   caddy:
     image: caddy:2.11.7-alpine

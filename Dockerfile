@@ -34,11 +34,33 @@ RUN yarn install --frozen-lockfile --production --network-timeout 600000 \
   && yarn cache clean \
   && mkdir -p server/node_modules
 
+# supercronic runs the daily job in the cron service (compose.prod.yaml).
+# Pinned release, verified against its published SHA-256.
+FROM ${NODE_IMAGE} AS supercronic
+ARG TARGETARCH
+ARG SUPERCRONIC_VERSION=v0.2.49
+ARG SUPERCRONIC_SHA256_AMD64=a53ae236602c7338aba3fbaff40bda6300eae3b9fedb8261eb06cfe3724430c1
+ARG SUPERCRONIC_SHA256_ARM64=02aa0cb229ba09050cba6638059dadb9eedc2276632ea43d6a57a2f8c1629dd5
+RUN case "${TARGETARCH:-amd64}" in \
+      amd64) sha256="${SUPERCRONIC_SHA256_AMD64}" ;; \
+      arm64) sha256="${SUPERCRONIC_SHA256_ARM64}" ;; \
+      *) echo "No supercronic checksum for ${TARGETARCH}" >&2; exit 1 ;; \
+    esac \
+  && wget -q -O /usr/local/bin/supercronic \
+    "https://github.com/aptible/supercronic/releases/download/${SUPERCRONIC_VERSION}/supercronic-linux-${TARGETARCH:-amd64}" \
+  && echo "${sha256}  /usr/local/bin/supercronic" | sha256sum -c - \
+  && chmod +x /usr/local/bin/supercronic
+
 FROM ${NODE_IMAGE} AS runtime
 ENV NODE_ENV=production \
     PORT=8080 \
     DATABASE_PATH=/data/secret-santa.db
 WORKDIR /app
+
+# rclone copies daily backups offsite (BACKUP_RCLONE_REMOTE).
+RUN apk add --no-cache rclone
+COPY --from=supercronic /usr/local/bin/supercronic /usr/local/bin/supercronic
+COPY crontab /app/crontab
 
 COPY --from=prod-deps /app/node_modules node_modules
 COPY --from=prod-deps /app/server/node_modules server/node_modules
@@ -56,6 +78,6 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD wget -q -O /dev/null "http://127.0.0.1:${PORT}/api/health" || exit 1
 
-# Migrations run on start (server.ts). The daily job (#18) reuses this image
-# with a different command.
+# Migrations run on start (server.ts). The cron service reuses this image
+# with `supercronic /app/crontab` (daily retention and backups).
 CMD ["node", "dist/server.js"]
