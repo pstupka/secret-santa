@@ -16,11 +16,11 @@ interface StoredReturnTo {
 }
 
 // Only same-origin app paths; never `//host`, and never back into `/auth`.
-const isSafePath = (path: string): boolean =>
+export const isSafeReturnPath = (path: string): boolean =>
   path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/auth');
 
 export const rememberReturnTo = (path: string, now = Date.now()): void => {
-  if (!isSafePath(path)) return;
+  if (!isSafeReturnPath(path)) return;
   const stored: StoredReturnTo = { path, savedAt: now };
   writeStored(STORAGE_KEY, JSON.stringify(stored));
 };
@@ -34,7 +34,7 @@ export const takeReturnTo = (now = Date.now()): string | null => {
     const { path, savedAt } = JSON.parse(raw) as Partial<StoredReturnTo>;
     if (typeof path !== 'string' || typeof savedAt !== 'number') return null;
     if (now - savedAt > RETURN_TO_MAX_AGE_MS || now < savedAt) return null;
-    return isSafePath(path) ? path : null;
+    return isSafeReturnPath(path) ? path : null;
   } catch {
     return null;
   }

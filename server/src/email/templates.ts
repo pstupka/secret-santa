@@ -27,6 +27,11 @@ export interface InvitationPayload {
 }
 
 export interface DrawResultPayload {
+  // Signs the addressee in (the giver, or their caretaker) and opens `next`.
+  token: string;
+  // App path the personal link opens after signing in: the assignment page,
+  // or the print view of a managed participant's draw result.
+  next: string;
   eventId: string;
   eventTitle: string;
   exchangeOn: string; // YYYY-MM-DD
@@ -99,8 +104,16 @@ const formatMoney = (amount: number, currency: string): string =>
     amount / 100,
   );
 
-const personalLink = (publicUrl: string, token: string): string =>
-  `${publicUrl}/auth#token=${encodeURIComponent(token)}`;
+// `next`: an app path to open once signed in (the token stays in the fragment,
+// so it never reaches server logs).
+const personalLink = (
+  publicUrl: string,
+  token: string,
+  next?: string,
+): string =>
+  `${publicUrl}/auth${
+    next ? `?next=${encodeURIComponent(next)}` : ''
+  }#token=${encodeURIComponent(token)}`;
 
 // Paragraphs are plain text; the layout escapes them for HTML.
 interface EmailContent {
@@ -227,8 +240,8 @@ const renderers: Renderers = {
       ],
       link: {
         label: t('draw-result', 'cta'),
-        url: `${publicUrl}/events/${encodeURIComponent(p.eventId)}/assignment`,
-        confidential: false,
+        url: personalLink(publicUrl, p.token, p.next),
+        confidential: true,
       },
     };
   },

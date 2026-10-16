@@ -70,7 +70,7 @@ export const createTestContext = async (): Promise<TestContext> => {
 
 // The raw magic token from a personal link in a captured email.
 export const magicTokenFrom = (email: EmailMessage): string => {
-  const match = /\/auth#token=([\w-]+)/.exec(email.text);
+  const match = /\/auth(?:\?[^#\s]*)?#token=([\w-]+)/.exec(email.text);
   if (!match) {
     throw new Error(`No personal link in email "${email.subject}"`);
   }

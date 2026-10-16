@@ -4,7 +4,12 @@ import httpStatus from 'http-status';
 
 import { DrawResultPayload } from '@email/templates';
 import { ACTING_AS_HEADER } from '@components/events/eventAccess.middleware';
-import { createTestContext, signIn, TestContext } from '@test/harness';
+import {
+  createTestContext,
+  magicTokenFrom,
+  signIn,
+  TestContext,
+} from '@test/harness';
 import {
   addManagedParticipant,
   addMember,
@@ -173,7 +178,10 @@ describe('Draw API', () => {
       const assignments = await assignmentsOf(event.eventId);
       const recipientName = (giverId: string) =>
         names.get(assignments.get(giverId) as string);
+      const assignmentPath = `/events/${event.eventId}/assignment`;
       const common = {
+        token: expect.any(String),
+        next: assignmentPath,
         eventId: event.eventId,
         eventTitle: 'Wigilia 2026',
         exchangeOn: '2026-12-24',
@@ -204,6 +212,7 @@ describe('Draw API', () => {
             to: 'tomek@example.com',
             payload: {
               ...common,
+              next: `${assignmentPath}/print?as=${zosiaId}`,
               giverName: 'Zosia',
               recipientName: recipientName(zosiaId),
               caretakerName: 'Tomek',
@@ -223,6 +232,37 @@ describe('Draw API', () => {
         'tomek@example.com',
         'tomek@example.com',
       ]);
+    });
+
+    test('each draw-result email carries a personal link that signs its addressee in', async () => {
+      const { event, tomek } = await setUpFamily();
+      await drawRequest(event.eventId, event.organizerToken).expect(
+        httpStatus.OK,
+      );
+
+      await ctx.sendEmails();
+      const toTomek = ctx.mailer.sent.filter(
+        (email) =>
+          email.to === 'tomek@example.com' &&
+          email.subject.startsWith('Losowanie'),
+      );
+      expect(toTomek).toHaveLength(2);
+      const tokens = toTomek.map(magicTokenFrom);
+      expect(new Set(tokens).size).toBe(2);
+      // eslint-disable-next-line no-restricted-syntax
+      for (const token of tokens) {
+        // eslint-disable-next-line no-await-in-loop
+        const me = await request(ctx.app)
+          .get('/api/me')
+          .set('Authorization', `Bearer ${token}`)
+          .expect(httpStatus.OK);
+        expect(me.body.email).toBe('tomek@example.com');
+      }
+      // Earlier personal links keep working.
+      await request(ctx.app)
+        .get('/api/me')
+        .set('Authorization', `Bearer ${tomek.token}`)
+        .expect(httpStatus.OK);
     });
 
     test('leaves declined participants out of the draw', async () => {

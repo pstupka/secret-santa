@@ -64,11 +64,11 @@ export const waitForEmail = async (
   return mailpit<Message>(`/message/${found!.ID}`);
 };
 
-// The personal link (`${PUBLIC_URL}/auth#token=…`) in an email.
+// The personal link (`${PUBLIC_URL}/auth[?next=…]#token=…`) in an email.
 export const personalLinkIn = (message: Message): string => {
   const escaped = APP_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const link = message.Text.match(
-    new RegExp(`${escaped}/auth#token=[^\\s"<>]+`),
+    new RegExp(`${escaped}/auth(?:\\?[^#\\s"<>]*)?#token=[^\\s"<>]+`),
   )?.[0];
   if (!link) {
     throw new Error(`No personal link in "${message.Subject}"`);

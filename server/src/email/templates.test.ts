@@ -73,10 +73,12 @@ describe('Email templates', () => {
     expect(email.text).not.toContain('Zasady');
   });
 
-  test('draw-result names the recipient and links to the assignment', () => {
+  test('draw-result names the recipient and signs in to the assignment', () => {
     const email = renderEmail(
       'draw-result',
       {
+        token: 'tok_9',
+        next: '/events/evt-1/assignment',
         eventId: 'evt-1',
         eventTitle: 'Wigilia',
         exchangeOn: '2026-12-24',
@@ -90,15 +92,16 @@ describe('Email templates', () => {
     expect(email.text).toContain('Cześć Kasia!');
     expect(email.text).toContain('Kupujesz prezent dla: Tomek.');
     expect(email.text).toContain(
-      'https://santa.example.com/events/evt-1/assignment',
+      'https://santa.example.com/auth?next=%2Fevents%2Fevt-1%2Fassignment#token=tok_9',
     );
-    expect(email.text).not.toContain('#token=');
   });
 
   test('draw-result for a managed participant addresses their caretaker', () => {
     const email = renderEmail(
       'draw-result',
       {
+        token: 'tok',
+        next: '/events/evt-1/assignment/print?as=p-1',
         eventId: 'evt-1',
         eventTitle: 'Wigilia',
         exchangeOn: '2026-12-24',

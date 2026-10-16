@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { RouterLink, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 import { isApiError } from '@/api';
 import { magicTokenFromHash, removeHashFromUrl } from '@/auth/personalLink';
-import { takeReturnTo } from '@/auth/returnTo';
+import { isSafeReturnPath, takeReturnTo } from '@/auth/returnTo';
 import { useApiErrorMessage } from '@/composables/useApiErrorMessage';
 import { useAuthStore } from '@/stores/auth';
 
 const auth = useAuthStore();
+const route = useRoute();
 const router = useRouter();
 const errorMessage = useApiErrorMessage();
 
@@ -21,8 +22,13 @@ const signIn = async () => {
   error.value = null;
   try {
     await auth.signIn(magicToken);
-    // Back to the page that asked for sign-in, if any.
-    await router.replace(takeReturnTo() ?? { name: 'events' });
+    // Where the personal link points (`?next=`, e.g. the draw-result email's
+    // assignment page), else back to the page that asked for sign-in.
+    const remembered = takeReturnTo();
+    const { next } = route.query;
+    const linked =
+      typeof next === 'string' && isSafeReturnPath(next) ? next : null;
+    await router.replace(linked ?? remembered ?? { name: 'events' });
   } catch (e) {
     // A `401` already signed out and sent the person to the landing page.
     if (!isApiError(e) || e.kind !== 'unauthorized')

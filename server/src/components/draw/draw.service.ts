@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import AppError from '@core/utils/appError';
 import { Db } from '@db/database';
 import { EventRow, ParticipantRow } from '@db/schema';
+import { issueMagicToken } from '@components/auth/magicToken';
 import { enqueueEmail } from '@email/outbox';
 import { Clock, nowUtc } from '@shared/clock';
 import { todayIn } from '@shared/dates';
@@ -41,6 +42,7 @@ interface DrawnParticipant {
   email: string | null;
   caretaker_name: string | null;
   caretaker_email: string | null;
+  caretaker_person_id: string | null;
 }
 
 // Every non-declined participant of the event.
@@ -67,6 +69,7 @@ const drawnParticipantsOf = (trx: Db, eventId: string) =>
       'persons.email',
       'caretakers.display_name as caretaker_name',
       'caretaker_persons.email as caretaker_email',
+      'caretakers.person_id as caretaker_person_id',
     ])
     .where('participants.event_id', '=', eventId)
     .where('participants.status', '=', 'active')
@@ -159,11 +162,25 @@ export const runDraw = async (
     for (const giver of participants) {
       const recipient = byId.get(result.assignments.get(giver.id) as string);
       const managed = giver.person_id === null;
+      // A fresh personal link, so the email signs its addressee in even in a
+      // browser they never used. A caretaker lands on the print view of the
+      // managed participant's draw result.
+      // eslint-disable-next-line no-await-in-loop
+      const token = await issueMagicToken(
+        trx,
+        clock,
+        (managed ? giver.caretaker_person_id : giver.person_id) as string,
+      );
+      const assignmentPath = `/events/${event.id}/assignment`;
       // eslint-disable-next-line no-await-in-loop
       await enqueueEmail(trx, clock, {
         to: (managed ? giver.caretaker_email : giver.email) as string,
         template: 'draw-result',
         payload: {
+          token,
+          next: managed
+            ? `${assignmentPath}/print?as=${giver.id}`
+            : assignmentPath,
           eventId: event.id,
           eventTitle: drawnEvent.title,
           exchangeOn: drawnEvent.exchange_on,
