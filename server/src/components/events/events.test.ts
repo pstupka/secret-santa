@@ -7,7 +7,6 @@ import {
   PUBLIC_LIMIT_PER_EMAIL,
   PUBLIC_LIMIT_PER_IP,
 } from '@core/middlewares/rateLimit.middleware';
-import { ParticipantStatus } from '@db/schema';
 import newId from '@shared/ids';
 import {
   createTestContext,
@@ -15,19 +14,13 @@ import {
   signIn,
   TestContext,
 } from '@test/harness';
-
-const newEvent = (overrides: Record<string, unknown> = {}) => ({
-  title: 'Wigilia 2026',
-  description: 'Rodzinne Mikołajki',
-  budgetAmount: 15000,
-  budgetCurrency: 'PLN',
-  rules: 'Bez skarpetek.',
-  timezone: 'Europe/Warsaw',
-  exchangeOn: '2026-12-24',
-  organizerName: 'Ania',
-  organizerEmail: 'ania@example.com',
-  ...overrides,
-});
+import {
+  addMember as addMemberTo,
+  decline,
+  newEvent,
+  OrganizedEvent,
+  organizeEvent as organizeEventIn,
+} from '@test/fixtures';
 
 describe('Events API', () => {
   let ctx: TestContext;
@@ -222,40 +215,14 @@ describe('Events API', () => {
     });
   });
 
-  // Creates an event through the API; returns it with the organizer's token.
-  const organizeEvent = async (overrides: Record<string, unknown> = {}) => {
-    const body = newEvent(overrides);
-    const res = await createEvent(body).expect(httpStatus.CREATED);
-    const { token } = await signIn(ctx, body.organizerEmail as string);
-    return { eventId: res.body.id as string, organizerToken: token };
-  };
+  const organizeEvent = (overrides: Record<string, unknown> = {}) =>
+    organizeEventIn(ctx, overrides);
 
-  // Adds an invited member participant directly (no participants API yet).
-  const addMember = async (
-    eventId: string,
+  const addMember = (
+    event: OrganizedEvent,
     email: string,
     displayName: string,
-    status: ParticipantStatus = 'active',
-  ) => {
-    const { personId, token } = await signIn(ctx, email);
-    const participantId = newId();
-    const now = ctx.clock.now().toISOString();
-    await ctx.db
-      .insertInto('participants')
-      .values({
-        id: participantId,
-        event_id: eventId,
-        person_id: personId,
-        managed_by_participant_id: null,
-        display_name: displayName,
-        role: 'member',
-        status,
-        added_at: now,
-        invite_sent_at: now,
-      })
-      .execute();
-    return { participantId, token };
-  };
+  ) => addMemberTo(ctx, event, email, displayName);
 
   const getEvent = (eventId: string, token: string) =>
     request(ctx.app)
@@ -295,11 +262,11 @@ describe('Events API', () => {
       });
       const ania = await signIn(ctx, 'ania@example.com');
       const { participantId } = await addMember(
-        sylwester.eventId,
+        sylwester,
         'ania@example.com',
         'Ania',
-        'declined',
       );
+      await decline(ctx, sylwester.eventId, ania.token);
       // An event Ania does not participate in.
       await organizeEvent({
         title: 'Mikołajki',
@@ -358,14 +325,11 @@ describe('Events API', () => {
 
   describe('GET /api/events/:eventId', () => {
     test('shows a participant the event details and participant names and statuses', async () => {
-      const { eventId } = await organizeEvent();
-      const tomek = await addMember(eventId, 'tomek@example.com', 'Tomek');
-      const ola = await addMember(
-        eventId,
-        'ola@example.com',
-        'Ola',
-        'declined',
-      );
+      const event = await organizeEvent();
+      const { eventId } = event;
+      const tomek = await addMember(event, 'tomek@example.com', 'Tomek');
+      const ola = await addMember(event, 'ola@example.com', 'Ola');
+      await decline(ctx, eventId, ola.token);
 
       const res = await getEvent(eventId, tomek.token).expect(httpStatus.OK);
 
@@ -407,6 +371,7 @@ describe('Events API', () => {
             status: 'declined',
           },
         ],
+        managedParticipants: [],
       });
       // Names and statuses only: no emails or invitation state.
       expect(JSON.stringify(res.body)).not.toContain('@example.com');
@@ -563,8 +528,9 @@ describe('Events API', () => {
     });
 
     test('forbids a member with 403', async () => {
-      const { eventId } = await organizeEvent();
-      const tomek = await addMember(eventId, 'tomek@example.com', 'Tomek');
+      const event = await organizeEvent();
+      const { eventId } = event;
+      const tomek = await addMember(event, 'tomek@example.com', 'Tomek');
 
       await patchEvent(eventId, tomek.token, { title: 'Moje' }).expect(
         httpStatus.FORBIDDEN,
@@ -629,9 +595,10 @@ describe('Events API', () => {
 
   describe('DELETE /api/events/:eventId', () => {
     test('lets the organizer delete the event with all its data', async () => {
-      const { eventId, organizerToken } = await organizeEvent();
-      const tomek = await addMember(eventId, 'tomek@example.com', 'Tomek');
-      const ola = await addMember(eventId, 'ola@example.com', 'Ola');
+      const event = await organizeEvent();
+      const { eventId, organizerToken } = event;
+      const tomek = await addMember(event, 'tomek@example.com', 'Tomek');
+      const ola = await addMember(event, 'ola@example.com', 'Ola');
       const now = ctx.clock.now().toISOString();
       const wishlistId = newId();
       await ctx.db
@@ -700,8 +667,9 @@ describe('Events API', () => {
     });
 
     test('forbids a member with 403', async () => {
-      const { eventId } = await organizeEvent();
-      const tomek = await addMember(eventId, 'tomek@example.com', 'Tomek');
+      const event = await organizeEvent();
+      const { eventId } = event;
+      const tomek = await addMember(event, 'tomek@example.com', 'Tomek');
 
       await deleteEvent(eventId, tomek.token).expect(httpStatus.FORBIDDEN);
       expect(await storedEvent(eventId)).toBeDefined();

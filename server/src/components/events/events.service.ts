@@ -15,6 +15,11 @@ import { todayIn } from '@shared/dates';
 import newId from '@shared/ids';
 import { issueMagicToken } from '@components/auth/magicToken';
 import { findOrCreatePerson } from '@components/persons/persons';
+import {
+  listManagedParticipantsOf,
+  listParticipantSummaries,
+  ParticipantSummaryDto,
+} from '@components/participants/participants.service';
 
 // 'finished' is never stored: it is derived from exchange_on (PLAN.md lifecycle).
 export type EventStatus = 'open' | 'drawn' | 'finished';
@@ -197,16 +202,10 @@ export const listEventsOf = async (
   );
 };
 
-// What every participant may see about the others: names and statuses.
-export interface ParticipantSummaryDto {
-  id: string;
-  displayName: string;
-  role: ParticipantRole;
-  status: ParticipantStatus;
-}
-
 export interface EventDetailsDto extends MyEventDto {
   participants: ParticipantSummaryDto[];
+  // The caller's managed participants, whom they can act as (`X-Acting-As`).
+  managedParticipants: ParticipantSummaryDto[];
 }
 
 export const getEventDetails = async (
@@ -214,25 +213,11 @@ export const getEventDetails = async (
   clock: Clock,
   event: EventRow,
   myParticipant: ParticipantRow,
-): Promise<EventDetailsDto> => {
-  const participants = await db
-    .selectFrom('participants')
-    .select(['id', 'display_name', 'role', 'status'])
-    .where('event_id', '=', event.id)
-    .orderBy('added_at')
-    .orderBy('id')
-    .execute();
-
-  return {
-    ...toMyEventDto(event, myParticipant, clock),
-    participants: participants.map((participant) => ({
-      id: participant.id,
-      displayName: participant.display_name,
-      role: participant.role,
-      status: participant.status,
-    })),
-  };
-};
+): Promise<EventDetailsDto> => ({
+  ...toMyEventDto(event, myParticipant, clock),
+  participants: await listParticipantSummaries(db, event.id),
+  managedParticipants: await listManagedParticipantsOf(db, myParticipant),
+});
 
 // Fields the organizer can edit; absent fields are left unchanged.
 export interface UpdateEventInput {

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import { currentPerson } from '@components/auth/authenticate.middleware';
+import { recordFirstOpened } from '@components/participants/participants.service';
 import { AppDeps } from '../../deps';
 import { currentEventAccess } from './eventAccess.middleware';
 import {
@@ -28,9 +29,11 @@ const createEventsController = ({ db, clock }: AppDeps) => ({
     res.status(httpStatus.OK).json(events);
   },
 
-  // GET /events/:eventId (participant): details plus participant names and statuses.
+  // GET /events/:eventId (participant): details plus participant names and
+  // statuses. The first view records that the participant opened the event.
   get: async (req: Request, res: Response) => {
     const { event, participant } = currentEventAccess(req);
+    await recordFirstOpened(db, clock, participant);
     res
       .status(httpStatus.OK)
       .json(await getEventDetails(db, clock, event, participant));

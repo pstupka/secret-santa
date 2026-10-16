@@ -119,7 +119,7 @@
         "tags": [
           "events"
         ],
-        "summary": "Event details with participant names and statuses (participant)",
+        "summary": "Event details with participant names and statuses (participant). The first view records firstOpenedAt.",
         "security": [
           {
             "magicToken": []
@@ -313,6 +313,289 @@
           },
           "401": {
             "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/participants": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "participants"
+        ],
+        "summary": "List participants (participant). Everyone sees names and statuses; the organizer also sees emails, invitation state, caretakers and wishlist flags.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ParticipantSummary items, or OrganizerParticipant items for the organizer",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrganizerParticipant"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "participants"
+        ],
+        "summary": "Add a participant silently, no email (organizer, open events). At most 50 participants.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewParticipant"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/OrganizerParticipant"
+            }
+          },
+          "400": {
+            "description": "Invalid input, or the caretaker is not a non-managed participant of this event",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished, the person is already a participant, or the event has 50 participants",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/participants/{participantId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "in": "path",
+          "name": "participantId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "delete": {
+        "tags": [
+          "participants"
+        ],
+        "summary": "Remove a participant with their wishlists and exclusions (organizer, open events)",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "The person is a participant but not the organizer",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event or participant, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished, the participant is the organizer, or a caretaker who still has managed participants",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/participation/decline": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": [
+          "participants"
+        ],
+        "summary": "Decline: leave the draw (open events). A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The participant with the new status",
+            "schema": {
+              "$ref": "#/definitions/ParticipantSummary"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished, or the organizer tries to decline",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{eventId}/participation/rejoin": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "eventId",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": [
+          "participants"
+        ],
+        "summary": "Rejoin: undo a decline (open events). A caretaker may act for a managed participant with X-Acting-As.",
+        "security": [
+          {
+            "magicToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Acting-As",
+            "required": false,
+            "type": "string",
+            "description": "Participant id of a managed participant to act as; only their caretaker may"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The participant with the new status",
+            "schema": {
+              "$ref": "#/definitions/ParticipantSummary"
+            }
+          },
+          "401": {
+            "description": "Missing, unknown, expired or revoked magic token",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "X-Acting-As names a participant the caller is not the caretaker of",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Unknown event, or the person is not a participant",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "The event is drawn or finished",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -576,6 +859,72 @@
               "items": {
                 "$ref": "#/definitions/ParticipantSummary"
               }
+            },
+            "managedParticipants": {
+              "type": "array",
+              "description": "The caller's managed participants, whom they can act as with X-Acting-As",
+              "items": {
+                "$ref": "#/definitions/ParticipantSummary"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "NewParticipant": {
+      "type": "object",
+      "required": [
+        "displayName"
+      ],
+      "description": "Exactly one of email (a participant with a person) or managedByParticipantId (a managed participant)",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Finds or creates the person"
+        },
+        "managedByParticipantId": {
+          "type": "string",
+          "description": "Caretaker: a non-managed participant of the same event"
+        }
+      }
+    },
+    "OrganizerParticipant": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ParticipantSummary"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "x-nullable": true,
+              "description": "null for a managed participant"
+            },
+            "managedByParticipantId": {
+              "type": "string",
+              "x-nullable": true,
+              "description": "Caretaker of a managed participant"
+            },
+            "inviteSentAt": {
+              "type": "string",
+              "format": "date-time",
+              "x-nullable": true
+            },
+            "firstOpenedAt": {
+              "type": "string",
+              "format": "date-time",
+              "x-nullable": true,
+              "description": "First authenticated GET of the event"
+            },
+            "wishlistFilled": {
+              "type": "boolean",
+              "description": "The participant's own wishlist has items or notes"
             }
           }
         }

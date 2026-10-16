@@ -7,10 +7,13 @@ import { currentPerson } from '@components/auth/authenticate.middleware';
 import { AppDeps } from '../../deps';
 import { EventStatus, eventStatus } from './events.service';
 
-// The event from `:eventId` and the caller's participant in it.
+// The event from `:eventId` and the participant the request acts as: the
+// caller's own, or a managed participant behind `actAsManagedParticipant`.
 export interface EventAccess {
   event: EventRow;
   participant: ParticipantRow;
+  // The caller's own participant when acting as a managed participant.
+  caretaker?: ParticipantRow;
 }
 
 declare module 'express-serve-static-core' {
@@ -88,5 +91,43 @@ export const requireEventStatus =
         `Not allowed while the event is ${status}`,
       );
     }
+    return next();
+  };
+
+// Header a caretaker sends to act as one of their managed participants.
+export const ACTING_AS_HEADER = 'X-Acting-As';
+
+// With `X-Acting-As: <participantId>`, swaps `req.eventAccess.participant` for
+// that managed participant and keeps the caller in `caretaker`; `403` unless
+// the caller is that participant's caretaker in this event. Without the
+// header the caller acts as themselves. Use right after `loadEventAccess`, on
+// endpoints a caretaker uses for a managed participant (wishlists, claims,
+// decline/rejoin, assignment).
+export const actAsManagedParticipant =
+  ({ db }: AppDeps) =>
+  async (req: Request, _res: Response, next: NextFunction) => {
+    const managedParticipantId = req.header(ACTING_AS_HEADER);
+    if (managedParticipantId === undefined) return next();
+
+    const access = currentEventAccess(req);
+    const managed = await db
+      .selectFrom('participants')
+      .selectAll()
+      .where('id', '=', managedParticipantId)
+      .where('event_id', '=', access.event.id)
+      .where('managed_by_participant_id', '=', access.participant.id)
+      .executeTakeFirst();
+    if (!managed) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        'Only the caretaker can act as this participant',
+      );
+    }
+
+    req.eventAccess = {
+      event: access.event,
+      participant: managed,
+      caretaker: access.participant,
+    };
     return next();
   };

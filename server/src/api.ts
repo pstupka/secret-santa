@@ -3,6 +3,7 @@ import { Router } from 'express';
 import healthCheck from '@components/healthcheck/healthCheck.router';
 import createAccessRouter from '@components/auth/access.router';
 import createEventsRouter from '@components/events/events.router';
+import createParticipantsRouter from '@components/participants/participants.router';
 import { AppDeps } from './deps';
 
 const createApi = (deps: AppDeps): Router => {
@@ -10,6 +11,7 @@ const createApi = (deps: AppDeps): Router => {
   router.use(healthCheck);
   router.use(createAccessRouter(deps));
   router.use(createEventsRouter(deps));
+  router.use(createParticipantsRouter(deps));
   return router;
 };
 
