@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { readPackage } from '@core/utils/package';
 
 // All env variables used by the app should be defined in this file.
@@ -17,7 +17,17 @@ const envsSchema = Joi.object()
       .valid('production', 'integration', 'development')
       .required(),
     PORT: Joi.number().default(8080),
-    API_KEY_TOKEN: Joi.string().required(),
+    PUBLIC_URL: Joi.string()
+      .uri({ scheme: ['http', 'https'] })
+      .required()
+      .description('Origin used to build personal links in emails'),
+    DATABASE_PATH: Joi.string().required(),
+    SMTP_URL: Joi.string()
+      .uri({ scheme: ['smtp', 'smtps'] })
+      .required(),
+    MAIL_FROM: Joi.string().required(),
+    // Only used by protectedByApiKey, which is not mounted on business routes.
+    API_KEY_TOKEN: Joi.string().optional(),
   })
   .unknown(true);
 
@@ -31,13 +41,20 @@ if (error) {
      This app requires env variables to work properly. If you run app locally use docker-compose`,
   );
 }
-const packageData = readPackage(resolve(__dirname, '../..'), true);
+const packageData = readPackage(
+  fileURLToPath(new URL('../..', import.meta.url)),
+  true,
+);
 
 // map env vars and make it visible outside module
 export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
-  xApiKey: envVars.API_KEY_TOKEN,
-  ptojectName: packageData.name,
+  publicUrl: (envVars.PUBLIC_URL as string).replace(/\/+$/, ''),
+  databasePath: envVars.DATABASE_PATH as string,
+  smtpUrl: envVars.SMTP_URL as string,
+  mailFrom: envVars.MAIL_FROM as string,
+  xApiKey: envVars.API_KEY_TOKEN as string | undefined,
+  projectName: packageData.name,
   projectVersion: packageData.version,
 };

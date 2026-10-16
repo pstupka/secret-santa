@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 import swaggerUi from 'swagger-ui-express';
@@ -6,7 +7,11 @@ import AppError from '@core/utils/appError';
 import logger from '@core/utils/logger';
 import consts from '@config/consts';
 import config from '@config/config';
-import swaggerDocument from '../../swagger.json';
+
+const swaggerDocument = JSON.parse(
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- fixed path next to this module.
+  readFileSync(new URL('../../swagger.json', import.meta.url), 'utf8'),
+);
 
 const swaggerForbidden = () => {
   logger.error('Trying to access swagger docs on production');

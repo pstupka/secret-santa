@@ -1,10 +1,12 @@
 import { Router } from 'express';
 
 import healthCheck from '@components/healthcheck/healthCheck.router';
-import user from '@components/user/user.router';
+import { AppDeps } from './deps';
 
-const router: Router = Router();
-router.use(healthCheck);
-router.use(user);
+const createApi = (_deps: AppDeps): Router => {
+  const router: Router = Router();
+  router.use(healthCheck);
+  return router;
+};
 
-export default router;
+export default createApi;

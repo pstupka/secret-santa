@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "types": ["jest", "node"],
+    "types": ["node"],
     "typeRoots": ["node_modules/@types", "../node_modules/@types", "typings"],
     "lib": ["ESNext", "DOM"],
-    "module": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "declaration": true,
     "esModuleInterop": true,
@@ -27,21 +28,26 @@
       "core/*": ["./src/core/*"],
       "@core/*": ["./src/core/*"],
       "@components/*": ["./src/components/*"],
-      "@config/*": ["./src/config/*"]
-    },
-    "plugins": [{ "transform": "ts-optchain/transform" }]
+      "@config/*": ["./src/config/*"],
+      "@db/*": ["./src/db/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@test/*": ["./src/test/*"]
+    }
   },
+  "include": ["src/**/*"],
   "exclude": [
     "dist",
     "node_modules",
     "test/**/*",
+    "src/test/**/*",
     "ci/**/*",
     "scripts/**/*",
     "__mocks__/**/*",
     "**/node_modules/**/*",
     "**/dts/**/*",
     "**/dist/**/*",
-    "**/*.(spec|test).ts"
+    "**/*.spec.ts",
+    "**/*.test.ts"
   ],
   "compileOnSave": true,
   "typeAcquisition": {

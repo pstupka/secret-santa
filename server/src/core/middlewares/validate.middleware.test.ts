@@ -1,3 +1,4 @@
+import { describe, test, expect, vi } from 'vitest';
 import httpMocks from 'node-mocks-http';
 import httpStatus from 'http-status';
 import { Response, Request } from 'express';
@@ -36,7 +37,7 @@ const skip = undefined;
 
 describe('Validate middleware', () => {
   test('should call next middleware in the stack with no errors if validation passes', () => {
-    const next = jest.fn();
+    const next = vi.fn();
     const res: Response = httpMocks.createResponse();
     const req: Request = httpMocks.createRequest({
       method: 'POST',
@@ -86,7 +87,7 @@ describe('Validate middleware', () => {
   ])(
     'should throw an app error with error message=$validationErr when request body= $body params=$params and query=$query',
     ({ body, params, query, validationErr }) => {
-      const next = jest.fn();
+      const next = vi.fn();
       const res: Response = httpMocks.createResponse();
       const req: Request = httpMocks.createRequest({
         method: 'POST',
@@ -105,7 +106,7 @@ describe('Validate middleware', () => {
   );
 
   test('should block prototype pollution attempt', () => {
-    const next = jest.fn();
+    const next = vi.fn();
     const res: Response = httpMocks.createResponse();
     const req: Request = httpMocks.createRequest({
       method: 'POST',

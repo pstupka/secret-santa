@@ -18,9 +18,6 @@ export default [
   },
   ...compat
     .config({
-      env: {
-        "jest/globals": true,
-      },
       extends: [
         "airbnb-base",
         "plugin:@typescript-eslint/recommended",
@@ -33,14 +30,17 @@ export default [
       parser: "@typescript-eslint/parser",
       parserOptions: {
         ecmaVersion: 2017,
-        project: ["tsconfig.json"],
+        project: ["tsconfig.test.json"],
         sourceType: "module",
         tsconfigRootDir: serverDirectory,
       },
-      plugins: ["@typescript-eslint", "jest", "security"],
+      plugins: ["@typescript-eslint", "security"],
       rules: {
         "max-len": ["error", { code: 128 }],
         "import/extensions": "off",
+        // The base rule misreports TS type signatures; the TS-aware one covers it.
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
         "node/no-missing-import": "off",
         "react/jsx-filename-extension": "off",
         "node/file-extension-in-import": "off",
@@ -58,7 +58,7 @@ export default [
         "import/resolver": {
           typescript: {
             project: fileURLToPath(
-              new URL("./server/tsconfig.json", import.meta.url)
+              new URL("./server/tsconfig.test.json", import.meta.url)
             ),
           },
           node: {
@@ -69,6 +69,20 @@ export default [
         },
       },
     })
+    .concat(
+      compat.config({
+        overrides: [
+          {
+            // Tests and the test harness may use dev dependencies (vitest, supertest).
+            files: ["**/*.test.ts", "src/test/**/*.ts"],
+            rules: {
+              "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+              "node/no-unpublished-import": "off",
+            },
+          },
+        ],
+      }),
+    )
     .map((config) => ({
       ...config,
       files: config.files
