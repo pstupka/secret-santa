@@ -5,6 +5,7 @@ import {
   type RouterHistory,
 } from 'vue-router';
 
+import { rememberReturnTo } from '@/auth/returnTo';
 import { useAuthStore } from '@/stores/auth';
 import LandingView from '@/views/LandingView.vue';
 import { requireOrganizer } from './requireOrganizer';
@@ -103,7 +104,9 @@ export const createAppRouter = (
 
   router.beforeEach((to) => {
     if (to.meta.requiresAuth && !useAuthStore().isSignedIn) {
-      return { name: 'landing' };
+      // Come back here after signing in with a personal link.
+      rememberReturnTo(to.fullPath);
+      return { name: 'landing', query: { signIn: '1' } };
     }
     return true;
   });

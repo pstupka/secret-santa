@@ -34,7 +34,8 @@
         "body": "Każdy dowie się tylko, komu kupuje prezent. Reszta pozostaje tajemnicą aż do dnia wymiany."
       }
     },
-    "signedOutNotice": "Twój osobisty link wygasł lub jest nieprawidłowy. Poproś poniżej o nowy."
+    "signedOutNotice": "Twój osobisty link wygasł lub jest nieprawidłowy. Poproś poniżej o nowy.",
+    "signInNotice": "Ta strona wymaga zalogowania. Otwórz swój osobisty link z e-maila w tej przeglądarce albo poproś poniżej o nowy – po zalogowaniu wrócisz w to samo miejsce."
   },
   "lostLink": {
     "title": "Zgubiłeś swój link?",

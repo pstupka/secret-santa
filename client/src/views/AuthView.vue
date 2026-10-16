@@ -4,6 +4,7 @@ import { RouterLink, useRouter } from 'vue-router';
 
 import { isApiError } from '@/api';
 import { magicTokenFromHash, removeHashFromUrl } from '@/auth/personalLink';
+import { takeReturnTo } from '@/auth/returnTo';
 import { useApiErrorMessage } from '@/composables/useApiErrorMessage';
 import { useAuthStore } from '@/stores/auth';
 
@@ -20,7 +21,8 @@ const signIn = async () => {
   error.value = null;
   try {
     await auth.signIn(magicToken);
-    await router.replace({ name: 'events' });
+    // Back to the page that asked for sign-in, if any.
+    await router.replace(takeReturnTo() ?? { name: 'events' });
   } catch (e) {
     // A `401` already signed out and sent the person to the landing page.
     if (!isApiError(e) || e.kind !== 'unauthorized')

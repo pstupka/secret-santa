@@ -11,6 +11,11 @@ const route = useRoute();
 
 // Set by the api client after a `401` (see SIGNED_OUT_LOCATION).
 const signedOut = computed(() => route.query.signedOut !== undefined);
+// Set by the router when a signed-out person opened a page that needs a
+// personal link; they return there after signing in.
+const signInNeeded = computed(
+  () => !signedOut.value && route.query.signIn !== undefined,
+);
 
 const steps = ['create', 'invite', 'draw'] as const;
 </script>
@@ -19,6 +24,9 @@ const steps = ['create', 'invite', 'draw'] as const;
   <div class="space-y-10 sm:space-y-14">
     <p v-if="signedOut" class="alert-error" role="alert">
       {{ $t('landing.signedOutNotice') }}
+    </p>
+    <p v-if="signInNeeded" class="alert-info" role="status">
+      {{ $t('landing.signInNotice') }}
     </p>
 
     <section
