@@ -14,6 +14,11 @@
   ],
   "scripts": {
     "server:dev": "yarn workspace @secret-santa/server server:dev",
+    "client:dev": "yarn workspace @secret-santa/client client:dev",
+    "client:build": "yarn workspace @secret-santa/client build",
+    "client:test": "yarn workspace @secret-santa/client test",
+    "client:typecheck": "yarn workspace @secret-santa/client typecheck",
+    "client:lint": "yarn workspace @secret-santa/client lint",
     "docker:server:dev": "docker compose -f server/docker-compose.yaml up --build"
   },
   "devDependencies": {

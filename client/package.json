@@ -3,11 +3,54 @@
   "description": "Vue web client for creating and participating in Secret Santa events.",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "client:dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "vue-tsc -b",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "prettier": "prettier --check \"{*.ts,src/**/*.{ts,vue,json,css}}\"",
+    "prettier:fix": "prettier --write \"{*.ts,src/**/*.{ts,vue,json,css}}\""
+  },
   "keywords": [
     "secret-santa",
     "gift-exchange",
     "vue",
     "vite",
     "web-client"
-  ]
+  ],
+  "dependencies": {
+    "@vue/devtools-api": "^8.2.1",
+    "pinia": "^4.1.0",
+    "vue": "^3.5.44",
+    "vue-i18n": "^11.4.14",
+    "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.71.1",
+    "@typescript-eslint/parser": "^8.71.1",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "@vue/tsconfig": "^0.9.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^10.11.1",
+    "happy-dom": "^21.0.3",
+    "prettier": "^2.5.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^3.3.13"
+  }
 }

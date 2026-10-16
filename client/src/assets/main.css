@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-display: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+
+  /* Festive palette: cranberry, pine and gold on warm snow. */
+  --color-snow: #fbf8f3;
+  --color-cranberry-50: #fdf2f3;
+  --color-cranberry-100: #fbe3e6;
+  --color-cranberry-200: #f5c2c8;
+  --color-cranberry-500: #c0283a;
+  --color-cranberry-600: #9f1d2b;
+  --color-cranberry-700: #821824;
+  --color-pine-50: #eff7f2;
+  --color-pine-100: #d6ebdd;
+  --color-pine-600: #1f6b45;
+  --color-pine-700: #185537;
+  --color-pine-900: #0f3322;
+  --color-gold-300: #f2d48a;
+  --color-gold-400: #e9b949;
+}
+
+@layer base {
+  body {
+    @apply bg-snow font-sans text-stone-800 antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-pine-900;
+  }
+}
+
+/* Shared building blocks; compose with regular utilities in templates. */
+
+@utility card {
+  @apply rounded-2xl border border-stone-200/80 bg-white p-5 shadow-sm sm:p-7;
+}
+
+@utility btn {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-base font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-primary {
+  @apply btn bg-cranberry-600 text-white shadow-sm hover:bg-cranberry-700 focus-visible:outline-cranberry-600;
+}
+
+@utility btn-secondary {
+  @apply btn border border-pine-600/30 bg-white text-pine-700 hover:bg-pine-50 focus-visible:outline-pine-600;
+}
+
+@utility field-label {
+  @apply mb-1.5 block text-sm font-semibold text-stone-700;
+}
+
+@utility field-input {
+  @apply block w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-base text-stone-900 shadow-xs placeholder:text-stone-400 focus:border-pine-600 focus:ring-2 focus:ring-pine-600/20 focus:outline-none aria-invalid:border-cranberry-500;
+}
+
+@utility field-hint {
+  @apply mt-1.5 text-sm text-stone-500;
+}
+
+@utility field-error {
+  @apply mt-1.5 text-sm font-medium text-cranberry-600;
+}
+
+@utility alert-error {
+  @apply rounded-xl border border-cranberry-200 bg-cranberry-50 px-4 py-3 text-sm text-cranberry-700;
+}
+
+/* A sprinkle of snowflakes for dark festive panels. */
+@utility snowfall {
+  background-image: radial-gradient(
+      circle at 12% 20%,
+      #fff 0 1.5px,
+      transparent 2px
+    ),
+    radial-gradient(circle at 78% 14%, #fff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 62% 70%, #fff 0 1.5px, transparent 2px),
+    radial-gradient(circle at 26% 82%, #fff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 90% 56%, #fff 0 2px, transparent 2.5px);
+  background-size: 180px 160px;
+}
+
+@utility alert-info {
+  @apply rounded-xl border border-pine-100 bg-pine-50 px-4 py-3 text-sm text-pine-700;
+}

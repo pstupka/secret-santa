@@ -1,0 +1,11 @@
+<template>
+  <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+    <rect x="4" y="12" width="24" height="17" rx="3" fill="#9f1d2b" />
+    <rect x="2" y="8" width="28" height="7" rx="2" fill="#c0283a" />
+    <rect x="14" y="8" width="4" height="21" fill="#e9b949" />
+    <path
+      d="M16 8c-2-5-8-6-8-2 0 2 4 2 8 2zm0 0c2-5 8-6 8-2 0 2-4 2-8 2z"
+      fill="#e9b949"
+    />
+  </svg>
+</template>

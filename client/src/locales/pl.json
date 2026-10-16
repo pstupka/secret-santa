@@ -1,0 +1,109 @@
+{
+  "app": {
+    "name": "Secret Santa",
+    "tagline": "Losowanie prezentów dla całej rodziny"
+  },
+  "nav": {
+    "home": "Strona główna",
+    "myEvents": "Moje wydarzenia",
+    "signOut": "Wyloguj"
+  },
+  "common": {
+    "optional": "opcjonalnie",
+    "backHome": "Wróć na stronę główną",
+    "tryAgain": "Spróbuj ponownie",
+    "sending": "Wysyłanie…"
+  },
+  "landing": {
+    "heroTitle": "Wspólne prezenty, bez zamieszania",
+    "heroLead": "Zorganizuj losowanie Secret Santa dla rodziny lub znajomych. Bez kont i haseł – każdy dostaje osobisty link e-mailem.",
+    "createEvent": "Utwórz wydarzenie",
+    "goToMyEvents": "Przejdź do moich wydarzeń",
+    "howItWorks": "Jak to działa?",
+    "steps": {
+      "create": {
+        "title": "Utwórz wydarzenie",
+        "body": "Podaj nazwę, datę wymiany prezentów i budżet. Osobisty link przyjdzie na Twój e-mail."
+      },
+      "invite": {
+        "title": "Zaproś uczestników",
+        "body": "Dodaj bliskich i wyślij zaproszenia, kiedy wszystko będzie gotowe. Każdy uzupełni swoją listę życzeń."
+      },
+      "draw": {
+        "title": "Rozlosuj pary",
+        "body": "Każdy dowie się tylko, komu kupuje prezent. Reszta pozostaje tajemnicą aż do dnia wymiany."
+      }
+    },
+    "signedOutNotice": "Twój osobisty link wygasł lub jest nieprawidłowy. Poproś poniżej o nowy."
+  },
+  "lostLink": {
+    "title": "Zgubiłeś swój link?",
+    "lead": "Podaj adres e-mail, na który dostałeś zaproszenie lub link organizatora. Wyślemy Ci nowy osobisty link.",
+    "emailLabel": "Adres e-mail",
+    "submit": "Wyślij mi link",
+    "sent": "Jeśli ten adres jest nam znany, właśnie wysłaliśmy na niego nowy osobisty link. Poprzednie linki nadal działają."
+  },
+  "newEvent": {
+    "title": "Nowe wydarzenie",
+    "lead": "Wypełnij podstawowe informacje. Szczegóły zmienisz później w panelu organizatora.",
+    "sections": {
+      "event": "Wydarzenie",
+      "organizer": "Organizator",
+      "details": "Szczegóły"
+    },
+    "fields": {
+      "title": "Nazwa wydarzenia",
+      "titlePlaceholder": "np. Wigilia u Kowalskich",
+      "exchangeOn": "Data wymiany prezentów",
+      "budget": "Budżet na prezent",
+      "budgetPlaceholder": "np. 150",
+      "budgetCurrency": "Waluta",
+      "budgetInvalid": "Podaj kwotę, np. 150 albo 99,99.",
+      "description": "Opis",
+      "descriptionPlaceholder": "Gdzie i kiedy się spotykamy?",
+      "rules": "Zasady",
+      "rulesPlaceholder": "np. Prezenty pakujemy w szary papier, bez słodyczy.",
+      "organizerName": "Twoje imię",
+      "organizerNamePlaceholder": "np. Ania",
+      "organizerEmail": "Twój adres e-mail",
+      "organizerEmailHint": "Wyślemy na niego Twój osobisty link do zarządzania wydarzeniem."
+    },
+    "timezone": "Daty liczymy w strefie czasowej {timezone}.",
+    "organizerTakesPart": "Jako organizator też bierzesz udział w losowaniu.",
+    "submit": "Utwórz wydarzenie",
+    "creating": "Tworzenie…"
+  },
+  "checkInbox": {
+    "title": "Sprawdź skrzynkę",
+    "lead": "Wysłaliśmy osobisty link na adres {email}.",
+    "eventCreated": "Wydarzenie „{title}” jest gotowe. Kliknij link z wiadomości, aby dodać uczestników i wysłać zaproszenia.",
+    "spam": "Nie widzisz wiadomości? Zajrzyj do folderu spam lub poczekaj kilka minut.",
+    "keepSecret": "Link jest tylko dla Ciebie – nie przekazuj go dalej."
+  },
+  "auth": {
+    "signingIn": "Logowanie…",
+    "missingToken": "Ten link jest niekompletny. Otwórz go ponownie z wiadomości e-mail albo poproś o nowy.",
+    "failed": "Nie udało się zalogować."
+  },
+  "events": {
+    "title": "Moje wydarzenia",
+    "signedInAs": "Zalogowano jako {email}",
+    "comingSoon": "Lista Twoich wydarzeń pojawi się tutaj."
+  },
+  "notFound": {
+    "title": "Nie znaleziono strony",
+    "lead": "Ta strona nie istnieje albo została przeniesiona."
+  },
+  "errors": {
+    "validation": "Sprawdź wprowadzone dane i spróbuj ponownie.",
+    "unauthorized": "Twój osobisty link wygasł lub jest nieprawidłowy.",
+    "forbidden": "Nie masz dostępu do tej strony.",
+    "notFound": "Nie znaleziono.",
+    "conflict": "Ktoś właśnie to zmienił. Odśwież stronę i spróbuj ponownie.",
+    "unprocessable": "Tej operacji nie można teraz wykonać.",
+    "rateLimited": "Zbyt wiele prób. Spróbuj ponownie za jakiś czas.",
+    "rateLimitedRetry": "Zbyt wiele prób. Spróbuj ponownie za {minutes} min.",
+    "server": "Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę.",
+    "network": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie."
+  }
+}

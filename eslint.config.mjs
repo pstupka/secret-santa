@@ -1,6 +1,35 @@
 import { fileURLToPath, URL } from "node:url";
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import prettierConfig from "eslint-config-prettier";
+import prettierPlugin from "eslint-plugin-prettier";
+import vuePlugin from "eslint-plugin-vue";
+
+// Client (Vue SFCs + TypeScript): Vue and typescript-eslint recommended rules,
+// formatting left to Prettier (client/.prettierrc.json).
+const clientConfigs = [
+  ...tsPlugin.configs["flat/recommended"],
+  ...vuePlugin.configs["flat/recommended"],
+  {
+    languageOptions: {
+      parserOptions: { parser: tsParser },
+      globals: { window: "readonly", document: "readonly" },
+    },
+    plugins: { prettier: prettierPlugin },
+    rules: {
+      ...prettierConfig.rules,
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    },
+  },
+].map((config) => ({
+  ...config,
+  files: config.files
+    ? config.files.map((pattern) => ["client/src/**/*.{ts,vue}", pattern])
+    : ["client/src/**/*.{ts,vue}"],
+}));
 
 const serverDirectory = fileURLToPath(new URL("./server/", import.meta.url));
 const compat = new FlatCompat({
@@ -89,4 +118,5 @@ export default [
         ? config.files.map((pattern) => ["server/src/**/*.ts", pattern])
         : ["server/src/**/*.ts"],
     })),
+  ...clientConfigs,
 ];
