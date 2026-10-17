@@ -87,11 +87,7 @@ const submit = async () => {
             required
             :min="minExchangeOn"
             class="field-input"
-            aria-describedby="event-timezone"
           />
-          <p id="event-timezone" class="field-hint">
-            {{ $t('newEvent.timezone', { timezone }) }}
-          </p>
         </div>
 
         <div class="grid grid-cols-[1fr_auto] gap-3">

@@ -75,7 +75,6 @@
       "organizerEmail": "Twój adres e-mail",
       "organizerEmailHint": "Wyślemy na niego Twój osobisty link do zarządzania wydarzeniem."
     },
-    "timezone": "Daty liczymy w strefie czasowej {timezone}.",
     "organizerTakesPart": "Jako organizator też bierzesz udział w losowaniu.",
     "submit": "Utwórz wydarzenie",
     "creating": "Tworzenie…"
@@ -144,8 +143,7 @@
       "budget": "Budżet na prezent",
       "noBudget": "Nie ustalono",
       "description": "Opis",
-      "rules": "Zasady",
-      "timezone": "Daty liczymy w strefie czasowej {timezone}."
+      "rules": "Zasady"
     },
     "participation": {
       "title": "Udział w losowaniu",

@@ -104,9 +104,6 @@ const rejoin = () => run(events.rejoin);
             </dd>
           </div>
         </dl>
-        <p class="field-hint mt-4">
-          {{ $t('dashboard.details.timezone', { timezone: event.timezone }) }}
-        </p>
       </section>
 
       <section
