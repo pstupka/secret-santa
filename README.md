@@ -90,6 +90,7 @@ docker build -t secret-santa .                        # build the image alone
 
 See `server/README.md`: `yarn docker:server:dev` runs the API with Mailpit,
 `yarn client:dev` runs the Vite dev server (proxying `/api` to the API).
+`yarn dev` runs Mailpit (in docker), `server:dev` and `client:dev` together.
 
 ## End-to-end tests
 
