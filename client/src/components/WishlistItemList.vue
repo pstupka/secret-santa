@@ -20,10 +20,10 @@ const hostOf = (url: string) => {
 </script>
 
 <template>
-  <p v-if="items.length === 0" class="text-stone-500">
+  <p v-if="items.length === 0" class="text-stone-600">
     {{ $t('wishlist.empty') }}
   </p>
-  <ol v-else class="divide-y divide-stone-100">
+  <ol v-else class="divide-y divide-dashed divide-kraft-400">
     <li
       v-for="item in items"
       :key="item.id"

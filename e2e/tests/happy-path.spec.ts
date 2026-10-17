@@ -259,6 +259,8 @@ test('happy path: create event, invite, wishlists, claim, draw, assignments', as
 
   const recipients = new Map<string, string>();
   const readAssignment = async (page: Page, giver: string) => {
+    // The name stays sealed until the giver chooses to reveal it.
+    await page.getByTestId('assignment-reveal').click();
     const recipient = page.getByTestId('assignment-recipient');
     await expect(recipient).toBeVisible();
     const name = (await recipient.textContent())?.trim() ?? '';

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
+import UiIcon from '@/components/UiIcon.vue';
 import DeleteEventPanel from '@/components/manage/DeleteEventPanel.vue';
 import DrawPanel from '@/components/manage/DrawPanel.vue';
 import EditEventForm from '@/components/manage/EditEventForm.vue';
@@ -9,6 +10,7 @@ import InvitationsPanel from '@/components/manage/InvitationsPanel.vue';
 import ParticipantsManager from '@/components/manage/ParticipantsManager.vue';
 import { useApiErrorMessage } from '@/composables/useApiErrorMessage';
 import { isMembershipOpen } from '@/manage/participants';
+import { currentStep, MANAGE_STEPS, stepState } from '@/manage/steps';
 import { useEventsStore } from '@/stores/events';
 import { useManageStore } from '@/stores/manage';
 
@@ -25,6 +27,12 @@ const isOrganizer = computed(
 );
 const membershipOpen = computed(
   () => !!event.value && isMembershipOpen(event.value.status),
+);
+
+const current = computed(() =>
+  event.value && manage.participants
+    ? currentStep(event.value.status, manage.participants)
+    : null,
 );
 
 const loadError = ref<string | null>(null);
@@ -72,36 +80,102 @@ const loaded = computed(
     </p>
 
     <div v-else-if="manage.participants && manage.exclusions" class="space-y-6">
-      <p class="alert-info" data-testid="manage-lifecycle">
-        {{ $t(`manage.lifecycle.${event.status}`) }}
-      </p>
+      <nav :aria-label="$t('manage.steps.label')">
+        <ol class="grid grid-cols-3 gap-2" data-testid="manage-steps">
+          <li v-for="(step, index) in MANAGE_STEPS" :key="step">
+            <a
+              :href="`#manage-${step}`"
+              class="block text-sm leading-snug"
+              :class="{
+                'text-pine-900': stepState(step, current) === 'done',
+                'font-bold text-cranberry-700':
+                  stepState(step, current) === 'current',
+                'text-stone-700': stepState(step, current) === 'upcoming',
+              }"
+              :aria-current="
+                stepState(step, current) === 'current' ? 'step' : undefined
+              "
+            >
+              <span
+                class="mb-2 block h-1"
+                :class="{
+                  'bg-pine-700': stepState(step, current) === 'done',
+                  'bg-cranberry-600': stepState(step, current) === 'current',
+                  'bg-ground-line': stepState(step, current) === 'upcoming',
+                }"
+                aria-hidden="true"
+              />
+              <span class="font-display font-bold">{{ index + 1 }}.</span>
+              {{ $t(`manage.steps.${step}`) }}
+              <span v-if="stepState(step, current) === 'done'" class="sr-only">
+                – {{ $t('manage.steps.done') }}
+              </span>
+            </a>
+          </li>
+        </ol>
+        <p class="mt-4 text-stone-800" data-testid="manage-lifecycle">
+          {{ $t(`manage.lifecycle.${event.status}`) }}
+        </p>
+      </nav>
 
-      <ParticipantsManager
-        :participants="manage.participants"
-        :membership-open="membershipOpen"
-        :my-participant-id="event.myParticipant.id"
-      />
+      <div id="manage-participants" class="scroll-mt-6">
+        <ParticipantsManager
+          :participants="manage.participants"
+          :membership-open="membershipOpen"
+          :my-participant-id="event.myParticipant.id"
+        />
+      </div>
 
-      <InvitationsPanel
-        v-if="membershipOpen"
-        :participants="manage.participants"
-      />
+      <div v-if="membershipOpen" id="manage-invitations" class="scroll-mt-6">
+        <InvitationsPanel :participants="manage.participants" />
+      </div>
 
-      <ExclusionsEditor
-        :participants="manage.participants"
-        :exclusions="manage.exclusions"
-        :editable="membershipOpen"
-      />
+      <details
+        class="group"
+        :open="manage.exclusions.some(({ builtIn }) => !builtIn) || undefined"
+        data-testid="exclusions-disclosure"
+      >
+        <summary
+          class="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-sm font-bold text-pine-900 [&::-webkit-details-marker]:hidden"
+        >
+          <UiIcon
+            name="chevron"
+            class="size-4 shrink-0 transition-transform group-open:rotate-90"
+          />
+          {{ $t('manage.exclusions.disclosure') }}
+        </summary>
+        <ExclusionsEditor
+          class="mt-3"
+          :participants="manage.participants"
+          :exclusions="manage.exclusions"
+          :editable="membershipOpen"
+          :titled="false"
+        />
+      </details>
 
-      <DrawPanel
-        v-if="event.status !== 'finished'"
-        :event="event"
-        :participants="manage.participants"
-      />
+      <div id="manage-draw" class="scroll-mt-6">
+        <DrawPanel
+          v-if="event.status !== 'finished'"
+          :event="event"
+          :participants="manage.participants"
+        />
+      </div>
 
-      <EditEventForm :event="event" />
-
-      <DeleteEventPanel v-if="event.status !== 'finished'" :event="event" />
+      <details class="group" data-testid="settings-disclosure">
+        <summary
+          class="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-sm font-bold text-pine-900 [&::-webkit-details-marker]:hidden"
+        >
+          <UiIcon
+            name="chevron"
+            class="size-4 shrink-0 transition-transform group-open:rotate-90"
+          />
+          {{ $t('manage.settings') }}
+        </summary>
+        <div class="mt-3 space-y-6">
+          <EditEventForm :event="event" />
+          <DeleteEventPanel v-if="event.status !== 'finished'" :event="event" />
+        </div>
+      </details>
     </div>
   </div>
 </template>

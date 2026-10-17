@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import { printLocation } from '@/assignment/myAssignment';
 import { useMyAssignment } from '@/assignment/useMyAssignment';
 import GiftIcon from '@/components/GiftIcon.vue';
+import GiftTag from '@/components/GiftTag.vue';
 import RecipientWishlist from '@/components/RecipientWishlist.vue';
 import { formatBudget, formatExchangeDate } from '@/events/eventDetails';
 import { useEventsStore } from '@/stores/events';
@@ -17,6 +18,31 @@ const { state, error, reload } = useMyAssignment();
 
 const event = computed(() => events.event);
 const acting = computed(() => events.actingParticipant);
+// The name stays sealed until the person chooses to look, every time the page
+// opens: assignments often get opened at the family table.
+const revealed = ref(false);
+const recipientName = ref<HTMLElement | null>(null);
+const revealButton = ref<HTMLButtonElement | null>(null);
+
+const reveal = async () => {
+  revealed.value = true;
+  await nextTick();
+  recipientName.value?.focus();
+};
+
+const hide = async () => {
+  revealed.value = false;
+  await nextTick();
+  revealButton.value?.focus();
+};
+
+watch(
+  () => events.actingAs,
+  () => {
+    revealed.value = false;
+  },
+);
+
 const budget = computed(
   () =>
     event.value &&
@@ -82,105 +108,196 @@ const budget = computed(
       </p>
     </section>
 
-    <div v-else class="space-y-6">
-      <section
-        class="relative overflow-hidden rounded-2xl bg-pine-900 px-6 py-8 text-center text-white shadow-sm"
-        aria-labelledby="recipient-intro"
-      >
-        <div
-          class="snowfall pointer-events-none absolute inset-0 opacity-20"
-          aria-hidden="true"
-        />
-        <p id="recipient-intro" class="relative text-pine-100">
-          {{
-            acting.isSelf
-              ? $t('assignment.youGiveTo')
-              : $t('assignment.managedGivesTo', { name: acting.displayName })
-          }}
-        </p>
-        <p
-          class="relative mt-2 font-display text-4xl font-bold break-words text-gold-300 sm:text-5xl"
-          data-testid="assignment-recipient"
-        >
-          {{ state.assignment.recipient.displayName }}
-        </p>
-        <p class="relative mt-4 text-sm text-pine-100">
-          {{ $t('assignment.keepSecret') }}
-        </p>
+    <div v-else class="space-y-8">
+      <section aria-labelledby="recipient-intro" class="mx-auto max-w-xl">
+        <GiftTag>
+          <p id="recipient-intro" class="text-lg text-stone-700">
+            {{
+              acting.isSelf
+                ? $t('assignment.youGiveTo')
+                : $t('assignment.managedGivesTo', { name: acting.displayName })
+            }}
+          </p>
+
+          <Transition name="unseal" mode="out-in">
+            <div
+              v-if="!revealed"
+              key="sealed"
+              class="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center"
+            >
+              <span
+                class="flex size-16 shrink-0 items-center justify-center rounded-full bg-cranberry-600 shadow-sm ring-4 ring-cranberry-700/30"
+                aria-hidden="true"
+              >
+                <span class="size-10 rounded-full ring-2 ring-gold-300/70" />
+              </span>
+              <div class="min-w-0">
+                <p class="font-display text-2xl font-bold text-pine-900">
+                  {{ $t('assignment.sealed.title') }}
+                </p>
+                <p class="mt-1 text-sm text-stone-600">
+                  {{ $t('assignment.sealed.lead') }}
+                </p>
+                <button
+                  ref="revealButton"
+                  type="button"
+                  class="btn-primary mt-4 w-full sm:w-auto"
+                  data-testid="assignment-reveal"
+                  @click="reveal"
+                >
+                  {{ $t('assignment.sealed.reveal') }}
+                </button>
+              </div>
+            </div>
+
+            <div v-else key="revealed" class="mt-3">
+              <p
+                ref="recipientName"
+                tabindex="-1"
+                class="font-display text-4xl leading-tight font-bold break-words text-cranberry-700 focus:outline-none sm:text-5xl"
+                data-testid="assignment-recipient"
+              >
+                {{ state.assignment.recipient.displayName }}
+              </p>
+              <span
+                class="mt-3 block h-1 w-20 rounded-full bg-gold-400"
+                aria-hidden="true"
+              />
+              <p class="mt-3 text-sm text-stone-600">
+                {{ $t('assignment.keepSecret') }}
+              </p>
+              <button
+                type="button"
+                class="btn-quiet mt-2 -ml-3"
+                data-testid="assignment-hide"
+                @click="hide"
+              >
+                {{ $t('assignment.sealed.hide') }}
+              </button>
+            </div>
+          </Transition>
+        </GiftTag>
       </section>
 
       <p v-if="event.status === 'finished'" class="alert-info" role="status">
         {{ $t('assignment.finished') }}
       </p>
 
-      <section class="card" aria-labelledby="gift-details-title">
-        <h2 id="gift-details-title" class="text-lg font-bold">
-          {{ $t('assignment.details.title') }}
-        </h2>
-        <dl class="mt-4 grid gap-x-6 gap-y-4 sm:grid-cols-2">
-          <div>
-            <dt class="text-sm font-semibold text-stone-500">
-              {{ $t('assignment.details.exchangeOn') }}
-            </dt>
-            <dd class="mt-0.5 text-stone-800">
-              {{ formatExchangeDate(event.exchangeOn) }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-sm font-semibold text-stone-500">
-              {{ $t('assignment.details.budget') }}
-            </dt>
-            <dd class="mt-0.5 text-stone-800">
-              {{ budget ?? $t('assignment.details.noBudget') }}
-            </dd>
-          </div>
-          <div v-if="event.rules" class="sm:col-span-2">
-            <dt class="text-sm font-semibold text-stone-500">
-              {{ $t('assignment.details.rules') }}
-            </dt>
-            <dd class="mt-0.5 break-words whitespace-pre-line text-stone-800">
-              {{ event.rules }}
-            </dd>
-          </div>
-        </dl>
-      </section>
+      <article class="card">
+        <section aria-labelledby="gift-details-title">
+          <h2 id="gift-details-title" class="text-lg font-bold">
+            {{ $t('assignment.details.title') }}
+          </h2>
+          <dl class="mt-4 grid gap-x-6 gap-y-4 sm:grid-cols-2">
+            <div>
+              <dt class="text-sm font-bold text-stone-600">
+                {{ $t('assignment.details.exchangeOn') }}
+              </dt>
+              <dd class="mt-0.5 text-stone-800">
+                {{ formatExchangeDate(event.exchangeOn) }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-bold text-stone-600">
+                {{ $t('assignment.details.budget') }}
+              </dt>
+              <dd class="mt-0.5 text-stone-800">
+                {{ budget ?? $t('assignment.details.noBudget') }}
+              </dd>
+            </div>
+            <div v-if="event.rules" class="sm:col-span-2">
+              <dt class="text-sm font-bold text-stone-600">
+                {{ $t('assignment.details.rules') }}
+              </dt>
+              <dd class="mt-0.5 break-words whitespace-pre-line text-stone-800">
+                {{ event.rules }}
+              </dd>
+            </div>
+          </dl>
+        </section>
 
-      <section class="card" aria-labelledby="recipient-wishlist-title">
-        <h2 id="recipient-wishlist-title" class="text-lg font-bold">
-          {{
-            $t('assignment.wishlist.title', {
-              name: state.assignment.recipient.displayName,
-            })
-          }}
-        </h2>
-        <RecipientWishlist
-          class="mt-3"
-          :wishlist="state.assignment.wishlist"
-          :recipient-name="state.assignment.recipient.displayName"
-        />
-      </section>
-
-      <section class="card" aria-labelledby="print-title">
-        <h2 id="print-title" class="text-lg font-bold">
-          {{ $t('assignment.print.title') }}
-        </h2>
-        <p class="mt-2 text-stone-600">
-          {{
-            acting.isSelf
-              ? $t('assignment.print.lead')
-              : $t('assignment.print.managedLead', {
-                  name: acting.displayName,
+        <template v-if="revealed">
+          <section
+            class="sheet-rule mt-8 pt-8"
+            aria-labelledby="recipient-wishlist-title"
+          >
+            <h2 id="recipient-wishlist-title" class="text-lg font-bold">
+              {{
+                $t('assignment.wishlist.title', {
+                  name: state.assignment.recipient.displayName,
                 })
-          }}
+              }}
+            </h2>
+            <RecipientWishlist
+              class="mt-3"
+              :wishlist="state.assignment.wishlist"
+              :recipient-name="state.assignment.recipient.displayName"
+            />
+          </section>
+
+          <section
+            class="sheet-rule mt-8 flex flex-col gap-4 pt-8 sm:flex-row sm:items-center sm:justify-between"
+            aria-labelledby="print-title"
+          >
+            <div>
+              <h2 id="print-title" class="text-lg font-bold">
+                {{ $t('assignment.print.title') }}
+              </h2>
+              <p class="mt-1 text-stone-600">
+                {{
+                  acting.isSelf
+                    ? $t('assignment.print.lead')
+                    : $t('assignment.print.managedLead', {
+                        name: acting.displayName,
+                      })
+                }}
+              </p>
+            </div>
+            <RouterLink
+              :to="printLocation(event.id, events.actingAs)"
+              class="btn-secondary w-full shrink-0 sm:w-auto"
+              data-testid="assignment-print-link"
+            >
+              {{ $t('assignment.print.open') }}
+            </RouterLink>
+          </section>
+        </template>
+        <p v-else class="sheet-rule mt-8 pt-6 text-sm text-stone-600">
+          {{ $t('assignment.sealed.wishlistHidden') }}
         </p>
-        <RouterLink
-          :to="printLocation(event.id, events.actingAs)"
-          class="btn-secondary mt-4 w-full sm:w-auto"
-          data-testid="assignment-print-link"
-        >
-          {{ $t('assignment.print.open') }}
-        </RouterLink>
-      </section>
+      </article>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Unsealing: the name slides out from under the seal, left to right. */
+.unseal-enter-active {
+  transition: clip-path 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 300ms ease-out;
+}
+
+.unseal-leave-active {
+  transition: opacity 150ms ease-in;
+}
+
+.unseal-enter-from {
+  clip-path: inset(0 100% 0 0);
+  opacity: 0;
+}
+
+.unseal-enter-to {
+  clip-path: inset(0 0 0 0);
+}
+
+.unseal-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unseal-enter-active,
+  .unseal-leave-active {
+    transition: none;
+  }
+}
+</style>

@@ -86,7 +86,7 @@ onMounted(load);
       <li v-for="event in events.myEvents" :key="event.id">
         <RouterLink
           :to="{ name: 'event', params: { eventId: event.id } }"
-          class="card block transition hover:border-pine-600/40 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-600"
+          class="card block transition hover:-translate-y-0.5"
           :class="{ 'opacity-75': event.status === 'finished' }"
         >
           <div class="flex items-start justify-between gap-3">
@@ -99,24 +99,24 @@ onMounted(load);
                 date: formatExchangeDate(event.exchangeOn),
               })
             }}
-            <span class="whitespace-nowrap text-stone-500">
+            <span class="whitespace-nowrap text-stone-600">
               · {{ countdownLabel(event) }}
             </span>
           </p>
-          <p class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+          <p class="mt-3 flex flex-wrap gap-2">
             <span
-              class="rounded-full px-2.5 py-0.5"
+              class="stamp"
               :class="
                 event.myParticipant.role === 'organizer'
-                  ? 'bg-cranberry-50 text-cranberry-700'
-                  : 'bg-stone-100 text-stone-600'
+                  ? 'border-cranberry-600/40 text-cranberry-700'
+                  : 'border-stone-400 text-stone-700'
               "
             >
               {{ $t(`event.role.${event.myParticipant.role}`) }}
             </span>
             <span
               v-if="event.myParticipant.status === 'declined'"
-              class="rounded-full bg-stone-100 px-2.5 py-0.5 text-stone-600"
+              class="stamp border-dashed border-stone-500 text-stone-700"
             >
               {{ $t('events.declined') }}
             </span>

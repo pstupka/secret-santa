@@ -130,7 +130,7 @@ const submit = async () => {
           <div>
             <label for="manage-budget" class="field-label">
               {{ $t('newEvent.fields.budget') }}
-              <span class="font-normal text-stone-500">
+              <span class="font-normal text-stone-600">
                 ({{ $t('common.optional') }})
               </span>
             </label>
@@ -177,7 +177,7 @@ const submit = async () => {
         <div>
           <label for="manage-description" class="field-label">
             {{ $t('newEvent.fields.description') }}
-            <span class="font-normal text-stone-500">
+            <span class="font-normal text-stone-600">
               ({{ $t('common.optional') }})
             </span>
           </label>
@@ -193,7 +193,7 @@ const submit = async () => {
         <div>
           <label for="manage-rules" class="field-label">
             {{ $t('newEvent.fields.rules') }}
-            <span class="font-normal text-stone-500">
+            <span class="font-normal text-stone-600">
               ({{ $t('common.optional') }})
             </span>
           </label>
@@ -213,7 +213,7 @@ const submit = async () => {
       <p v-if="error" class="alert-error" role="alert">
         {{ error }}
       </p>
-      <p v-else-if="notice" class="alert-info" role="status">
+      <p v-else-if="notice" class="status-ok" role="status">
         {{ notice }}
       </p>
 

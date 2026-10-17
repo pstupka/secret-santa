@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiIcon from '@/components/UiIcon.vue';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -9,11 +10,16 @@ import { useManageStore } from '@/stores/manage';
 
 // Pairs of participants who must not draw each other: pick two and add, or
 // remove a pair. Built-in caretaker pairs are listed but cannot be removed.
-const props = defineProps<{
-  participants: OrganizerParticipant[];
-  exclusions: Exclusion[];
-  editable: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    participants: OrganizerParticipant[];
+    exclusions: Exclusion[];
+    editable: boolean;
+    // Shows its own heading; off when a disclosure above already names it.
+    titled?: boolean;
+  }>(),
+  { titled: true },
+);
 
 const manage = useManageStore();
 const errorMessage = useApiErrorMessage();
@@ -70,18 +76,26 @@ const removeLabel = (nameA: string, nameB: string) =>
 </script>
 
 <template>
-  <section class="card" aria-labelledby="manage-exclusions-title">
-    <h2 id="manage-exclusions-title" class="text-lg font-bold">
+  <section
+    class="card"
+    :aria-labelledby="titled ? 'manage-exclusions-title' : undefined"
+    :aria-label="titled ? undefined : $t('manage.exclusions.title')"
+  >
+    <h2 v-if="titled" id="manage-exclusions-title" class="text-lg font-bold">
       {{ $t('manage.exclusions.title') }}
     </h2>
-    <p class="mt-2 text-sm text-stone-600">
+    <p class="text-sm text-stone-600" :class="{ 'mt-2': titled }">
       {{ $t('manage.exclusions.lead') }}
     </p>
 
-    <p v-if="listed.length === 0" class="mt-3 text-sm text-stone-500">
+    <p v-if="listed.length === 0" class="mt-3 text-sm text-stone-600">
       {{ $t('manage.exclusions.empty') }}
     </p>
-    <ul v-else class="mt-3 divide-y divide-stone-100" data-testid="exclusions">
+    <ul
+      v-else
+      class="mt-3 divide-y divide-dashed divide-kraft-400"
+      data-testid="exclusions"
+    >
       <li
         v-for="exclusion in listed"
         :key="exclusion.key"
@@ -90,11 +104,11 @@ const removeLabel = (nameA: string, nameB: string) =>
       >
         <span class="text-stone-800">
           <span class="font-medium">{{ exclusion.nameA }}</span>
-          <span class="mx-1.5 text-stone-400" aria-hidden="true">↔</span>
+          <UiIcon name="pair" class="mx-1.5 inline size-4 text-stone-600" />
           <span class="font-medium">{{ exclusion.nameB }}</span>
           <span
             v-if="exclusion.builtIn"
-            class="ml-2 rounded-full bg-gold-300/40 px-2 py-0.5 text-xs font-semibold text-pine-900"
+            class="stamp ml-2 border-kraft-600/50 text-kraft-600"
             :title="$t('manage.exclusions.builtInHint')"
           >
             {{ $t('manage.exclusions.builtIn') }}
@@ -103,7 +117,7 @@ const removeLabel = (nameA: string, nameB: string) =>
         <button
           v-if="editable && !exclusion.builtIn"
           type="button"
-          class="min-h-9 rounded-xl px-3 py-1 text-sm font-semibold text-cranberry-700 hover:bg-cranberry-50 focus-visible:outline-2 focus-visible:outline-cranberry-600 disabled:opacity-60"
+          class="btn-quiet min-h-9 py-1 text-sm"
           :disabled="busy"
           :aria-label="removeLabel(exclusion.nameA, exclusion.nameB)"
           data-testid="remove-exclusion"
@@ -116,7 +130,7 @@ const removeLabel = (nameA: string, nameB: string) =>
 
     <form
       v-if="editable && participants.length >= 2"
-      class="mt-4 space-y-4 rounded-xl bg-stone-50 p-4"
+      class="sheet-rule mt-6 space-y-4 pt-6"
       @submit.prevent="add"
     >
       <div class="grid gap-4 sm:grid-cols-2">

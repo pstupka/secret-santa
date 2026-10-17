@@ -4,10 +4,12 @@ import { useI18n } from 'vue-i18n';
 
 import type { Event, OrganizerParticipant } from '@/api';
 import ConfirmPanel from '@/components/manage/ConfirmPanel.vue';
+import SealedEnvelope from '@/components/SealedEnvelope.vue';
 import {
   drawAction,
   drawBlockers,
   drawFailure,
+  drawnParticipants,
   formatDrawnAt,
   type DrawBlocker,
   type DrawFailure,
@@ -30,6 +32,11 @@ const { t } = useI18n();
 const action = computed(() => drawAction(props.event));
 const blockers = computed(() =>
   props.event.status === 'open' ? drawBlockers(props.participants) : [],
+);
+
+// Everyone who took part in the draw just run: one sealed envelope each.
+const drawn = computed(() =>
+  drawnParticipants(manage.participants ?? props.participants),
 );
 
 const confirming = ref(false);
@@ -89,12 +96,35 @@ const run = async () => {
     </p>
 
     <div
+      v-if="doneCount !== null"
+      class="mt-5 mb-8 border-b border-dashed border-kraft-400 pb-8"
+      role="status"
+      data-testid="draw-done"
+    >
+      <p class="font-display text-2xl font-bold text-pine-900">
+        {{ $t('manage.draw.doneTitle', { count: doneCount }) }}
+      </p>
+      <p class="mt-1 text-stone-700">{{ $t('manage.draw.doneLead') }}</p>
+      <ul
+        class="mt-6 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4"
+        :aria-label="$t('manage.draw.envelopes')"
+      >
+        <li v-for="(participant, index) in drawn" :key="participant.id">
+          <SealedEnvelope :name="participant.displayName" :order="index" />
+        </li>
+      </ul>
+      <p class="mt-5 text-sm text-stone-600">
+        {{ $t('manage.draw.doneNext') }}
+      </p>
+    </div>
+
+    <div
       v-if="blockers.length > 0"
-      class="alert-info mt-4"
+      class="mt-5 text-stone-800"
       data-testid="draw-blockers"
     >
-      <p class="font-semibold">{{ $t('manage.draw.blockedTitle') }}</p>
-      <ul class="mt-1 list-disc space-y-1 pl-5">
+      <p class="font-bold">{{ $t('manage.draw.blockedTitle') }}</p>
+      <ul class="mt-1 list-disc space-y-1 pl-5 marker:text-cranberry-600">
         <li v-for="blocker in blockers" :key="blocker.kind">
           {{ reasonText(blocker) }}
         </li>
@@ -122,6 +152,7 @@ const run = async () => {
         :busy-label="$t('manage.draw.running')"
         :busy="running"
         confirm-testid="confirm-draw"
+        :tone="action === 'redo' ? 'destructive' : 'commit'"
         @confirm="run"
         @cancel="confirming = false"
       />
@@ -141,14 +172,6 @@ const run = async () => {
       {{ $t('manage.draw.redoClosed') }}
     </p>
 
-    <p
-      v-if="doneCount !== null"
-      class="alert-info mt-3"
-      role="status"
-      data-testid="draw-done"
-    >
-      {{ $t('manage.draw.done', { count: doneCount }) }}
-    </p>
     <p
       v-if="failure"
       class="alert-error mt-3"

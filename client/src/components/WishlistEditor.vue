@@ -88,7 +88,7 @@ const submit = () => {
 
 <template>
   <form
-    class="card space-y-5 border-pine-600/30"
+    class="card space-y-5"
     novalidate
     data-testid="wishlist-editor"
     @submit.prevent="submit"
@@ -125,7 +125,7 @@ const submit = () => {
     <div>
       <label :for="fieldId('wishlist', 'notes')" class="field-label">
         {{ $t('wishlistEditor.notes') }}
-        <span class="font-normal text-stone-500">
+        <span class="font-normal text-stone-600">
           ({{ $t('common.optional') }})
         </span>
       </label>
@@ -142,14 +142,14 @@ const submit = () => {
     <fieldset>
       <legend class="field-label">{{ $t('wishlistEditor.items') }}</legend>
       <p class="field-hint mt-0! mb-3">{{ $t('wishlistEditor.itemsHint') }}</p>
-      <p v-if="draft.items.length === 0" class="mb-3 text-stone-500">
+      <p v-if="draft.items.length === 0" class="mb-3 text-stone-600">
         {{ $t('wishlistEditor.noItems') }}
       </p>
       <ol class="space-y-3">
         <li
           v-for="(item, index) in draft.items"
           :key="item.key"
-          class="rounded-xl border border-stone-200 bg-stone-50/60 p-3 sm:p-4"
+          class="border-t border-dashed border-kraft-400 pt-4"
           data-testid="wishlist-editor-item"
         >
           <div class="mb-2 flex items-center justify-between gap-2">
@@ -222,7 +222,7 @@ const submit = () => {
             <div>
               <label :for="fieldId(item.key, 'url')" class="field-label">
                 {{ $t('wishlistEditor.itemUrl') }}
-                <span class="font-normal text-stone-500">
+                <span class="font-normal text-stone-600">
                   ({{ $t('common.optional') }})
                 </span>
               </label>
@@ -251,7 +251,7 @@ const submit = () => {
             <div>
               <label :for="fieldId(item.key, 'notes')" class="field-label">
                 {{ $t('wishlistEditor.itemNotes') }}
-                <span class="font-normal text-stone-500">
+                <span class="font-normal text-stone-600">
                   ({{ $t('common.optional') }})
                 </span>
               </label>

@@ -52,10 +52,10 @@ const submit = async () => {
 
   <div v-else>
     <h1 class="text-3xl font-bold sm:text-4xl">{{ $t('newEvent.title') }}</h1>
-    <p class="mt-2 text-stone-600">{{ $t('newEvent.lead') }}</p>
+    <p class="mt-2 text-stone-700">{{ $t('newEvent.lead') }}</p>
 
-    <form class="mt-8 space-y-6" @submit.prevent="submit">
-      <fieldset class="card space-y-5">
+    <form class="card mt-8 space-y-8" @submit.prevent="submit">
+      <fieldset class="space-y-5">
         <legend class="sr-only">{{ $t('newEvent.sections.event') }}</legend>
         <h2 class="text-lg font-bold" aria-hidden="true">
           {{ $t('newEvent.sections.event') }}
@@ -98,7 +98,7 @@ const submit = async () => {
           <div>
             <label for="event-budget" class="field-label">
               {{ $t('newEvent.fields.budget') }}
-              <span class="font-normal text-stone-500">
+              <span class="font-normal text-stone-600">
                 ({{ $t('common.optional') }})
               </span>
             </label>
@@ -143,7 +143,7 @@ const submit = async () => {
         </div>
       </fieldset>
 
-      <fieldset class="card space-y-5">
+      <fieldset class="sheet-rule space-y-5 pt-8">
         <legend class="sr-only">{{ $t('newEvent.sections.organizer') }}</legend>
         <h2 class="text-lg font-bold" aria-hidden="true">
           {{ $t('newEvent.sections.organizer') }}
@@ -184,10 +184,10 @@ const submit = async () => {
           </p>
         </div>
 
-        <p class="alert-info">{{ $t('newEvent.organizerTakesPart') }}</p>
+        <p class="field-hint">{{ $t('newEvent.organizerTakesPart') }}</p>
       </fieldset>
 
-      <fieldset class="card space-y-5">
+      <fieldset class="sheet-rule space-y-5 pt-8">
         <legend class="sr-only">{{ $t('newEvent.sections.details') }}</legend>
         <h2 class="text-lg font-bold" aria-hidden="true">
           {{ $t('newEvent.sections.details') }}
@@ -196,7 +196,7 @@ const submit = async () => {
         <div>
           <label for="event-description" class="field-label">
             {{ $t('newEvent.fields.description') }}
-            <span class="font-normal text-stone-500">
+            <span class="font-normal text-stone-600">
               ({{ $t('common.optional') }})
             </span>
           </label>
@@ -213,7 +213,7 @@ const submit = async () => {
         <div>
           <label for="event-rules" class="field-label">
             {{ $t('newEvent.fields.rules') }}
-            <span class="font-normal text-stone-500">
+            <span class="font-normal text-stone-600">
               ({{ $t('common.optional') }})
             </span>
           </label>

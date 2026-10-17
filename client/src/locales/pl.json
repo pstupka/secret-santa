@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Secret Santa",
+    "name": "Twój Tajny Mikołaj",
     "tagline": "Losowanie prezentów dla całej rodziny"
   },
   "nav": {
@@ -16,7 +16,7 @@
   },
   "landing": {
     "heroTitle": "Wspólne prezenty, bez zamieszania",
-    "heroLead": "Zorganizuj losowanie Secret Santa dla rodziny lub znajomych. Bez kont i haseł – każdy dostaje osobisty link e-mailem.",
+    "heroLead": "Zorganizuj losowanie prezentów dla rodziny lub znajomych. Bez kont i haseł – każdy dostaje osobisty link e-mailem.",
     "createEvent": "Utwórz wydarzenie",
     "goToMyEvents": "Przejdź do moich wydarzeń",
     "howItWorks": "Jak to działa?",
@@ -35,7 +35,13 @@
       }
     },
     "signedOutNotice": "Twój osobisty link wygasł lub jest nieprawidłowy. Poproś poniżej o nowy.",
-    "signInNotice": "Ta strona wymaga zalogowania. Otwórz swój osobisty link z e-maila w tej przeglądarce albo poproś poniżej o nowy – po zalogowaniu wrócisz w to samo miejsce."
+    "signInNotice": "Ta strona wymaga zalogowania. Otwórz swój osobisty link z e-maila w tej przeglądarce albo poproś poniżej o nowy – po zalogowaniu wrócisz w to samo miejsce.",
+    "example": {
+      "title": "Wigilia u Kowalskich",
+      "meta": "24 grudnia · budżet 150 zł",
+      "recipient": "Babcia Zosia",
+      "caption": "Przykład. Tak wygląda wylosowana osoba – zaklejona, dopóki sam jej nie odkryjesz."
+    }
   },
   "lostLink": {
     "title": "Zgubiłeś swój link?",
@@ -132,12 +138,6 @@
     "comingSoon": "Ta sekcja jeszcze powstaje."
   },
   "dashboard": {
-    "countdown": {
-      "days": "dni do wymiany prezentów",
-      "tomorrow": "Wymiana prezentów już jutro!",
-      "today": "Dziś wymiana prezentów!",
-      "past": "Wymiana prezentów już się odbyła."
-    },
     "details": {
       "title": "Szczegóły",
       "exchangeOn": "Data wymiany prezentów",
@@ -213,6 +213,13 @@
       "back": "Wylosowana osoba",
       "print": "Drukuj",
       "for": "Dla: {name}"
+    },
+    "sealed": {
+      "title": "Imię jest zaklejone",
+      "lead": "Odkryj je, kiedy nikt nie zagląda Ci przez ramię.",
+      "reveal": "Odkryj imię",
+      "hide": "Zaklej z powrotem",
+      "wishlistHidden": "Lista życzeń i wersja do druku pojawią się po odkryciu imienia."
     }
   },
   "notFound": {
@@ -404,8 +411,8 @@
     "exclusions": {
       "title": "Wykluczenia",
       "lead": "Para osób, które nie mogą wylosować siebie nawzajem – np. małżonkowie.",
-      "first": "Pierwsza osoba",
-      "second": "Druga osoba",
+      "first": "Osoba",
+      "second": "Nie może wylosować (i odwrotnie)",
       "choose": "Wybierz osobę",
       "submit": "Dodaj wykluczenie",
       "adding": "Dodawanie…",
@@ -414,7 +421,8 @@
       "builtIn": "opiekun i osoba pod opieką",
       "builtInHint": "Wykluczenie automatyczne – nie można go usunąć.",
       "remove": "Usuń wykluczenie {a} – {b}",
-      "locked": "Wykluczeń nie można już zmieniać."
+      "locked": "Wykluczeń nie można już zmieniać.",
+      "disclosure": "Wykluczenia – kto nie może wylosować kogo (np. małżonkowie)"
     },
     "draw": {
       "title": "Losowanie",
@@ -426,7 +434,6 @@
       "confirmRunYes": "Tak, losuj",
       "confirmRedo": "Powtórzyć losowanie? Wszystkie dotychczasowe pary przepadną, a każdy uczestnik dostanie nowy e-mail z nową wylosowaną osobą.",
       "confirmRedoYes": "Tak, losuj od nowa",
-      "done": "Gotowe! Wylosowano pary dla {count} osób. Każda dostanie e-mail z wynikiem.",
       "drawnAt": "Ostatnie losowanie: {date}.",
       "redoUntil": "Losowanie można powtórzyć do dnia przed wymianą prezentów.",
       "redoClosed": "Losowania nie można już powtórzyć.",
@@ -436,7 +443,11 @@
         "notEveryoneInvited": "Wyślij zaproszenia wszystkim uczestnikom. Bez zaproszenia: {names}.",
         "impossibleExclusions": "Przy obecnych wykluczeniach nie da się rozlosować par. Usuń część wykluczeń i spróbuj ponownie.",
         "redoTooLate": "Losowania nie można już powtórzyć – wymiana prezentów jest dziś albo już się odbyła."
-      }
+      },
+      "doneTitle": "Wylosowano pary dla {count} osób",
+      "doneLead": "Każda koperta jest zaklejona – nikt, także Ty, nie widzi cudzych par.",
+      "doneNext": "Wyniki idą e-mailem. Osoby pod opieką dostaną je przez swoich opiekunów.",
+      "envelopes": "Zaklejone koperty z wynikami"
     },
     "delete": {
       "title": "Usuń wydarzenie",
@@ -446,6 +457,14 @@
       "confirmYes": "Tak, usuń na zawsze",
       "deleting": "Usuwanie…"
     },
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "steps": {
+      "label": "Kroki organizatora",
+      "participants": "Uczestnicy",
+      "invitations": "Zaproszenia",
+      "draw": "Losowanie",
+      "done": "gotowe"
+    },
+    "settings": "Ustawienia wydarzenia: szczegóły i usuwanie"
   }
 }

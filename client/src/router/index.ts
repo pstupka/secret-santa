@@ -14,11 +14,18 @@ declare module 'vue-router' {
   interface RouteMeta {
     // Needs a stored magic token; otherwise the landing page is shown.
     requiresAuth?: boolean;
+    // Uses the wide page frame (the landing page's two columns).
+    wide?: boolean;
   }
 }
 
 export const routes: RouteRecordRaw[] = [
-  { path: '/', name: 'landing', component: LandingView },
+  {
+    path: '/',
+    name: 'landing',
+    component: LandingView,
+    meta: { wide: true },
+  },
   {
     path: '/new',
     name: 'new-event',

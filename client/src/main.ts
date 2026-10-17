@@ -6,6 +6,8 @@ import App from '@/App.vue';
 import { createAppI18n } from '@/i18n';
 import { createAppRouter } from '@/router';
 import { useAuthStore } from '@/stores/auth';
+import '@fontsource-variable/atkinson-hyperlegible-next';
+import '@fontsource-variable/poltawski-nowy';
 import '@/assets/main.css';
 
 const app = createApp(App);

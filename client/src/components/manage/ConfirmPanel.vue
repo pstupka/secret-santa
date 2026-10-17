@@ -1,26 +1,56 @@
 <script setup lang="ts">
-// Inline confirmation of a destructive or far-reaching organizer action.
-defineProps<{
-  message: string;
-  confirmLabel: string;
-  busyLabel: string;
-  busy: boolean;
-  confirmTestid?: string;
-}>();
+import { onMounted, ref } from 'vue';
 
-defineEmits<{ confirm: []; cancel: [] }>();
+// Inline confirmation of a far-reaching action. `destructive` (the default)
+// is for deleting or removing; `commit` for a deliberate step forward such as
+// running the draw, which must not look like a warning. Takes focus when it
+// opens, and Escape cancels.
+const props = withDefaults(
+  defineProps<{
+    message: string;
+    confirmLabel: string;
+    busyLabel: string;
+    busy: boolean;
+    confirmTestid?: string;
+    tone?: 'destructive' | 'commit';
+  }>(),
+  { tone: 'destructive', confirmTestid: undefined },
+);
+
+const emit = defineEmits<{ confirm: []; cancel: [] }>();
+
+const confirmButton = ref<HTMLButtonElement | null>(null);
+
+onMounted(() => confirmButton.value?.focus());
+
+const cancel = () => {
+  if (!props.busy) emit('cancel');
+};
 </script>
 
 <template>
-  <div class="alert-error space-y-3" role="alertdialog" :aria-label="message">
+  <div
+    class="sheet-rule space-y-4 pt-4"
+    :class="
+      tone === 'commit' ? 'text-pine-900' : 'font-bold text-cranberry-700'
+    "
+    role="alertdialog"
+    :aria-label="message"
+    @keydown.esc.stop="cancel"
+  >
     <p>{{ message }}</p>
     <div class="flex flex-col gap-2 sm:flex-row">
       <button
+        ref="confirmButton"
         type="button"
-        class="btn-primary"
+        :class="
+          tone === 'commit'
+            ? 'btn bg-pine-700 text-white shadow-sm hover:bg-pine-900 focus-visible:outline-pine-700'
+            : 'btn-primary'
+        "
         :disabled="busy"
         :data-testid="confirmTestid"
-        @click="$emit('confirm')"
+        @click="emit('confirm')"
       >
         {{ busy ? busyLabel : confirmLabel }}
       </button>
@@ -28,7 +58,7 @@ defineEmits<{ confirm: []; cancel: [] }>();
         type="button"
         class="btn-secondary"
         :disabled="busy"
-        @click="$emit('cancel')"
+        @click="cancel"
       >
         {{ $t('manage.cancel') }}
       </button>

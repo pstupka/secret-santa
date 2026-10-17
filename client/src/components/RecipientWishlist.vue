@@ -22,7 +22,7 @@ defineProps<{
     <template v-else>
       <p
         v-if="wishlist.notes"
-        class="rounded-xl bg-gold-300/25 px-4 py-3 break-words whitespace-pre-line text-stone-800 print:border print:border-stone-300 print:bg-transparent"
+        class="break-words whitespace-pre-line text-stone-800"
       >
         {{ wishlist.notes }}
       </p>
@@ -35,7 +35,7 @@ defineProps<{
       </p>
       <ol
         v-else
-        class="mt-3 divide-y divide-stone-100 print:divide-stone-300"
+        class="mt-3 divide-y divide-dashed divide-kraft-400 print:divide-stone-300"
         data-testid="recipient-wishlist"
       >
         <li
@@ -44,7 +44,7 @@ defineProps<{
           class="flex gap-3 py-3 break-inside-avoid"
         >
           <span
-            class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-pine-50 text-xs font-bold text-pine-700 print:border print:border-stone-400 print:bg-transparent"
+            class="w-6 shrink-0 pt-px text-right font-display font-bold text-cranberry-700 tabular-nums"
             aria-hidden="true"
           >
             {{ index + 1 }}

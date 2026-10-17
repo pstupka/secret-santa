@@ -277,6 +277,16 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
+"@fontsource-variable/atkinson-hyperlegible-next@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/atkinson-hyperlegible-next/-/atkinson-hyperlegible-next-5.3.0.tgz#defa6480f1e9e0591dc398e0ab66dcb41e754133"
+  integrity sha512-UnLzNUy1RWoLDfydAatP4NaRm99X/WbQEph7q/PymJnCFIOOwKOx3pBmp5ys8trO0dM+CKGuJgeZP9fAR4mQpA==
+
+"@fontsource-variable/poltawski-nowy@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/poltawski-nowy/-/poltawski-nowy-5.3.0.tgz#abefff7a389095757310b3194cdcc25ae8df4052"
+  integrity sha512-Mek0xda/Z9xcSErLYVq4hNKpvYA43l3u+ZmEhoFDDbfVwKannfuJCNP+KW068mWTqz6Ee3uc+SNwlbZ0Cu9BPA==
+
 "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"

@@ -48,3 +48,13 @@ server/data/
 e2e/test-results/
 e2e/playwright-report/
 e2e/blob-report/
+
+# Impeccable (design skill) #
+# Keep the durable records: PRODUCT.md, DESIGN.md, .impeccable/design.json
+# and the surface briefs (.impeccable/surfaces/). Ignore per-run output.
+**/.impeccable/review/
+**/.impeccable/live/
+**/.impeccable/critique/
+**/.impeccable/mocks/
+**/.impeccable/build/
+**/.impeccable/config.local.json

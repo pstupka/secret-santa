@@ -215,7 +215,7 @@ const canAddChild = computed(
 
         <p
           v-if="groups.myChildren.length === 0 && !isAdding('child')"
-          class="text-stone-500"
+          class="text-stone-600"
         >
           {{ $t('wishlists.children.empty') }}
         </p>

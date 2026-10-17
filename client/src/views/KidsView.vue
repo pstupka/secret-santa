@@ -107,9 +107,7 @@ const mineLabel = computed(() =>
           "
           #actions
         >
-          <span
-            class="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap text-stone-600"
-          >
+          <span class="stamp border-stone-400 text-stone-700">
             {{
               $t('kids.claimedCount', {
                 claimed: claimedCount(wishlist),
@@ -121,7 +119,7 @@ const mineLabel = computed(() =>
 
         <p
           v-if="isFamilyWishlist(wishlist, store.familyParticipantIds)"
-          class="alert-info mt-4"
+          class="mt-4 text-sm text-stone-600"
         >
           {{ $t('kids.familyHidden') }}
         </p>

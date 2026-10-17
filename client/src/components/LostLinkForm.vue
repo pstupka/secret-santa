@@ -31,7 +31,7 @@ const submit = async () => {
     </h2>
     <p class="mt-2 text-stone-600">{{ $t('lostLink.lead') }}</p>
 
-    <p v-if="sent" class="alert-info mt-5" role="status">
+    <p v-if="sent" class="status-ok mt-5" role="status">
       {{ $t('lostLink.sent') }}
     </p>
     <form v-else class="mt-5" @submit.prevent="submit">

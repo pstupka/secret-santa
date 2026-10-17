@@ -33,10 +33,7 @@ const remove = async () => {
 </script>
 
 <template>
-  <section
-    class="card border-cranberry-200"
-    aria-labelledby="manage-delete-title"
-  >
+  <section class="card" aria-labelledby="manage-delete-title">
     <h2 id="manage-delete-title" class="text-lg font-bold">
       {{ $t('manage.delete.title') }}
     </h2>

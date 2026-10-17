@@ -28,7 +28,7 @@ const profiles = computed(() => {
     :aria-label="$t('event.profile.label')"
     class="flex flex-wrap items-center gap-2"
   >
-    <span class="text-sm font-semibold text-stone-600" aria-hidden="true">
+    <span class="text-sm font-bold text-stone-700" aria-hidden="true">
       {{ $t('event.profile.label') }}:
     </span>
     <button
@@ -37,11 +37,11 @@ const profiles = computed(() => {
       type="button"
       role="radio"
       :aria-checked="events.actingAs === profile.id"
-      class="min-h-9 rounded-full border px-3.5 py-1 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-600"
+      class="min-h-9 rounded-full border px-3.5 py-1 text-sm font-semibold transition"
       :class="
         events.actingAs === profile.id
           ? 'border-pine-700 bg-pine-700 text-white'
-          : 'border-stone-300 bg-white text-stone-700 hover:bg-stone-50'
+          : 'border-stone-400 bg-paper text-stone-800 hover:border-stone-600'
       "
       @click="events.actAs(profile.id)"
     >

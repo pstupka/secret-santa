@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 
 import { isApiError } from '@/api';
 import EventStatusBadge from '@/components/EventStatusBadge.vue';
 import ProfileSwitcher from '@/components/ProfileSwitcher.vue';
+import UiIcon from '@/components/UiIcon.vue';
 import { useApiErrorMessage } from '@/composables/useApiErrorMessage';
 import { useExchangeCountdown } from '@/composables/useExchangeCountdown';
 import { formatExchangeDate } from '@/events/eventDetails';
@@ -22,6 +23,18 @@ const errorMessage = useApiErrorMessage();
 const countdownLabel = useExchangeCountdown();
 
 const eventId = computed(() => String(route.params.eventId));
+
+// On phones the sections scroll sideways; keep the open one in view.
+const sectionNav = ref<HTMLElement | null>(null);
+watch(
+  () => [route.name, sectionNav.value],
+  async () => {
+    await nextTick();
+    sectionNav.value
+      ?.querySelector('[aria-current="page"]')
+      ?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  },
+);
 const loading = ref(false);
 const error = ref<string | null>(null);
 
@@ -68,9 +81,9 @@ const sections = computed(() => {
   <div>
     <RouterLink
       :to="{ name: 'events' }"
-      class="inline-flex items-center gap-1 rounded-lg text-sm font-semibold text-pine-700 hover:underline focus-visible:outline-2 focus-visible:outline-pine-600"
+      class="inline-flex min-h-9 items-center gap-1.5 rounded-sm text-sm font-bold text-pine-700 hover:underline"
     >
-      <span aria-hidden="true">←</span> {{ $t('event.backToEvents') }}
+      <UiIcon name="arrow-left" class="size-4" /> {{ $t('event.backToEvents') }}
     </RouterLink>
 
     <div v-if="error" class="alert-error mt-6" role="alert">
@@ -96,7 +109,7 @@ const sections = computed(() => {
           </h1>
           <EventStatusBadge :status="event.status" />
         </div>
-        <p class="mt-2 text-stone-600">
+        <p class="mt-2 text-stone-700">
           {{
             $t('events.exchangeOn', {
               date: formatExchangeDate(event.exchangeOn),
@@ -119,14 +132,15 @@ const sections = computed(() => {
         </p>
 
         <nav
+          ref="sectionNav"
           :aria-label="$t('event.nav.label')"
-          class="-mx-4 mt-6 overflow-x-auto border-b border-stone-200 px-4 [scrollbar-width:none] sm:mx-0 sm:px-0"
+          class="tab-row -mx-4 mt-6 overflow-x-auto border-b border-ground-line px-4 [scrollbar-width:none] sm:mx-0 sm:px-0"
         >
-          <ul class="flex gap-1">
+          <ul class="-mb-px flex gap-x-1 max-sm:pr-10">
             <li v-for="section in sections" :key="section.name">
               <RouterLink
                 :to="{ name: section.name, params: { eventId: event.id } }"
-                class="block border-b-2 border-transparent px-3 py-2.5 text-sm font-semibold whitespace-nowrap text-stone-600 hover:text-pine-700"
+                class="block border-b-[3px] border-transparent px-3 py-2.5 text-sm font-bold whitespace-nowrap text-stone-700 hover:border-ground-line hover:text-pine-900"
                 exact-active-class="border-cranberry-600! text-pine-900!"
               >
                 {{ $t(`event.nav.${section.label}`) }}
@@ -142,3 +156,12 @@ const sections = computed(() => {
     </template>
   </div>
 </template>
+
+<style scoped>
+/* More sections lie past the right edge on phones: fade them out there. */
+@media (width < 40rem) {
+  .tab-row {
+    mask-image: linear-gradient(to right, black calc(100% - 3rem), transparent);
+  }
+}
+</style>

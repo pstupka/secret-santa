@@ -65,7 +65,7 @@ const submit = async () => {
 
 <template>
   <form
-    class="space-y-4 rounded-xl bg-stone-50 p-4"
+    class="sheet-rule space-y-4 pt-6"
     data-testid="add-participant-form"
     @submit.prevent="submit"
   >
@@ -159,9 +159,6 @@ const submit = async () => {
       </div>
     </div>
 
-    <p v-if="error" class="alert-error" role="alert">{{ error }}</p>
-    <p v-else-if="notice" class="alert-info" role="status">{{ notice }}</p>
-
     <button
       type="submit"
       class="btn-secondary w-full sm:w-auto"
@@ -170,5 +167,8 @@ const submit = async () => {
     >
       {{ adding ? $t('manage.add.adding') : $t('manage.add.submit') }}
     </button>
+
+    <p v-if="error" class="alert-error" role="alert">{{ error }}</p>
+    <p v-else-if="notice" class="status-ok" role="status">{{ notice }}</p>
   </form>
 </template>

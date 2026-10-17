@@ -45,11 +45,11 @@ const rows = computed(() =>
 );
 
 const stateStyles: Record<InviteState, string> = {
-  managed: 'bg-gold-300/40 text-pine-900',
-  notInvited: 'bg-stone-100 text-stone-700',
-  invited: 'bg-pine-50 text-pine-700',
-  opened: 'bg-pine-100 text-pine-900',
-  declined: 'bg-cranberry-50 text-cranberry-700',
+  managed: 'border-kraft-600/50 text-kraft-600',
+  notInvited: 'border-dashed border-stone-500 text-stone-700',
+  invited: 'border-pine-600/40 text-pine-700',
+  opened: 'border-pine-700 bg-pine-50 text-pine-900',
+  declined: 'border-cranberry-600/40 text-cranberry-700',
 };
 
 // One participant action at a time.
@@ -112,20 +112,23 @@ const remove = (participant: OrganizerParticipant) =>
       {{ $t('manage.participants.empty') }}
     </p>
 
-    <ul class="mt-3 divide-y divide-stone-100" data-testid="participant-list">
+    <ul
+      class="mt-3 divide-y divide-dashed divide-kraft-400"
+      data-testid="participant-list"
+    >
       <li
         v-for="row in rows"
         :key="row.participant.id"
-        class="py-3"
+        class="py-4"
         data-testid="participant-row"
         :data-participant-name="row.participant.displayName"
       >
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span
-            class="font-medium break-all"
+            class="font-bold break-all"
             :class="
               row.state === 'declined'
-                ? 'text-stone-400 line-through'
+                ? 'text-stone-600 line-through decoration-stone-400'
                 : 'text-stone-800'
             "
           >
@@ -133,19 +136,19 @@ const remove = (participant: OrganizerParticipant) =>
           </span>
           <span
             v-if="row.participant.id === myParticipantId"
-            class="rounded-full bg-pine-50 px-2 py-0.5 text-xs font-semibold text-pine-700"
+            class="stamp border-pine-600/40 text-pine-700"
           >
             {{ $t('manage.participants.you') }}
           </span>
           <span
             v-if="row.participant.role === 'organizer'"
-            class="rounded-full bg-cranberry-50 px-2 py-0.5 text-xs font-semibold text-cranberry-700"
+            class="stamp border-cranberry-600/40 text-cranberry-700"
           >
             {{ $t('event.role.organizer') }}
           </span>
         </div>
 
-        <p class="mt-0.5 text-sm break-all text-stone-500">
+        <p class="mt-0.5 text-sm break-all text-stone-600">
           <template v-if="row.participant.email">
             {{ row.participant.email }}
           </template>
@@ -157,41 +160,35 @@ const remove = (participant: OrganizerParticipant) =>
           </template>
         </p>
 
-        <div class="mt-2 flex flex-wrap items-center gap-2 text-xs">
+        <div class="mt-2 flex flex-wrap items-center gap-2">
           <span
-            class="rounded-full px-2 py-0.5 font-semibold"
+            class="stamp"
             :class="stateStyles[row.state]"
             data-testid="invite-state"
           >
             {{ $t(`manage.participants.inviteState.${row.state}`) }}
           </span>
           <span
-            class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold"
+            class="text-sm"
             :class="
               row.participant.wishlistFilled
-                ? 'bg-pine-50 text-pine-700'
-                : 'bg-stone-100 text-stone-600'
+                ? 'font-bold text-pine-700'
+                : 'text-stone-600'
             "
             data-testid="wishlist-filled"
             :data-filled="row.participant.wishlistFilled"
           >
-            <span aria-hidden="true">
-              {{ $t('manage.participants.wishlist') }}
-              {{ row.participant.wishlistFilled ? '✓' : '✗' }}
-            </span>
-            <span class="sr-only">
-              {{
-                row.participant.wishlistFilled
-                  ? $t('manage.participants.wishlistFilled')
-                  : $t('manage.participants.wishlistEmpty')
-              }}
-            </span>
+            {{
+              row.participant.wishlistFilled
+                ? $t('manage.participants.wishlistFilled')
+                : $t('manage.participants.wishlistEmpty')
+            }}
           </span>
         </div>
 
         <div
           v-if="membershipOpen && (row.invitation || !row.removal)"
-          class="mt-3 flex flex-wrap gap-2"
+          class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2"
         >
           <button
             v-if="row.invitation"
@@ -211,7 +208,7 @@ const remove = (participant: OrganizerParticipant) =>
           <button
             v-if="!row.removal && confirmingRemoveId !== row.participant.id"
             type="button"
-            class="min-h-9 rounded-xl px-3.5 py-1.5 text-sm font-semibold text-cranberry-700 hover:bg-cranberry-50 focus-visible:outline-2 focus-visible:outline-cranberry-600 disabled:opacity-60"
+            class="btn-quiet -my-1 min-h-9 px-0 py-1 text-sm"
             :disabled="busyId !== null"
             data-testid="remove-participant"
             @click="confirmingRemoveId = row.participant.id"
@@ -245,11 +242,11 @@ const remove = (participant: OrganizerParticipant) =>
     </ul>
 
     <p v-if="error" class="alert-error mt-3" role="alert">{{ error }}</p>
-    <p v-else-if="notice" class="alert-info mt-3" role="status">{{ notice }}</p>
+    <p v-else-if="notice" class="status-ok mt-3" role="status">{{ notice }}</p>
 
     <AddParticipantForm
       v-if="membershipOpen"
-      class="mt-4"
+      class="mt-6"
       :participants="participants"
     />
     <p v-else class="field-hint mt-4">{{ $t('manage.add.locked') }}</p>

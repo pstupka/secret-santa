@@ -1,0 +1,634 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T19:56:23+00:00",
+  "title": "Design System: Twój Tajny Mikołaj",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#d8c3a5",
+        "tonalRamp": [
+          "#b39b7a",
+          "#d8c3a5"
+        ]
+      },
+      "ground-line": {
+        "role": "neutral",
+        "displayName": "Ground Line",
+        "canonical": "#b39b7a",
+        "tonalRamp": [
+          "#b39b7a",
+          "#d8c3a5"
+        ]
+      },
+      "kraft": {
+        "role": "neutral",
+        "displayName": "Kraft",
+        "canonical": "#dcc59d",
+        "tonalRamp": [
+          "#7d6243",
+          "#b8996c",
+          "#cfb48a",
+          "#dcc59d"
+        ]
+      },
+      "kraft-300": {
+        "role": "neutral",
+        "displayName": "Kraft Edge",
+        "canonical": "#cfb48a",
+        "tonalRamp": [
+          "#7d6243",
+          "#b8996c",
+          "#cfb48a",
+          "#dcc59d"
+        ]
+      },
+      "kraft-400": {
+        "role": "neutral",
+        "displayName": "Kraft Fold",
+        "canonical": "#b8996c",
+        "tonalRamp": [
+          "#7d6243",
+          "#b8996c",
+          "#cfb48a",
+          "#dcc59d"
+        ]
+      },
+      "kraft-600": {
+        "role": "neutral",
+        "displayName": "Kraft Ink",
+        "canonical": "#7d6243",
+        "tonalRamp": [
+          "#7d6243",
+          "#b8996c",
+          "#cfb48a",
+          "#dcc59d"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#fffcf6",
+        "tonalRamp": [
+          "#0d0b07",
+          "#26241f",
+          "#423f3b",
+          "#605d58",
+          "#807d78",
+          "#a19e99",
+          "#c7c4be",
+          "#f1eee8"
+        ]
+      },
+      "field-white": {
+        "role": "neutral",
+        "displayName": "Field White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0d0b07",
+          "#26241f",
+          "#423f3b",
+          "#605d58",
+          "#807d78",
+          "#a19e99",
+          "#c7c4be",
+          "#f1eee8"
+        ]
+      },
+      "cranberry-50": {
+        "role": "primary",
+        "displayName": "Cranberry Wash",
+        "canonical": "#fdf2f3",
+        "tonalRamp": [
+          "#821824",
+          "#9f1d2b",
+          "#c0283a",
+          "#f5c2c8",
+          "#fbe3e6",
+          "#fdf2f3"
+        ]
+      },
+      "cranberry-100": {
+        "role": "primary",
+        "displayName": "Cranberry Wash",
+        "canonical": "#fbe3e6",
+        "tonalRamp": [
+          "#821824",
+          "#9f1d2b",
+          "#c0283a",
+          "#f5c2c8",
+          "#fbe3e6",
+          "#fdf2f3"
+        ]
+      },
+      "cranberry-200": {
+        "role": "primary",
+        "displayName": "Cranberry Wash Edge",
+        "canonical": "#f5c2c8",
+        "tonalRamp": [
+          "#821824",
+          "#9f1d2b",
+          "#c0283a",
+          "#f5c2c8",
+          "#fbe3e6",
+          "#fdf2f3"
+        ]
+      },
+      "cranberry-500": {
+        "role": "primary",
+        "displayName": "Invalid Cranberry",
+        "canonical": "#c0283a",
+        "tonalRamp": [
+          "#821824",
+          "#9f1d2b",
+          "#c0283a",
+          "#f5c2c8",
+          "#fbe3e6",
+          "#fdf2f3"
+        ]
+      },
+      "cranberry-600": {
+        "role": "primary",
+        "displayName": "Cranberry Twine",
+        "canonical": "#9f1d2b",
+        "tonalRamp": [
+          "#821824",
+          "#9f1d2b",
+          "#c0283a",
+          "#f5c2c8",
+          "#fbe3e6",
+          "#fdf2f3"
+        ]
+      },
+      "cranberry-700": {
+        "role": "primary",
+        "displayName": "Deep Cranberry Ink",
+        "canonical": "#821824",
+        "tonalRamp": [
+          "#821824",
+          "#9f1d2b",
+          "#c0283a",
+          "#f5c2c8",
+          "#fbe3e6",
+          "#fdf2f3"
+        ]
+      },
+      "pine-50": {
+        "role": "secondary",
+        "displayName": "Pine Wash",
+        "canonical": "#eff7f2",
+        "tonalRamp": [
+          "#0f3322",
+          "#185537",
+          "#1f6b45",
+          "#d6ebdd",
+          "#eff7f2"
+        ]
+      },
+      "pine-100": {
+        "role": "secondary",
+        "displayName": "Pine Wash Edge",
+        "canonical": "#d6ebdd",
+        "tonalRamp": [
+          "#0f3322",
+          "#185537",
+          "#1f6b45",
+          "#d6ebdd",
+          "#eff7f2"
+        ]
+      },
+      "pine-600": {
+        "role": "secondary",
+        "displayName": "Pine Focus",
+        "canonical": "#1f6b45",
+        "tonalRamp": [
+          "#0f3322",
+          "#185537",
+          "#1f6b45",
+          "#d6ebdd",
+          "#eff7f2"
+        ]
+      },
+      "pine-700": {
+        "role": "secondary",
+        "displayName": "Pine Ink",
+        "canonical": "#185537",
+        "tonalRamp": [
+          "#0f3322",
+          "#185537",
+          "#1f6b45",
+          "#d6ebdd",
+          "#eff7f2"
+        ]
+      },
+      "pine-900": {
+        "role": "secondary",
+        "displayName": "Pine Shell",
+        "canonical": "#0f3322",
+        "tonalRamp": [
+          "#0f3322",
+          "#185537",
+          "#1f6b45",
+          "#d6ebdd",
+          "#eff7f2"
+        ]
+      },
+      "gold-300": {
+        "role": "tertiary",
+        "displayName": "Pale Gold",
+        "canonical": "#f2d48a",
+        "tonalRamp": [
+          "#110a00",
+          "#2f2200",
+          "#503d05",
+          "#735a0c",
+          "#957a2f",
+          "#b89b52",
+          "#dfc177",
+          "#ffedc2"
+        ]
+      },
+      "gold-400": {
+        "role": "tertiary",
+        "displayName": "Gold Foil",
+        "canonical": "#e9b949",
+        "tonalRamp": [
+          "#110a00",
+          "#2f2201",
+          "#523c02",
+          "#765805",
+          "#9d770b",
+          "#c59618",
+          "#edbd4d",
+          "#ffedc8"
+        ]
+      },
+      "stone-100": {
+        "role": "neutral",
+        "displayName": "Warm Ink Envelope Flap",
+        "canonical": "#f1e8da",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      },
+      "stone-300": {
+        "role": "neutral",
+        "displayName": "Warm Ink Field Border",
+        "canonical": "#cdbb9f",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      },
+      "stone-400": {
+        "role": "neutral",
+        "displayName": "Warm Ink Muted Ink",
+        "canonical": "#9c8670",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      },
+      "stone-500": {
+        "role": "neutral",
+        "displayName": "Warm Ink Placeholder Ink",
+        "canonical": "#6e5b47",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      },
+      "stone-600": {
+        "role": "neutral",
+        "displayName": "Warm Ink Hint Ink",
+        "canonical": "#574533",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      },
+      "stone-700": {
+        "role": "neutral",
+        "displayName": "Warm Ink Label Ink",
+        "canonical": "#45362a",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      },
+      "stone-800": {
+        "role": "neutral",
+        "displayName": "Warm Ink Body Ink",
+        "canonical": "#2f241b",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      },
+      "stone-900": {
+        "role": "neutral",
+        "displayName": "Warm Ink Field Ink",
+        "canonical": "#231a13",
+        "tonalRamp": [
+          "#231a13",
+          "#2f241b",
+          "#45362a",
+          "#574533",
+          "#6e5b47",
+          "#9c8670",
+          "#cdbb9f",
+          "#f1e8da"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing headline only; 2.25rem below 640px."
+      },
+      "name-reveal": {
+        "displayName": "Name Reveal",
+        "purpose": "The recipient's name on an opened gift tag, in cranberry-700; 2.25rem below 640px."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles (event name) and landing section titles; 1.875rem below 640px."
+      },
+      "title-lg": {
+        "displayName": "Title Large",
+        "purpose": "Titles written on an object: tag event name, sealed-tag title, draw result."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section heading at the top of each sheet."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Landing lead, max 34ch; 1.125rem below 640px."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All reading text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, definition terms, tabs, nav and step labels."
+      },
+      "stamp": {
+        "displayName": "Stamp",
+        "purpose": "Text on stamps only; the smallest size in the system."
+      }
+    },
+    "shadows": [
+      {
+        "name": "paper",
+        "value": "0 1px 1px rgb(74 52 28 / 0.1), 0 12px 28px -16px rgb(74 52 28 / 0.45)",
+        "purpose": "Every paper sheet and envelope lying on kraft (--shadow-paper)."
+      },
+      {
+        "name": "tag",
+        "value": "drop-shadow(0 1px 1px rgb(74 52 28 / 0.12)) drop-shadow(0 10px 14px rgb(74 52 28 / 0.22))",
+        "purpose": "Gift tags, applied as a filter on a wrapper because the cut corners clip box-shadow."
+      },
+      {
+        "name": "pressed",
+        "value": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        "purpose": "Primary and commit buttons and wax seals: a hint of thickness."
+      },
+      {
+        "name": "seal-ring",
+        "value": "0 0 0 4px rgb(130 24 36 / 0.3)",
+        "purpose": "The soft wax spread around every cranberry seal."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-unseal",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Ease-out for objects opening or landing: unsealing the name and pressing seals."
+      },
+      {
+        "name": "unseal",
+        "value": "clip-path 600ms ease-unseal, opacity 300ms ease-out",
+        "purpose": "The revealed name slides out from under the seal, left to right."
+      },
+      {
+        "name": "reseal",
+        "value": "opacity 150ms ease-in",
+        "purpose": "Hiding the name again."
+      },
+      {
+        "name": "press-seal",
+        "value": "420ms ease-unseal, 90ms stagger",
+        "purpose": "Envelope seals pressed on from 1.35x scale, already visible at 40% opacity."
+      },
+      {
+        "name": "state",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default hover and colour transitions on buttons, disclosure chevrons."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "All of the above are switched off under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The next step; one cranberry action per sheet.",
+      "html": "<button class=\"ds-btn-primary\">Utwórz wydarzenie</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:0.375rem;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;font-size:1rem;font-weight:700;line-height:1.5;cursor:pointer;transition:color .15s,background-color .15s,border-color .15s,text-decoration-color .15s;border:none;background:var(--color-cranberry-600, #9f1d2b);color:#fff;box-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);} .ds-btn-primary:hover{background:var(--color-cranberry-700, #821824);} .ds-btn-primary:focus-visible{outline:2px solid var(--color-cranberry-600, #9f1d2b);outline-offset:2px;} .ds-btn-primary:disabled{opacity:.6;cursor:not-allowed;}"
+    },
+    {
+      "name": "Commit Button",
+      "kind": "button",
+      "refersTo": "button-commit",
+      "description": "Confirms a deliberate step forward, such as running the draw; never looks like a warning.",
+      "html": "<button class=\"ds-btn-commit\">Rozlosuj pary</button>",
+      "css": ".ds-btn-commit{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:0.375rem;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;font-size:1rem;font-weight:700;line-height:1.5;cursor:pointer;transition:color .15s,background-color .15s,border-color .15s,text-decoration-color .15s;border:none;background:var(--color-pine-700, #185537);color:#fff;box-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);} .ds-btn-commit:hover{background:var(--color-pine-900, #0f3322);} .ds-btn-commit:focus-visible{outline:2px solid var(--color-pine-700, #185537);outline-offset:2px;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Any other action on a sheet.",
+      "html": "<button class=\"ds-btn-secondary\">Wyślij zaproszenie</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:0.375rem;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;font-size:1rem;font-weight:700;line-height:1.5;cursor:pointer;transition:color .15s,background-color .15s,border-color .15s,text-decoration-color .15s;border:1px solid rgb(24 85 55 / 0.4);background:var(--color-paper, #fffcf6);color:var(--color-pine-700, #185537);} .ds-btn-secondary:hover{border-color:var(--color-pine-700, #185537);background:var(--color-pine-50, #eff7f2);} .ds-btn-secondary:focus-visible{outline:2px solid var(--color-pine-600, #1f6b45);outline-offset:2px;}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "An action that only names itself, e.g. removing a row or hiding the name.",
+      "html": "<button class=\"ds-btn-quiet\">Usuń</button>",
+      "css": ".ds-btn-quiet{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:0.375rem;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;font-size:1rem;font-weight:700;line-height:1.5;cursor:pointer;transition:color .15s,background-color .15s,border-color .15s,text-decoration-color .15s;padding:10px 12px;border:none;background:transparent;color:var(--color-cranberry-700, #821824);text-decoration:underline;text-decoration-color:var(--color-cranberry-200, #f5c2c8);text-underline-offset:4px;} .ds-btn-quiet:hover{text-decoration-color:var(--color-cranberry-700, #821824);} .ds-btn-quiet:focus-visible{outline:2px solid var(--color-pine-600, #1f6b45);outline-offset:2px;}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "A white slip set into the paper, with label and hint.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Adres e-mail</span><input class=\"ds-field-input\" type=\"email\" placeholder=\"np. ania@example.com\"><span class=\"ds-field-hint\">Wyślemy Ci nowy osobisty link.</span></label>",
+      "css": ".ds-field{display:block;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;} .ds-field-label{display:block;margin-bottom:6px;font-size:.875rem;font-weight:700;color:var(--color-stone-700, #45362a);} .ds-field-input{display:block;width:100%;box-sizing:border-box;padding:10px 14px;border:1px solid var(--color-stone-300, #cdbb9f);border-radius:.375rem;background:#fff;color:var(--color-stone-900, #231a13);font:inherit;font-size:1rem;caret-color:var(--color-cranberry-600, #9f1d2b);} .ds-field-input::placeholder{color:var(--color-stone-500, #6e5b47);} .ds-field-input:focus{border-color:var(--color-pine-600, #1f6b45);outline:2px solid var(--color-pine-600, #1f6b45);outline-offset:0;} .ds-field-input[aria-invalid=true]{border-color:var(--color-cranberry-500, #c0283a);} .ds-field-hint{display:block;margin-top:6px;font-size:.875rem;color:var(--color-stone-600, #574533);}"
+    },
+    {
+      "name": "Shell and Tabs",
+      "kind": "nav",
+      "refersTo": "nav-shell",
+      "description": "The pine header band, and the event tab row on kraft.",
+      "html": "<div class=\"ds-shell\"><header class=\"ds-shell-bar\"><span class=\"ds-shell-logo\">Twój Tajny Mikołaj</span><nav><a href=\"#\" class=\"ds-shell-link\">Moje wydarzenia</a><a href=\"#\" class=\"ds-shell-link ds-shell-link-quiet\">Wyloguj</a></nav></header><ul class=\"ds-tabs\"><li><a href=\"#\" class=\"ds-tab\">Wydarzenie</a></li><li><a href=\"#\" class=\"ds-tab\">Listy życzeń</a></li><li><a href=\"#\" class=\"ds-tab ds-tab-active\" aria-current=\"page\">Zarządzaj</a></li></ul></div>",
+      "css": ".ds-shell{background:var(--color-ground, #d8c3a5);padding-bottom:16px;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;} .ds-shell-bar{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 16px;background:var(--color-pine-900, #0f3322);} .ds-shell-logo{font-family:'Poltawski Nowy Variable', ui-serif, Georgia, serif;font-size:1.25rem;font-weight:700;color:#fff;} .ds-shell-link{padding:8px 10px;border-radius:.25rem;font-size:.875rem;font-weight:700;color:#fff;text-decoration:none;text-underline-offset:4px;} .ds-shell-link-quiet{font-weight:400;color:var(--color-pine-100, #d6ebdd);} .ds-shell-link:hover{text-decoration:underline;} .ds-shell-link:focus-visible{outline:2px solid var(--color-gold-300, #f2d48a);outline-offset:2px;} .ds-tabs{display:flex;gap:4px;margin:24px 16px 0;padding:0;list-style:none;border-bottom:1px solid var(--color-ground-line, #b39b7a);} .ds-tab{display:block;margin-bottom:-1px;padding:10px 12px;border-bottom:3px solid transparent;font-size:.875rem;font-weight:700;color:var(--color-stone-700, #45362a);text-decoration:none;} .ds-tab:hover{border-bottom-color:var(--color-ground-line, #b39b7a);color:var(--color-pine-900, #0f3322);} .ds-tab-active,.ds-tab-active:hover{border-bottom-color:var(--color-cranberry-600, #9f1d2b);color:var(--color-pine-900, #0f3322);} .ds-tab:focus-visible{outline:2px solid var(--color-pine-600, #1f6b45);outline-offset:2px;}"
+    },
+    {
+      "name": "Stamps",
+      "kind": "chip",
+      "refersTo": "stamp",
+      "description": "Small printed labels for role, invitation state and event status.",
+      "html": "<div class=\"ds-stamps\"><span class=\"ds-stamp ds-stamp-pine\">Ty</span><span class=\"ds-stamp ds-stamp-cranberry\">Organizator</span><span class=\"ds-stamp ds-stamp-kraft\">Wykluczenie</span><span class=\"ds-stamp ds-stamp-pending\">Bez zaproszenia</span></div>",
+      "css": ".ds-stamps{display:flex;flex-wrap:wrap;gap:8px;padding:16px;background:var(--color-paper, #fffcf6);} .ds-stamp{display:inline-flex;align-items:center;padding:1px 6px;border:1px solid;border-radius:.25rem;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;font-size:.75rem;font-weight:700;line-height:1.33;white-space:nowrap;} .ds-stamp-pine{border-color:rgb(31 107 69 / .4);color:var(--color-pine-700, #185537);} .ds-stamp-cranberry{border-color:rgb(159 29 43 / .4);color:var(--color-cranberry-700, #821824);} .ds-stamp-kraft{border-color:rgb(125 98 67 / .5);color:var(--color-kraft-600, #7d6243);} .ds-stamp-pending{border-style:dashed;border-color:var(--color-stone-500, #6e5b47);color:var(--color-stone-700, #45362a);}"
+    },
+    {
+      "name": "Paper Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "A section of content as a sheet of paper on kraft, divided by dashed fold lines.",
+      "html": "<div class=\"ds-kraft\"><section class=\"ds-sheet\"><h2 class=\"ds-sheet-title\">Uczestnicy (4)</h2><p class=\"ds-sheet-text\">Ania · Organizator</p><div class=\"ds-sheet-rule\"></div><p class=\"ds-status-ok\">Dodano: Babcia Zosia.</p></section></div>",
+      "css": ".ds-kraft{padding:24px 16px;background:var(--color-ground, #d8c3a5);} .ds-sheet{padding:32px;border-radius:.375rem;background:var(--color-paper, #fffcf6);box-shadow:0 1px 1px rgb(74 52 28 / 0.1), 0 12px 28px -16px rgb(74 52 28 / 0.45);font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;color:var(--color-stone-800, #2f241b);} .ds-sheet-title{margin:0;font-family:'Poltawski Nowy Variable', ui-serif, Georgia, serif;font-size:1.125rem;font-weight:700;color:var(--color-pine-900, #0f3322);} .ds-sheet-text{margin:12px 0 0;} .ds-sheet-rule{margin:24px 0;border-top:1px dashed var(--color-kraft-400, #b8996c);} .ds-status-ok{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:.875rem;font-weight:700;color:var(--color-pine-700, #185537);} .ds-status-ok::before{content:'\\2713';flex:none;}"
+    },
+    {
+      "name": "Gift Tag",
+      "kind": "custom",
+      "refersTo": "gift-tag",
+      "description": "The sealed secret: a cut-corner paper tag with a punched hole, cranberry twine and a wax seal.",
+      "html": "<div class=\"ds-tag-ground\"><div class=\"ds-tag\"><svg class=\"ds-tag-twine\" viewBox=\"0 0 76 80\" fill=\"none\" aria-hidden=\"true\"><path d=\"M76 40C54 38 36 18 2 22\" stroke=\"#9f1d2b\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><path d=\"M76 40C56 44 30 68 4 60\" stroke=\"#821824\" stroke-width=\"2.5\" stroke-linecap=\"round\"/></svg><div class=\"ds-tag-shadow\"><div class=\"ds-tag-body\"><span class=\"ds-tag-hole\"></span><p class=\"ds-tag-intro\">Kupujesz prezent dla</p><div class=\"ds-tag-sealed\"><span class=\"ds-seal\"><span class=\"ds-seal-ring\"></span></span><button class=\"ds-tag-reveal\">Odkryj imię</button></div></div></div></div></div>",
+      "css": ".ds-tag-ground{padding:32px 24px;background:var(--color-ground, #d8c3a5);font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;} .ds-tag{position:relative;padding-left:48px;} .ds-tag-twine{position:absolute;top:50%;left:0;z-index:1;width:76px;height:80px;transform:translateY(-50%);overflow:visible;pointer-events:none;} .ds-tag-shadow{filter:drop-shadow(0 1px 1px rgb(74 52 28 / .12)) drop-shadow(0 10px 14px rgb(74 52 28 / .22));} .ds-tag-body{position:relative;padding:32px 32px 32px 56px;background:var(--color-paper, #fffcf6);clip-path:polygon(1.5rem 0,100% 0,100% 100%,1.5rem 100%,0 calc(100% - 1.5rem),0 1.5rem);} .ds-tag-hole{position:absolute;top:50%;left:22px;width:14px;height:14px;border-radius:9999px;transform:translateY(-50%);background:var(--color-ground, #d8c3a5);box-shadow:0 0 0 3px var(--color-kraft-400, #b8996c);} .ds-tag-intro{margin:0;font-size:1.125rem;color:var(--color-stone-700, #45362a);} .ds-tag-sealed{display:flex;align-items:center;gap:16px;margin-top:16px;} .ds-seal{display:flex;flex:none;align-items:center;justify-content:center;width:64px;height:64px;border-radius:9999px;background:var(--color-cranberry-600, #9f1d2b);box-shadow:0 0 0 4px rgb(130 24 36 / .3),0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);} .ds-seal-ring{width:40px;height:40px;border-radius:9999px;box-shadow:0 0 0 2px rgb(242 212 138 / .7);} .ds-tag-reveal{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:0.375rem;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;font-size:1rem;font-weight:700;line-height:1.5;cursor:pointer;transition:color .15s,background-color .15s,border-color .15s,text-decoration-color .15s;border:none;background:var(--color-cranberry-600, #9f1d2b);color:#fff;box-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);} .ds-tag-reveal:hover{background:var(--color-cranberry-700, #821824);} .ds-tag-reveal:focus-visible{outline:2px solid var(--color-cranberry-600, #9f1d2b);outline-offset:2px;}"
+    },
+    {
+      "name": "Sealed Envelope",
+      "kind": "custom",
+      "refersTo": "sheet",
+      "description": "What the draw produced for one participant: a paper envelope sealed with their initial.",
+      "html": "<div class=\"ds-env-ground\"><figure class=\"ds-env\"><div class=\"ds-env-body\"><svg viewBox=\"0 0 120 80\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path d=\"M1 1 60 47 119 1Z\" fill=\"#f1e8da\"/><path d=\"M1 1 60 47 119 1\" fill=\"none\" stroke=\"#b8996c\" stroke-width=\"1.5\" vector-effect=\"non-scaling-stroke\"/></svg><span class=\"ds-env-seal\">B</span></div><figcaption class=\"ds-env-name\">Basia</figcaption></figure></div>",
+      "css": ".ds-env-ground{padding:24px;background:var(--color-paper, #fffcf6);} .ds-env{display:flex;flex-direction:column;align-items:center;gap:10px;margin:0;font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif;} .ds-env-body{position:relative;width:160px;aspect-ratio:3/2;border-radius:.25rem;background:var(--color-paper, #fffcf6);box-shadow:0 1px 1px rgb(74 52 28 / 0.1), 0 12px 28px -16px rgb(74 52 28 / 0.45),0 0 0 1px var(--color-kraft-300, #cfb48a);} .ds-env-body svg{position:absolute;inset:0;width:100%;height:100%;} .ds-env-seal{position:absolute;top:59%;left:50%;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9999px;transform:translate(-50%,-50%);background:var(--color-cranberry-600, #9f1d2b);color:var(--color-gold-300, #f2d48a);font-family:'Poltawski Nowy Variable', ui-serif, Georgia, serif;font-weight:700;box-shadow:0 0 0 4px rgb(130 24 36 / .3);animation:ds-press-seal 420ms cubic-bezier(0.16,1,0.3,1) both;} @keyframes ds-press-seal{from{transform:translate(-50%,-50%) scale(1.35);opacity:.4;}} @media (prefers-reduced-motion: reduce){.ds-env-seal{animation:none;}} .ds-env-name{font-weight:700;color:var(--color-stone-800, #2f241b);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Szary papier",
+    "overview": "**Creative North Star: \"Szary papier\"**\n\nThe secret is a physical object. The whole interface is a table covered in sand-brown wrapping paper: the ground is a soft sand brown, every section of content is a crisp off-white sheet of paper laid on it, and the one thing that matters to a participant, the name they drew, arrives as a paper gift tag tied with cranberry twine and closed with a wax seal. The draw produces envelopes, one per person, each sealed with the giver's initial. A deep pine band runs across the top as the shell.\n\nThe system is warm, quiet and legible before it is festive. It is built for whole families, older relatives on phones included, so the reading face is Atkinson Hyperlegible Next at a comfortable 16px and every control is at least 44px tall. Festivity is carried by materials (wrapping paper, kraft detail, twine, wax, gold foil) rather than by snowflakes, gradients or decoration. Density is moderate: one column of sheets, separated by generous stacks, each sheet divided internally by dashed fold lines.\n\nIt refuses the centred hero slab, the three-card step grid, and identical white cards stacked on a cream page.",
+    "keyCharacteristics": [
+      "Sand-brown ground, off-white paper sheets with a soft table-top shadow, pine shell.",
+      "Cranberry is the twine: primary actions, wax seals, the current step and the revealed name.",
+      "Gold is foil: it appears on seals, under the revealed name, in text selection and as the focus ring on the pine shell.",
+      "Półtawski Nowy, the Polish national antiqua, for headings, names and numbers; Atkinson Hyperlegible Next for everything read.",
+      "Dashed rules divide a sheet; sheets are never nested.",
+      "Secrets are sealed objects that open only on a deliberate tap."
+    ],
+    "rules": [
+      {
+        "name": "The Twine Rule",
+        "body": "Cranberry is a thread, not a fill. It appears as one primary action, a seal, a line or a name; it never tints a whole sheet or section.",
+        "section": "colors"
+      },
+      {
+        "name": "The Foil Rule",
+        "body": "Gold never carries text or fills a surface. It is a seal detail, a rule under a revealed name, a selection, or a focus ring on pine.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink on Kraft Rule",
+        "body": "On kraft, warm-ink text uses `stone-600` or darker; `stone-500` and lighter appear only on paper or white.",
+        "section": "colors"
+      },
+      {
+        "name": "The Antiqua for Names Rule",
+        "body": "Anything that is a name or a number (people's names when revealed, event names, step numerals, seal initials) is set in Półtawski Nowy. Instructions and controls never are.",
+        "section": "typography"
+      },
+      {
+        "name": "The Bold Not Small Rule",
+        "body": "Emphasis and labelling use weight 700 at 0.875rem or larger; nothing a person must read goes below 0.75rem, and 0.75rem is reserved for stamps.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Table Rule",
+        "body": "Every paper object sits at the same height on the table. No modals floating above, no stacked elevations, no shadow inside a sheet. Print drops shadows and gives tags a 1px `stone-400` outline instead.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** lay every section on its own paper sheet (paper, 0.375rem, paper shadow) directly on the ground.",
+      "**Do** separate parts of one sheet with a dashed `kraft-400` fold line and 2rem either side.",
+      "**Do** keep a secret sealed until the person taps to reveal it, and seal it again when they leave.",
+      "**Do** give each sheet at most one cranberry primary action, and use the pine commit button to confirm a step forward.",
+      "**Do** set names, event titles and numerals in Półtawski Nowy, and everything read in Atkinson Hyperlegible Next at 1rem or larger.",
+      "**Do** keep every control at least 44px tall and use the single 2px pine focus ring.",
+      "**Do** wrap motion in `prefers-reduced-motion` and let content be visible before any animation finishes."
+    ],
+    "donts": [
+      "**Don't** nest a sheet inside a sheet, or group content inside a sheet with a tinted panel; error and info alerts are the only tinted boxes.",
+      "**Don't** fill surfaces with gold or set text in it.",
+      "**Don't** use `stone-500` or lighter text directly on the ground.",
+      "**Don't** build a centred hero slab, a three-card step grid, or rows of identical white cards on a plain page.",
+      "**Don't** add shadows inside a sheet or lift any object above the paper shadow.",
+      "**Don't** show a drawn name on page load without the seal."
+    ]
+  }
+}

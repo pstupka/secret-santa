@@ -10,7 +10,9 @@ import {
   type AssignmentState,
 } from '@/assignment/myAssignment';
 import GiftIcon from '@/components/GiftIcon.vue';
+import GiftTag from '@/components/GiftTag.vue';
 import RecipientWishlist from '@/components/RecipientWishlist.vue';
+import UiIcon from '@/components/UiIcon.vue';
 import { useApiErrorMessage } from '@/composables/useApiErrorMessage';
 import { formatBudget, formatExchangeDate } from '@/events/eventDetails';
 import { useEventsStore } from '@/stores/events';
@@ -81,9 +83,10 @@ const print = () => window.print();
     <div class="flex flex-wrap items-center justify-between gap-3 print:hidden">
       <RouterLink
         :to="{ name: 'event-assignment', params: { eventId } }"
-        class="inline-flex items-center gap-1 rounded-lg text-sm font-semibold text-pine-700 hover:underline focus-visible:outline-2 focus-visible:outline-pine-600"
+        class="inline-flex items-center gap-1 rounded-sm text-sm font-bold text-pine-700 hover:underline"
       >
-        <span aria-hidden="true">←</span> {{ $t('assignment.print.back') }}
+        <UiIcon name="arrow-left" class="size-4" />
+        {{ $t('assignment.print.back') }}
       </RouterLink>
       <button
         v-if="state?.kind === 'assigned'"
@@ -101,7 +104,7 @@ const print = () => window.print();
       <button
         v-if="error.canRetry"
         type="button"
-        class="mt-2 font-semibold underline underline-offset-2 print:hidden"
+        class="mt-2 font-bold underline underline-offset-2 print:hidden"
         @click="load"
       >
         {{ $t('common.tryAgain') }}
@@ -140,7 +143,7 @@ const print = () => window.print();
         class="flex items-start justify-between gap-4 border-b border-stone-200 pb-4 print:border-stone-400"
       >
         <div class="min-w-0">
-          <p class="text-sm font-semibold text-stone-500">
+          <p class="text-sm font-bold text-stone-600">
             {{ $t('app.name') }}
           </p>
           <h1 class="mt-1 text-2xl font-bold break-words sm:text-3xl">
@@ -150,29 +153,35 @@ const print = () => window.print();
         <GiftIcon class="size-12 shrink-0" />
       </header>
 
-      <div class="py-8 text-center">
-        <p class="text-stone-600">
-          {{ $t('assignment.print.for', { name: acting.displayName }) }}
-        </p>
-        <p class="mt-4 text-lg text-stone-700">
-          {{ $t('assignment.youGiveTo') }}
-        </p>
-        <p
-          class="mt-2 font-display text-4xl font-bold break-words text-cranberry-600 sm:text-5xl"
-          data-testid="assignment-print-recipient"
-        >
-          {{ state.assignment.recipient.displayName }}
-        </p>
-        <p class="mt-4 text-sm text-stone-500">
-          {{ $t('assignment.keepSecret') }}
-        </p>
+      <div class="mx-auto max-w-lg py-8">
+        <GiftTag ground="paper" :twine="false">
+          <p class="text-stone-600">
+            {{ $t('assignment.print.for', { name: acting.displayName }) }}
+          </p>
+          <p class="mt-3 text-lg text-stone-700">
+            {{ $t('assignment.youGiveTo') }}
+          </p>
+          <p
+            class="mt-1 font-display text-4xl leading-tight font-bold break-words text-cranberry-700 sm:text-5xl"
+            data-testid="assignment-print-recipient"
+          >
+            {{ state.assignment.recipient.displayName }}
+          </p>
+          <span
+            class="mt-3 block h-1 w-20 rounded-full bg-gold-400 print:bg-stone-400"
+            aria-hidden="true"
+          />
+          <p class="mt-3 text-sm text-stone-600">
+            {{ $t('assignment.keepSecret') }}
+          </p>
+        </GiftTag>
       </div>
 
       <dl
         class="grid gap-x-6 gap-y-3 border-y border-stone-200 py-4 sm:grid-cols-2 print:grid-cols-2 print:border-stone-400"
       >
         <div>
-          <dt class="text-sm font-semibold text-stone-500">
+          <dt class="text-sm font-bold text-stone-600">
             {{ $t('assignment.details.exchangeOn') }}
           </dt>
           <dd class="mt-0.5 text-stone-900">
@@ -180,7 +189,7 @@ const print = () => window.print();
           </dd>
         </div>
         <div>
-          <dt class="text-sm font-semibold text-stone-500">
+          <dt class="text-sm font-bold text-stone-600">
             {{ $t('assignment.details.budget') }}
           </dt>
           <dd class="mt-0.5 text-stone-900">
@@ -188,7 +197,7 @@ const print = () => window.print();
           </dd>
         </div>
         <div v-if="event.rules" class="sm:col-span-2 print:col-span-2">
-          <dt class="text-sm font-semibold text-stone-500">
+          <dt class="text-sm font-bold text-stone-600">
             {{ $t('assignment.details.rules') }}
           </dt>
           <dd class="mt-0.5 break-words whitespace-pre-line text-stone-900">

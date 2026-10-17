@@ -97,7 +97,7 @@ const release = async (itemId: string) => {
         <h3 class="text-xl font-bold break-words">
           {{ $t('claims.forChild', { name: group.childName }) }}
         </h3>
-        <p class="mt-0.5 text-sm text-stone-500">
+        <p class="mt-0.5 text-sm text-stone-600">
           {{ $t('wishlist.childOf', { name: group.parentName }) }}
         </p>
         <WishlistItemList

@@ -63,7 +63,7 @@ const send = async () => {
     </button>
 
     <p v-if="error" class="alert-error mt-3" role="alert">{{ error }}</p>
-    <p v-else-if="notice" class="alert-info mt-3" role="status">
+    <p v-else-if="notice" class="status-ok mt-3" role="status">
       {{ notice }}
     </p>
   </section>

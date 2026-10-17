@@ -29,10 +29,8 @@ const state = computed(() => claimStateOf(props.item));
     :data-claim-state="state.kind"
   >
     <template v-if="state.kind === 'mine'">
-      <span
-        class="inline-flex items-center gap-1 rounded-full bg-pine-50 px-2.5 py-0.5 text-xs font-semibold text-pine-700"
-      >
-        <span aria-hidden="true">✓</span> {{ mineLabel }}
+      <span class="stamp border-pine-700 bg-pine-50 text-pine-900">
+        {{ mineLabel }}
       </span>
       <button
         v-if="!readOnly"
@@ -47,7 +45,7 @@ const state = computed(() => claimStateOf(props.item));
     </template>
     <span
       v-else-if="state.kind === 'taken'"
-      class="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-semibold text-stone-600"
+      class="stamp border-stone-400 text-stone-700"
     >
       {{ $t('kids.taken', { name: state.by }) }}
     </span>

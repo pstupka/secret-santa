@@ -24,14 +24,14 @@ defineSlots<{
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div class="min-w-0">
         <h3 class="text-xl font-bold break-words">{{ title }}</h3>
-        <p v-if="subtitle" class="mt-0.5 text-sm text-stone-500">
+        <p v-if="subtitle" class="mt-0.5 text-sm text-stone-600">
           {{ subtitle }}
         </p>
       </div>
       <slot name="actions" />
     </div>
-    <div v-if="wishlist.notes" class="mt-3 rounded-xl bg-stone-50 px-4 py-3">
-      <p class="text-xs font-semibold tracking-wide text-stone-500 uppercase">
+    <div v-if="wishlist.notes" class="mt-3">
+      <p class="text-sm font-bold text-stone-600">
         {{ $t('wishlist.notes') }}
       </p>
       <p class="mt-0.5 break-words whitespace-pre-line text-stone-700">
