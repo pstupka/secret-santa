@@ -65,21 +65,6 @@ export const useWishlistsStore = defineStore('wishlists', () => {
       : null,
   );
 
-  // The participants whose children the person counts as the parent of:
-  // themselves and their managed participants. Claims on these children's
-  // wishlists are hidden from them, whoever they act as.
-  const familyParticipantIds = computed(
-    () =>
-      new Set(
-        events.event
-          ? [
-              events.event.myParticipant.id,
-              ...events.event.managedParticipants.map(({ id }) => id),
-            ]
-          : [],
-      ),
-  );
-
   const loadWishlists = async (): Promise<Wishlist[]> => {
     const { eventId, actingAs, key } = context();
     const data = await api.listWishlists(eventId, actingAs);
@@ -230,7 +215,6 @@ export const useWishlistsStore = defineStore('wishlists', () => {
     wishlists,
     myClaims,
     groups,
-    familyParticipantIds,
     loadWishlists,
     loadMyClaims,
     createWishlist,

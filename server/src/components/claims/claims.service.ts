@@ -4,7 +4,6 @@ import AppError from '@core/utils/appError';
 import { Db } from '@db/database';
 import { Clock, nowUtc } from '@shared/clock';
 import {
-  ClaimReader,
   toWishlistItemDto,
   WishlistItemDto,
 } from '@components/wishlists/wishlists.service';
@@ -55,31 +54,24 @@ export const listMyClaims = async (
 ): Promise<MyClaimDto[]> =>
   (await selectClaims(db, claimerId).execute()).map(toMyClaimDto);
 
-// Checks that `itemId` is on a child wishlist of `eventId` and that `reader`
-// may change its claim. Unknown items and items of own wishlists are `404`;
-// the child's parent gets `403` before learning anything about the claim.
+// Checks that `itemId` is on a child wishlist of `eventId`. Unknown items
+// and items of own wishlists are `404`. Anyone may claim, the child's parent
+// included.
 const checkClaimable = async (
   db: Db,
-  reader: ClaimReader,
   eventId: string,
   itemId: string,
 ): Promise<void> => {
   const item = await db
     .selectFrom('wishlist_items')
     .innerJoin('wishlists', 'wishlists.id', 'wishlist_items.wishlist_id')
-    .select('wishlists.participant_id as parent_id')
+    .select('wishlist_items.id')
     .where('wishlist_items.id', '=', itemId)
     .where('wishlists.event_id', '=', eventId)
     .where('wishlists.child_name', 'is not', null)
     .executeTakeFirst();
   if (!item) {
     throw new AppError(httpStatus.NOT_FOUND, 'Wishlist item not found');
-  }
-  if (reader.actsForIds.includes(item.parent_id)) {
-    throw new AppError(
-      httpStatus.FORBIDDEN,
-      "The child's parent cannot claim items of their child's wishlist",
-    );
   }
 };
 
@@ -100,21 +92,21 @@ const currentClaimerOf = async (
   return item.claimed_by_participant_id;
 };
 
-// Claims the item for the reader; repeating one's own claim changes nothing.
+// Claims the item for `claimerId`; repeating one's own claim changes nothing.
 // The update only takes an unclaimed item, so of two concurrent claims only
 // one wins and the other gets `409`.
 export const claimWishlistItem = async (
   db: Db,
   clock: Clock,
-  reader: ClaimReader,
+  claimerId: string,
   eventId: string,
   itemId: string,
 ): Promise<MyClaimDto> => {
-  await checkClaimable(db, reader, eventId, itemId);
+  await checkClaimable(db, eventId, itemId);
   const { numUpdatedRows } = await db
     .updateTable('wishlist_items')
     .set({
-      claimed_by_participant_id: reader.participantId,
+      claimed_by_participant_id: claimerId,
       claimed_at: nowUtc(clock),
     })
     .where('id', '=', itemId)
@@ -122,7 +114,7 @@ export const claimWishlistItem = async (
     .executeTakeFirst();
   if (
     Number(numUpdatedRows) === 0 &&
-    (await currentClaimerOf(db, itemId)) !== reader.participantId
+    (await currentClaimerOf(db, itemId)) !== claimerId
   ) {
     throw new AppError(
       httpStatus.CONFLICT,
@@ -130,25 +122,25 @@ export const claimWishlistItem = async (
     );
   }
   return toMyClaimDto(
-    await selectClaims(db, reader.participantId)
+    await selectClaims(db, claimerId)
       .where('wishlist_items.id', '=', itemId)
       .executeTakeFirstOrThrow(),
   );
 };
 
-// Releases the reader's claim on the item; an unclaimed item stays as is.
+// Releases `claimerId`'s claim on the item; an unclaimed item stays as is.
 export const releaseClaim = async (
   db: Db,
-  reader: ClaimReader,
+  claimerId: string,
   eventId: string,
   itemId: string,
 ): Promise<void> => {
-  await checkClaimable(db, reader, eventId, itemId);
+  await checkClaimable(db, eventId, itemId);
   const { numUpdatedRows } = await db
     .updateTable('wishlist_items')
     .set({ claimed_by_participant_id: null, claimed_at: null })
     .where('id', '=', itemId)
-    .where('claimed_by_participant_id', '=', reader.participantId)
+    .where('claimed_by_participant_id', '=', claimerId)
     .executeTakeFirst();
   if (
     Number(numUpdatedRows) === 0 &&

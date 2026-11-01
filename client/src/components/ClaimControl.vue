@@ -5,8 +5,7 @@ import type { WishlistItem } from '@/api';
 import { claimStateOf } from '@/wishlists/wishlistGroups';
 
 // A child wishlist item's claim: "I'll buy this", who claimed it, or one's
-// own claim with a button to release it. Nothing when claims are hidden
-// (the child's parent).
+// own claim with a button to release it.
 const props = defineProps<{
   item: WishlistItem;
   // How one's own claim is labelled, e.g. "Kupujesz Ty".
@@ -23,7 +22,6 @@ const state = computed(() => claimStateOf(props.item));
 
 <template>
   <div
-    v-if="state.kind !== 'hidden'"
     class="flex shrink-0 flex-col items-start gap-1.5 sm:items-end"
     data-testid="claim"
     :data-claim-state="state.kind"

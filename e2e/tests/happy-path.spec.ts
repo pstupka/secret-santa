@@ -11,8 +11,8 @@ import { emailsTo, personalLinkIn, waitForEmail } from '../support/mailpit';
 // The whole exchange through the UI, as several people in their own browser
 // contexts: the organizer creates an event and gets their personal link by
 // email, adds participants (one managed) and sends invitations; participants
-// open their links and add wishlists, one adds a child wishlist and another
-// claims an item from it; the organizer runs the draw; every participant
+// open their links and add wishlists, one adds a child wishlist, another
+// claims an item from it and the child's parent claims one too; the organizer runs the draw; every participant
 // sees their assignment, the caretaker also the managed participant's.
 
 // Unique per run, so a reused environment (E2E_REUSE=1) still works.
@@ -220,7 +220,7 @@ test('happy path: create event, invite, wishlists, claim, draw, assignments', as
     await expect(claimed.getByTestId('claim-release')).toBeVisible();
   });
 
-  await test.step('others see the claim, the child’s family does not', async () => {
+  await test.step('others see the claim, the child’s parent too', async () => {
     await organizer.goto(`/events/${eventId}/kids`);
     const items = organizer
       .getByTestId('wishlist')
@@ -233,12 +233,18 @@ test('happy path: create event, invite, wishlists, claim, draw, assignments', as
       items.filter({ hasText: CHILD_GIFTS[1] }).getByTestId('claim'),
     ).toHaveAttribute('data-claim-state', 'free');
 
-    // The managed participant is the child's family through the caretaker.
+    // The parent sees the claim and claims another item for their child.
     await caretaker.goto(`/events/${eventId}/kids`);
-    await actAs(caretaker, MANAGED);
-    await expect(caretaker.getByText(CHILD_GIFTS[0]!)).toBeVisible();
-    await expect(caretaker.getByTestId('claim')).toHaveCount(0);
-    await actAs(caretaker, 'Ty');
+    const own = caretaker
+      .getByTestId('wishlist')
+      .filter({ has: caretaker.getByRole('heading', { name: CHILD }) })
+      .getByTestId('wishlist-item');
+    await expect(
+      own.filter({ hasText: CHILD_GIFTS[0] }).getByTestId('claim'),
+    ).toHaveAttribute('data-claim-state', 'taken');
+    const claim = own.filter({ hasText: CHILD_GIFTS[1] }).getByTestId('claim');
+    await claim.getByTestId('claim-item').click();
+    await expect(claim).toHaveAttribute('data-claim-state', 'mine');
   });
 
   await test.step('organizer runs the draw', async () => {

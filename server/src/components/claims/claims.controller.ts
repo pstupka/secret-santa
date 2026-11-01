@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import { currentEventAccess } from '@components/events/eventAccess.middleware';
-import { claimReaderOf } from '@components/wishlists/wishlists.service';
 import { AppDeps } from '../../deps';
 import {
   claimWishlistItem,
@@ -13,13 +12,13 @@ import {
 // Every handler acts as the effective participant: the caller, or the
 // managed participant a caretaker acts as (X-Acting-As).
 const createClaimsController = ({ db, clock }: AppDeps) => ({
-  // PUT /events/:eventId/wishlist-items/:itemId/claim (not the child's parent).
+  // PUT /events/:eventId/wishlist-items/:itemId/claim.
   claim: async (req: Request, res: Response) => {
-    const { event, participant, caretaker } = currentEventAccess(req);
+    const { event, participant } = currentEventAccess(req);
     const claim = await claimWishlistItem(
       db,
       clock,
-      await claimReaderOf(db, participant, caretaker),
+      participant.id,
       event.id,
       req.params.itemId as string,
     );
@@ -28,10 +27,10 @@ const createClaimsController = ({ db, clock }: AppDeps) => ({
 
   // DELETE /events/:eventId/wishlist-items/:itemId/claim (the claimer).
   release: async (req: Request, res: Response) => {
-    const { event, participant, caretaker } = currentEventAccess(req);
+    const { event, participant } = currentEventAccess(req);
     await releaseClaim(
       db,
-      await claimReaderOf(db, participant, caretaker),
+      participant.id,
       event.id,
       req.params.itemId as string,
     );

@@ -292,7 +292,7 @@
   },
   "kids": {
     "title": "Listy życzeń dzieci",
-    "lead": "Dzieci nie biorą udziału w losowaniu – prezenty dostają od całej grupy. Wybierz „Kupię to”, aby inni wiedzieli, że ten prezent jest już zajęty. Rodzic dziecka tego nie zobaczy.",
+    "lead": "Dzieci nie biorą udziału w losowaniu – prezenty dostają od całej grupy. Wybierz „Kupię to”, aby inni – także rodzic dziecka – wiedzieli, że ten prezent jest już zajęty.",
     "empty": "Nikt jeszcze nie dodał listy dziecka.",
     "claimedCount": "Zajęte: {claimed} z {total}",
     "claim": "Kupię to",
@@ -301,7 +301,6 @@
     "mine": "Kupujesz Ty",
     "managedMine": "Kupuje: {name}",
     "taken": "Kupuje: {name}",
-    "familyHidden": "To lista dziecka z Twojej rodziny – nie widzisz, kto co z niej kupuje.",
     "conflict": "Ktoś Cię wyprzedził – ten prezent jest już zajęty.",
     "finished": "Wydarzenie się zakończyło – zakupów nie można już zmieniać.",
     "goToClaims": "Moje zakupy"

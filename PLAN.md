@@ -31,7 +31,7 @@
 5. Participants provide wishlists.
    - Each participant has their own wishlist. Before the draw only the owner (and their caretaker) can read it; after the draw also their Secret Santa.
    - A participant can add wishlists for their children; these are readable by all participants. Children are not part of the draw — they get gifts from the group outside the draw.
-   - Items on children's wishlists can be **claimed** ("I'll buy this"). Claims are visible to other participants but hidden from the child's parent. Each participant has a "my claims" shopping list.
+   - Items on children's wishlists can be **claimed** ("I'll buy this"). Claims are visible to every participant, the child's parent included, and the parent can claim too. Each participant has a "my claims" shopping list.
    - Wishlists can be updated or removed until the exchange date.
 6. Draw: the organizer triggers it manually. It includes every participant who is not declined, requires ≥ 3 of them, and requires every non-managed participant to have been invited. Each drawn participant is assigned exactly one other drawn participant (classic Secret Santa), respecting **exclusion pairs** set by the organizer. Everyone gets a "your recipient" email.
    - The organizer is a normal participant in the draw. Nobody — organizer included — can see pairs other than their own.
@@ -234,7 +234,7 @@ Adding participants and sending invitations are blocked once the event is `drawn
 | `POST`   | `/api/events/:eventId/wishlists`             | participant | `{ childName?, notes, items[] }`.               |
 | `PATCH`  | `/api/events/:eventId/wishlists/:wishlistId` | owner       | Replace fields/items; not once `finished`. Item ids are kept so claims survive edits. |
 | `DELETE` | `/api/events/:eventId/wishlists/:wishlistId` | owner       | Not once `finished`.                            |
-| `PUT`    | `/api/events/:eventId/wishlist-items/:itemId/claim` | participant (not the parent) | Claim a child's item; `409` if claimed by someone else. |
+| `PUT`    | `/api/events/:eventId/wishlist-items/:itemId/claim` | participant | Claim a child's item; `409` if claimed by someone else. |
 | `DELETE` | `/api/events/:eventId/wishlist-items/:itemId/claim` | claimer | Release own claim.                    |
 | `GET`    | `/api/events/:eventId/my-claims`             | participant | My shopping list of claimed items.              |
 

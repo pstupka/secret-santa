@@ -22,7 +22,7 @@ Run a family Secret Santa from start to finish: gather the group, share wishlist
 ## Positioning
 
 - **No accounts, just a link.** A personal link sent by email is the only credential (ADR 0001). There is nothing to register or remember, and a lost link is re-sent by email.
-- **Built for families.** Managed participants with a caretaker, and children's wishlists that sit outside the draw, with claims ("I'll buy this") hidden from the child's parent.
+- **Built for families.** Managed participants with a caretaker, and children's wishlists that sit outside the draw, with claims ("I'll buy this") that everyone, the child's parent included, sees and can make.
 - **Real secrecy.** Nobody sees pairs other than their own, the organizer included. A draw is only ever redone whole, never edited (ADR 0005).
 - **Free, no ads, private.** Self-hosted, with no tracking. An event's data is deleted 60 days after its exchange date.
 

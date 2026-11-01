@@ -121,7 +121,7 @@ describe('wishlists store', () => {
     expect(wishlists.groups).toEqual({
       own,
       myChildren: [],
-      otherChildren: [zosia],
+      allChildren: [zosia],
     });
   });
 
@@ -154,12 +154,6 @@ describe('wishlists store', () => {
 
     events.actAs(null);
     expect(wishlists.wishlists).toBeNull();
-  });
-
-  test('the person counts as the parent of their and managed children', async () => {
-    const { wishlists } = await setup();
-
-    expect([...wishlists.familyParticipantIds]).toEqual(['ania', 'babcia']);
   });
 
   describe('editing', () => {

@@ -9,12 +9,11 @@ import { useActingProfileLoad } from '@/composables/useActingProfileLoad';
 import { useApiErrorMessage } from '@/composables/useApiErrorMessage';
 import { useEventsStore } from '@/stores/events';
 import { useWishlistsStore } from '@/stores/wishlists';
-import { claimedCount, isFamilyWishlist } from '@/wishlists/wishlistGroups';
+import { claimedCount } from '@/wishlists/wishlistGroups';
 
-// `/events/:eventId/kids`: other participants' child wishlists with claim /
-// release buttons and who claimed what. Claims on the wishlists of the
-// person's own family (their own children and their managed participants')
-// are hidden from them, so those show without claim info.
+// `/events/:eventId/kids`: every child wishlist of the event, the acting
+// participant's own children included, with claim / release buttons and who
+// claimed what.
 const events = useEventsStore();
 const store = useWishlistsStore();
 const { t } = useI18n();
@@ -23,7 +22,7 @@ const errorMessage = useApiErrorMessage();
 const { error, reload } = useActingProfileLoad(store.loadWishlists);
 
 const acting = computed(() => events.actingParticipant);
-const childWishlists = computed(() => store.groups?.otherChildren ?? null);
+const childWishlists = computed(() => store.groups?.allChildren ?? null);
 const readOnly = computed(() => events.event?.status === 'finished');
 
 const pendingItemId = ref<string | null>(null);
@@ -100,13 +99,7 @@ const mineLabel = computed(() =>
         :title="wishlist.childName ?? ''"
         :subtitle="$t('wishlist.childOf', { name: wishlist.participantName })"
       >
-        <template
-          v-if="
-            !isFamilyWishlist(wishlist, store.familyParticipantIds) &&
-            wishlist.items.length > 0
-          "
-          #actions
-        >
+        <template v-if="wishlist.items.length > 0" #actions>
           <span class="stamp border-stone-400 text-stone-700">
             {{
               $t('kids.claimedCount', {
@@ -116,13 +109,6 @@ const mineLabel = computed(() =>
             }}
           </span>
         </template>
-
-        <p
-          v-if="isFamilyWishlist(wishlist, store.familyParticipantIds)"
-          class="mt-4 text-sm text-stone-600"
-        >
-          {{ $t('kids.familyHidden') }}
-        </p>
 
         <template #item="{ item }">
           <ClaimControl

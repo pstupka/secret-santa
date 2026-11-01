@@ -78,5 +78,5 @@ A wishlist for a participant's child. Visible to all participants; children are 
 _Avoid_: Kid list, family wishlist
 
 **Claim**:
-A participant's mark on a child wishlist item meaning "I'll buy this". Hidden from the child's parent.
+A participant's mark on a child wishlist item meaning "I'll buy this". Visible to every participant, the child's parent included, and anyone (the parent too) may claim.
 _Avoid_: Reservation, booking

@@ -91,8 +91,7 @@ export interface WishlistItem {
   // http(s) only, so it is safe to render as a link.
   url: string | null;
   notes: string | null;
-  // Claim info, present only on child wishlists of other parents (a claim is
-  // hidden from the child's parent and their caretaker): whether the acting
+  // Claim info, present only on child wishlists: whether the acting
   // participant holds the claim, and the claimer's name (null = unclaimed).
   claimedByMe?: boolean;
   claimedBy?: string | null;

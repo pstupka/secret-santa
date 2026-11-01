@@ -16,12 +16,10 @@ import {
 // managed participant a caretaker acts as (X-Acting-As).
 const createWishlistsController = ({ db, clock }: AppDeps) => ({
   // GET /events/:eventId/wishlists: my own wishlist and all child wishlists
-  // (with claim info, except on my children's).
+  // (with claim info).
   list: async (req: Request, res: Response) => {
-    const { participant, caretaker } = currentEventAccess(req);
-    res
-      .status(httpStatus.OK)
-      .json(await listVisibleWishlists(db, participant, caretaker));
+    const { participant } = currentEventAccess(req);
+    res.status(httpStatus.OK).json(await listVisibleWishlists(db, participant));
   },
 
   // POST /events/:eventId/wishlists: my own wishlist or a child wishlist.

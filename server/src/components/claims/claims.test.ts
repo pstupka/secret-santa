@@ -120,8 +120,15 @@ describe('Claims API', () => {
       items: [{ title: 'Lalka', notes: 'Z włosami' }],
     });
     ctx.clock.set('2026-11-03T09:00:00.000Z');
-    const [klocki, rower] = stas.items;
-    const [lalka] = kasia.items;
+    // The items without claim info, as on a my-claims entry.
+    const bare = ({ id, title, url, notes }: Record<string, unknown>) => ({
+      id,
+      title,
+      url,
+      notes,
+    });
+    const [klocki, rower] = stas.items.map(bare);
+    const [lalka] = kasia.items.map(bare);
     return { event, tomek, ola, zosiaId, stas, kasia, klocki, rower, lalka };
   };
 
@@ -163,23 +170,26 @@ describe('Claims API', () => {
       ]);
     });
 
-    test('the parent sees no claim fields on their child’s wishlist', async () => {
+    test('the parent sees who claimed what on their child’s wishlist', async () => {
       const { event, tomek, ola, zosiaId, stas, klocki, rower } =
         await setUpFamily();
       await claim(event.eventId, ola.token, klocki.id).expect(httpStatus.OK);
 
       expect(await childItems(event.eventId, tomek.token, stas.id)).toEqual([
-        klocki,
-        rower,
+        { ...klocki, claimedByMe: false, claimedBy: 'Ola' },
+        { ...rower, claimedByMe: false, claimedBy: null },
       ]);
-      // Nor when the parent acts as a managed participant.
+      // Also when the parent acts as a managed participant.
       expect(
         await childItems(event.eventId, tomek.token, stas.id, zosiaId),
-      ).toEqual([klocki, rower]);
+      ).toEqual([
+        { ...klocki, claimedByMe: false, claimedBy: 'Ola' },
+        { ...rower, claimedByMe: false, claimedBy: null },
+      ]);
     });
 
-    test('a caretaker counts as the parent of a managed participant’s child', async () => {
-      const { event, tomek, ola, zosiaId } = await setUpFamily();
+    test('a caretaker claims on a managed participant’s child wishlist', async () => {
+      const { event, tomek, zosiaId } = await setUpFamily();
       const wnuczek = await createWishlist(
         event.eventId,
         tomek.token,
@@ -187,17 +197,15 @@ describe('Claims API', () => {
         zosiaId,
       );
       const [pilka] = wnuczek.items;
-      await claim(event.eventId, ola.token, pilka.id).expect(httpStatus.OK);
 
+      await claim(event.eventId, tomek.token, pilka.id).expect(httpStatus.OK);
+
+      expect(await childItems(event.eventId, tomek.token, wnuczek.id)).toEqual([
+        { ...pilka, claimedByMe: true, claimedBy: 'Tomek' },
+      ]);
       expect(
         await childItems(event.eventId, tomek.token, wnuczek.id, zosiaId),
-      ).toEqual([pilka]);
-      expect(await childItems(event.eventId, tomek.token, wnuczek.id)).toEqual([
-        pilka,
-      ]);
-      await claim(event.eventId, tomek.token, pilka.id).expect(
-        httpStatus.FORBIDDEN,
-      );
+      ).toEqual([{ ...pilka, claimedByMe: false, claimedBy: 'Tomek' }]);
     });
 
     test('a second claimer gets 409', async () => {
@@ -237,15 +245,23 @@ describe('Claims API', () => {
       expect(again.body).toEqual(first.body);
     });
 
-    test('the child’s parent cannot claim, also not via X-Acting-As', async () => {
-      const { event, tomek, zosiaId, klocki } = await setUpFamily();
+    test('the child’s parent can claim and release, also via X-Acting-As', async () => {
+      const { event, tomek, ola, zosiaId, stas, klocki, rower } =
+        await setUpFamily();
 
-      await claim(event.eventId, tomek.token, klocki.id).expect(
-        httpStatus.FORBIDDEN,
+      await claim(event.eventId, tomek.token, klocki.id).expect(httpStatus.OK);
+      await claim(event.eventId, tomek.token, rower.id, zosiaId).expect(
+        httpStatus.OK,
       );
-      await claim(event.eventId, tomek.token, klocki.id, zosiaId).expect(
-        httpStatus.FORBIDDEN,
+
+      expect(await childItems(event.eventId, ola.token, stas.id)).toEqual([
+        { ...klocki, claimedByMe: false, claimedBy: 'Tomek' },
+        { ...rower, claimedByMe: false, claimedBy: 'Babcia Zosia' },
+      ]);
+      await release(event.eventId, tomek.token, klocki.id).expect(
+        httpStatus.NO_CONTENT,
       );
+      expect(await myClaims(event.eventId, tomek.token)).toEqual([]);
     });
 
     test('items of own wishlists, unknown items and other events’ items are 404', async () => {
@@ -291,7 +307,7 @@ describe('Claims API', () => {
         { ...lalka, claimedByMe: false, claimedBy: 'Babcia Zosia' },
       ]);
       expect(await childItems(event.eventId, ola.token, kasia.id)).toEqual([
-        lalka,
+        { ...lalka, claimedByMe: false, claimedBy: 'Babcia Zosia' },
       ]);
       expect(await myClaims(event.eventId, tomek.token)).toEqual([]);
       expect(await myClaims(event.eventId, tomek.token, zosiaId)).toHaveLength(

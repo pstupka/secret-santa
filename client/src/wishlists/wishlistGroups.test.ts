@@ -6,7 +6,6 @@ import {
   claimStateOf,
   groupClaims,
   groupWishlists,
-  isFamilyWishlist,
 } from './wishlistGroups';
 
 const wishlist = (overrides: Partial<Wishlist>): Wishlist => ({
@@ -36,11 +35,11 @@ const recipient = wishlist({
 });
 
 describe('wishlist groups', () => {
-  test('splits own, my children and other children wishlists', () => {
+  test('splits own, my children and all children wishlists', () => {
     expect(groupWishlists([own, stas, zosia], 'ania')).toEqual({
       own,
       myChildren: [stas],
-      otherChildren: [zosia],
+      allChildren: [stas, zosia],
     });
   });
 
@@ -48,7 +47,7 @@ describe('wishlist groups', () => {
     expect(groupWishlists([own, recipient, zosia], 'ania')).toEqual({
       own,
       myChildren: [],
-      otherChildren: [zosia],
+      allChildren: [zosia],
     });
   });
 
@@ -62,23 +61,13 @@ describe('wishlist groups', () => {
     const groups = groupWishlists([babciaOwn, stas, zosia], 'babcia');
 
     expect(groups.own).toBe(babciaOwn);
-    expect(groups.otherChildren).toEqual([stas, zosia]);
-  });
-
-  test('family wishlists are those of oneself and of managed participants', () => {
-    const family = new Set(['ania', 'babcia']);
-
-    expect(isFamilyWishlist(stas, family)).toBe(true);
-    expect(isFamilyWishlist(zosia, family)).toBe(false);
+    expect(groups.myChildren).toEqual([]);
+    expect(groups.allChildren).toEqual([stas, zosia]);
   });
 });
 
 describe('claim state', () => {
   const item = { id: 'i', title: 'Klocki', url: null, notes: null };
-
-  test('hidden without claim info', () => {
-    expect(claimStateOf(item)).toEqual({ kind: 'hidden' });
-  });
 
   test('free, mine or taken', () => {
     expect(

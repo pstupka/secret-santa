@@ -15,9 +15,8 @@ export interface WishlistItemDto {
   title: string;
   url: string | null;
   notes: string | null;
-  // Claim info, only on child wishlists and never for the child's parent
-  // (see `ClaimReader`): whether the reader holds the claim, and the
-  // claimer's name (null = unclaimed).
+  // Claim info, only on child wishlists: whether the reader holds the claim,
+  // and the claimer's name (null = unclaimed).
   claimedByMe?: boolean;
   claimedBy?: string | null;
 }
@@ -62,44 +61,12 @@ export const toWishlistItemDto = (item: WishlistItemRow): WishlistItemDto => ({
   notes: item.notes,
 });
 
-// Whoever reads claims on child wishlist items.
-export interface ClaimReader {
-  // The participant the request acts as; claims are made in their name.
-  participantId: string;
-  // The person behind the request and the managed participants they are the
-  // caretaker of. They count as the parent of these participants' children:
-  // claims on those child wishlists are hidden from them and they cannot
-  // claim there, also when acting as someone else (X-Acting-As).
-  actsForIds: string[];
-}
-
-// The claim reader for a request acting as `participant`, by `caretaker` when
-// acting as a managed participant.
-export const claimReaderOf = async (
-  db: Db,
-  participant: ParticipantRow,
-  caretaker?: ParticipantRow,
-): Promise<ClaimReader> => {
-  const caller = caretaker ?? participant;
-  const managed = await db
-    .selectFrom('participants')
-    .select('id')
-    .where('managed_by_participant_id', '=', caller.id)
-    .execute();
-  return {
-    participantId: participant.id,
-    actsForIds: [caller.id, ...managed.map(({ id }) => id)],
-  };
-};
-
-// Whether `reader` sees claims on the items of `wishlist`.
+// Whether the reader sees claims on the items of `wishlist`: every
+// participant does on child wishlists, the child's parent included.
 const showsClaims = (
-  wishlist: Pick<WishlistRow, 'participant_id' | 'child_name'>,
-  reader?: ClaimReader,
-): reader is ClaimReader =>
-  reader !== undefined &&
-  wishlist.child_name !== null &&
-  !reader.actsForIds.includes(wishlist.participant_id);
+  wishlist: Pick<WishlistRow, 'child_name'>,
+  readerId?: string,
+): readerId is string => readerId !== undefined && wishlist.child_name !== null;
 
 type WishlistWithOwner = WishlistRow & { participant_name: string };
 
@@ -110,12 +77,13 @@ const selectWishlistsWithOwner = (db: Db) =>
     .selectAll('wishlists')
     .select('participants.display_name as participant_name');
 
-// Wishlists with their items, keeping the order of `wishlists`. Items carry
-// claim info only for a `reader` who may see it.
+// Wishlists with their items, keeping the order of `wishlists`. Child
+// wishlist items carry claim info as `readerId` (the participant the request
+// acts as) sees it.
 const withItems = async (
   db: Db,
   wishlists: WishlistWithOwner[],
-  reader?: ClaimReader,
+  readerId?: string,
 ): Promise<WishlistDto[]> => {
   if (wishlists.length === 0) return [];
   const items = await db
@@ -145,11 +113,10 @@ const withItems = async (
     items: items
       .filter((item) => item.wishlist_id === wishlist.id)
       .map((item) =>
-        showsClaims(wishlist, reader)
+        showsClaims(wishlist, readerId)
           ? {
               ...toWishlistItemDto(item),
-              claimedByMe:
-                item.claimed_by_participant_id === reader.participantId,
+              claimedByMe: item.claimed_by_participant_id === readerId,
               claimedBy: item.claimer_name,
             }
           : toWishlistItemDto(item),
@@ -172,13 +139,10 @@ export const findOwnWishlist = async (
 
 // What `viewer` may read: their own wishlist first, then once drawn their
 // recipient's own wishlist (the viewer is their Santa), then every child
-// wishlist of the event, oldest first. Child wishlist items carry claim info
-// unless the reader counts as the child's parent (see `ClaimReader`);
-// `caretaker` is set when acting as a managed participant.
+// wishlist of the event, oldest first. Child wishlist items carry claim info.
 export const listVisibleWishlists = async (
   db: Db,
   viewer: ParticipantRow,
-  caretaker?: ParticipantRow,
 ): Promise<WishlistDto[]> => {
   const recipientId = (
     await db
@@ -210,7 +174,7 @@ export const listVisibleWishlists = async (
     return wishlist.participant_id === viewer.id ? 0 : 1;
   };
   wishlists.sort((a, b) => rank(a) - rank(b));
-  return withItems(db, wishlists, await claimReaderOf(db, viewer, caretaker));
+  return withItems(db, wishlists, viewer.id);
 };
 
 const insertItems = (
@@ -237,6 +201,7 @@ const insertItems = (
         .execute()
         .then(() => undefined);
 
+// The wishlist as its owner sees it, claims on a child wishlist included.
 const getWishlist = async (
   db: Db,
   wishlistId: string,
@@ -244,7 +209,7 @@ const getWishlist = async (
   const wishlist = await selectWishlistsWithOwner(db)
     .where('wishlists.id', '=', wishlistId)
     .executeTakeFirstOrThrow();
-  return (await withItems(db, [wishlist]))[0];
+  return (await withItems(db, [wishlist], wishlist.participant_id))[0];
 };
 
 // Creates a wishlist owned by `owner`: their own (at most one) or a child's.
