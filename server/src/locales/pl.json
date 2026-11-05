@@ -1,39 +1,56 @@
 {
   "email": {
     "layout": {
+      "kicker": "Poczta z Bieguna Północnego",
+      "place": "Biegun Północny, Warsztat Elfów",
       "greeting": "Cześć {name}!",
       "greetingAnonymous": "Cześć!",
-      "signature": "Wesołych Świąt!\nTwój Mikołaj",
-      "linkFallback": "Jeśli przycisk nie działa, skopiuj ten adres do przeglądarki:",
-      "confidential": "Ten link jest tylko dla Ciebie — nie przekazuj go nikomu."
+      "signature": "Buziaki,\nOficjalny Rzecznik Elfów",
+      "postscript": "PS. Ten link jest tylko dla Ciebie – nie przekazuj go nikomu, nawet zaprzyjaźnionym elfom.",
+      "linkFallback": "Jeśli przycisk nie działa, skopiuj ten adres do przeglądarki:"
     },
     "organizer-link": {
       "subject": "Twoje wydarzenie „{eventTitle}” zostało utworzone",
-      "body": "Utworzyłeś(-aś) wydarzenie „{eventTitle}”. Pod poniższym linkiem możesz dodać uczestników, wysłać zaproszenia i przeprowadzić losowanie.",
+      "cardByline": "Maszyna gotowa do pracy",
+      "news": "Melduję posłusznie: Świąteczna Maszyna Losująca dla Mikołajek „{eventTitle}” została zmontowana, nasmarowana i stoi w gotowości. Elfy trzymają kciuki, a Mikołaj już zaciera ręce.",
+      "body": "Teraz Ty przejmujesz stery. Pod poniższym linkiem dodasz uczestników, roześlesz zaproszenia i – kiedy wszyscy będą gotowi – uruchomisz losowanie.",
+      "keep": "Zachowaj tę wiadomość – to Twój klucz do warsztatu organizatora. Gdyby się zapodział, poproś o nowy link na stronie Mikołajek, a elfy chętnie go podeślą.",
       "cta": "Zarządzaj wydarzeniem"
     },
     "access-link": {
       "subject": "Twój osobisty link do Mikołajek",
-      "body": "Poproszono o nowy osobisty link. Wszystkie Twoje wydarzenia znajdziesz pod poniższym adresem.",
-      "ignore": "Jeśli to nie Ty, zignoruj tę wiadomość — Twoje dotychczasowe linki nadal działają.",
+      "cardTitle": "Biuro Rzeczy Znalezionych",
+      "cardByline": "Twój osobisty link",
+      "news": "Elfy z Biura Rzeczy Znalezionych donoszą: ktoś poprosił o nowy osobisty link do Mikołajek dla tego adresu. Odkurzyliśmy go, zapakowaliśmy w kopertę i wysyłamy ekspresem – reniferem.",
+      "body": "Pod poniższym linkiem znajdziesz wszystkie swoje Mikołajki.",
+      "ignore": "Jeśli to nie Ty – nic się nie stało. Zignoruj tę wiadomość, a Twoje dotychczasowe linki działają jak dawniej.",
       "cta": "Moje wydarzenia"
     },
     "invitation": {
       "subject": "{organizerName} zaprasza Cię na Mikołajki „{eventTitle}”",
-      "body": "{organizerName} zaprasza Cię do wspólnych Mikołajek „{eventTitle}”. Każdy uczestnik wylosuje jedną osobę, dla której przygotuje prezent.",
-      "exchangeOn": "Wymiana prezentów: {date}",
-      "budget": "Budżet na prezent: {amount}",
+      "cardByline": "Zaprasza {organizerName}",
+      "news": "Najnowsze wieści z Bieguna Północnego – w tym roku także Święta zaskoczyły Mikołaja jak zima kierowców. Nasz staruszek tonie w robocie papierkowej i po prostu nie wyrabia się z niczym. Na szczęście elfy nie próżnowały. Ostatnie tygodnie spędziły na przedawkowaniu kofeiny, szlifując swój wynalazek napędzany magią (oraz AI) – Świąteczną Maszynę Losującą.",
+      "body": "Na liście Mikołajek „{eventTitle}”, które organizuje {organizerName}, jest też Twoje imię! Maszyna przydzieli każdemu uczestnikowi jedną osobę, dla której przygotuje prezent.",
+      "descriptionHeading": "{organizerName} dopisuje:",
+      "exchangeOnLabel": "Wymiana prezentów",
+      "budgetLabel": "Budżet na prezent",
       "rulesHeading": "Zasady od organizatora:",
-      "instructions": "Pod swoim osobistym linkiem dodaj listę życzeń, żeby Twój Mikołaj wiedział, co Cię ucieszy. Możesz też dodać listy życzeń dla swoich dzieci. Jeśli nie możesz wziąć udziału, zrezygnuj tam przed losowaniem — domyślnie bierzesz udział.",
-      "cta": "Przejdź do wydarzenia"
+      "instructions": "Żeby ta świąteczna technologia miała szansę zadziałać i faktycznie przydzieliła Ci osobę do obdarowania, musimy nakarmić ją danymi! Pod poniższym linkiem dodasz listę życzeń, która zastąpi Twój list do Mikołaja. Możesz tam też dodać listy życzeń swoich dzieci.",
+      "deadline": "Uzupełnij listę jak najszybciej – Maszyna ruszy, gdy tylko organizator da sygnał, a spóźnialskim grozi znalezienie pod choinką rózgi. A jeśli w tym roku nie możesz wziąć udziału, zrezygnuj tam, zanim Maszyna ruszy – domyślnie liczymy na Ciebie.",
+      "cta": "Napisz list do Mikołaja"
     },
     "draw-result": {
       "subject": "Losowanie w „{eventTitle}” zakończone",
-      "body": "Losowanie w wydarzeniu „{eventTitle}” zostało przeprowadzone. Kupujesz prezent dla: {recipientName}.",
-      "bodyCaretaker": "Losowanie w wydarzeniu „{eventTitle}” zostało przeprowadzone. {giverName} kupuje prezent dla: {recipientName}. Przekaż tę informację osobie, którą się opiekujesz.",
-      "exchangeOn": "Wymiana prezentów: {date}",
-      "secret": "Zachowaj to w tajemnicy!",
-      "cta": "Zobacz listę życzeń"
+      "cardByline": "Wyniki losowania",
+      "news": "Pilne wieści z Bieguna Północnego! Świąteczna Maszyna Losująca przetrawiła wszystkie dane, zgrzytnęła, zadymiła i – ku wielkiej uldze elfów – wypluła wyniki. Mikołaj wreszcie usiadł w fotelu, a elfy wróciły do kawy.",
+      "revealLabel": "Twoja tajna misja – osoba, dla której w tym roku szykujesz prezent",
+      "revealLabelCaretaker": "Tajna misja – osoba, dla której {giverName} szykuje w tym roku prezent",
+      "exchangeOnLabel": "Wymiana prezentów",
+      "instructions": "Pod poniższym linkiem znajdziesz listę życzeń tej osoby – podpowiedzi prosto od źródła. Zajrzyj też do list życzeń dzieci i zaklep prezent, żeby nikt nie kupił go drugi raz.",
+      "instructionsCaretaker": "Pod poniższym linkiem znajdziesz wynik losowania razem z listą życzeń, gotowy do wydrukowania. Przekaż go osobie, którą się opiekujesz – najlepiej szeptem, żeby nikt nie podsłuchał.",
+      "secret": "Pamiętaj: to ściśle tajne! Elfy podpisały klauzulę poufności, więc i Ty nikomu nie zdradzaj tego imienia – nawet reniferom.",
+      "cta": "Zobacz listę życzeń",
+      "ctaCaretaker": "Otwórz wersję do druku"
     }
   }
 }

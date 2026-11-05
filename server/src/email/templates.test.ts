@@ -20,6 +20,9 @@ describe('Email templates', () => {
     expect(email.html).toContain(
       'href="https://santa.example.com/auth#token=tok_123"',
     );
+    expect(email.html).toContain('Wigilia 2026</h1>');
+    expect(email.html).toMatch(/>A<\/div>/);
+    expect(email.text).toContain('Buziaki,\nOficjalny Rzecznik Elfów');
   });
 
   test('access-link has no greeting name', () => {
@@ -27,6 +30,8 @@ describe('Email templates', () => {
 
     expect(email.text.startsWith('Cześć!')).toBe(true);
     expect(email.text).toContain('/auth#token=tok');
+    expect(email.html).toContain('Biuro Rzeczy Znalezionych</h1>');
+    expect(email.text).toContain('Jeśli to nie Ty – nic się nie stało.');
   });
 
   test('invitation includes description, exchange date, budget and rules', () => {
@@ -51,6 +56,33 @@ describe('Email templates', () => {
     expect(email.text).toMatch(/150,00\s*zł/);
     expect(email.text).toContain('Bez skarpetek.\nTylko rękodzieło.');
     expect(email.html).toContain('Bez skarpetek.<br>Tylko rękodzieło.');
+  });
+
+  test('invitation is laid out as a card sealed with the organizer initial', () => {
+    const email = renderEmail(
+      'invitation',
+      {
+        token: 'tok',
+        participantName: 'Kasia',
+        organizerName: 'łucja',
+        eventTitle: 'Wigilia & co',
+        description: null,
+        exchangeOn: '2026-12-24',
+        budget: null,
+        rules: null,
+      },
+      PUBLIC_URL,
+    );
+
+    expect(email.html).toContain('Poczta z Bieguna Północnego');
+    expect(email.html).toContain('Zaprasza łucja');
+    expect(email.html).toContain('Wigilia &amp; co</h1>');
+    expect(email.html).toMatch(/>Ł<\/div>/);
+    expect(email.text).toContain('Wymiana prezentów: 24 grudnia 2026');
+    // A letter from the elves, not from Santa, with the link warning as a PS.
+    expect(email.text).toContain('Buziaki,\nOficjalny Rzecznik Elfów');
+    expect(email.text).not.toContain('Twój Mikołaj');
+    expect(email.text.trimEnd()).toMatch(/PS\. Ten link jest tylko dla Ciebie/);
   });
 
   test('invitation omits budget and rules when not set', () => {
@@ -90,7 +122,10 @@ describe('Email templates', () => {
     );
 
     expect(email.text).toContain('Cześć Kasia!');
-    expect(email.text).toContain('Kupujesz prezent dla: Tomek.');
+    expect(email.text).toContain(
+      'osoba, dla której w tym roku szykujesz prezent: Tomek',
+    );
+    expect(email.html).toContain('Zobacz listę życzeń');
     expect(email.text).toContain(
       'https://santa.example.com/auth?next=%2Fevents%2Fevt-1%2Fassignment#token=tok_9',
     );
@@ -113,7 +148,11 @@ describe('Email templates', () => {
     );
 
     expect(email.text).toContain('Cześć Kasia!');
-    expect(email.text).toContain('Babcia Zosia kupuje prezent dla: Tomek.');
+    expect(email.text).toContain(
+      'osoba, dla której Babcia Zosia szykuje w tym roku prezent: Tomek',
+    );
+    expect(email.html).toContain('Otwórz wersję do druku');
+    expect(email.html).toMatch(/>B<\/div>/);
   });
 
   test('user-provided text is HTML-escaped', () => {
