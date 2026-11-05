@@ -4,22 +4,22 @@ Secret Santa web service
 ## Deployment
 
 One Docker image runs the API and serves the built client (with an SPA
-fallback for client routes); Caddy in front of it terminates TLS. Deployment is
+fallback for client routes) on `127.0.0.1:8080`; Apache on the VPS terminates
+TLS and proxies to it. Deployment is
 manual: no CI, the image is built on the VPS from a checkout of this repo.
 
 | File                | Purpose                                                           |
 | ------------------- | ----------------------------------------------------------------- |
 | `Dockerfile`        | Multi-stage build: client, server, production-only runtime image. |
-| `compose.prod.yaml` | `app` (the image, `/data` volume), `cron` and `caddy` (80/443).   |
+| `compose.prod.yaml` | `app` (the image, `/data` volume, `127.0.0.1:8080`) and `cron`.   |
 | `crontab`           | Schedule for the `cron` service (daily job at 03:00 UTC).          |
-| `Caddyfile`         | Reverse proxy to `app:8080` with automatic HTTPS for `PUBLIC_URL`. |
 | `.env.example`      | Settings to copy into `.env` on the VPS (never committed).        |
 
 ### Settings (`.env`)
 
 | Variable     | Example                                     | Notes                                                    |
 | ------------ | ------------------------------------------- | -------------------------------------------------------- |
-| `PUBLIC_URL` | `https://santa.example.com`                 | No trailing slash. Links in emails and Caddy's site address. |
+| `PUBLIC_URL` | `https://santa.example.com`                 | No trailing slash. Used for links in emails.             |
 | `SMTP_URL`   | `smtps://user:password@smtp.example.com:465` | `smtp://` (STARTTLS) or `smtps://`; URL-encode credentials. |
 | `MAIL_FROM`  | `Secret Santa <santa@example.com>`          | Sender of every email.                                   |
 | `BACKUP_RCLONE_REMOTE` | `b2:santa-backups`                | Optional. rclone destination for offsite backup copies.  |
@@ -59,11 +59,29 @@ remove any `secret-santa.db-wal`/`-shm` next to it), then start the app again.
 ### First deploy
 
 1. Point a DNS A/AAAA record for the subdomain (e.g. `santa.example.com`) at
-   the VPS and open ports 80 and 443.
+   the VPS.
 2. Install Docker with the Compose plugin, then clone the repo on the VPS.
 3. `cp .env.example .env` and fill it in.
 4. `docker compose -f compose.prod.yaml up -d --build`
-5. Check: `docker compose -f compose.prod.yaml ps` shows `app` as `healthy` and
+5. Add an Apache vhost proxying to the app (`a2enmod proxy proxy_http headers`),
+   then get a certificate with `certbot --apache -d santa.example.com`:
+
+   ```apache
+   <VirtualHost *:80>
+       ServerName santa.example.com
+       ProxyPreserveHost On
+       ProxyPass        / http://127.0.0.1:8080/
+       ProxyPassReverse / http://127.0.0.1:8080/
+       RequestHeader set X-Forwarded-Proto "https"
+       Header always set Strict-Transport-Security "max-age=31536000"
+       Header always set X-Content-Type-Options "nosniff"
+       Header always set Referrer-Policy "no-referrer"
+   </VirtualHost>
+   ```
+
+   certbot copies it into an `:443` vhost with the certificate and turns the
+   `:80` one into a redirect to HTTPS.
+6. Check: `docker compose -f compose.prod.yaml ps` shows `app` as `healthy` and
    `cron` as running, and
    `https://santa.example.com/api/health` answers `{"status":"OK",...}`.
 

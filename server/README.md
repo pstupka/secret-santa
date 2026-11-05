@@ -181,7 +181,7 @@ Important: swaggerUI is disabled for the production env
 
 The production image is built from the repo root (`Dockerfile`) and bundles the
 client; see "Deployment" in the root `README.md` for building and running it
-with `compose.prod.yaml` and Caddy.
+with `compose.prod.yaml` behind Apache.
 
 ## Contributing
 

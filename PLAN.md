@@ -9,7 +9,7 @@
 - Database: SQLite via `better-sqlite3` + Kysely (typed query builder) + Kysely migrations.
 - Email: Nodemailer over SMTP (`SMTP_URL`). Production uses Gmail SMTP with an app password (requires 2FA on the account; ~500 recipients/day limit). Dev uses Mailpit in docker compose.
 - Frontend: Vite, Vue 3, TypeScript, Tailwind CSS, Vue Router, Pinia, vue-i18n (default and only shipped locale: `pl`; all copy in message files). Emails use the same locale.
-- Deployment: a single Docker image (API + built client static files) on own VPS behind Caddy, SQLite file on a mounted volume.
+- Deployment: a single Docker image (API + built client static files) on own VPS behind a reverse proxy (Apache), SQLite file on a mounted volume.
 
 ## Current repo state (2026-10-16)
 
@@ -281,8 +281,8 @@ Pinia stores: `auth` (token, me), `events`. A thin typed `api` client attaches t
   1. **Retention**: hard-deletes events 60 days after `exchange_on`, then persons with no participations (and their tokens), and sent `email_outbox` rows older than 7 days.
   2. **Backup**: `VACUUM INTO /data/backups/santa-YYYY-MM-DD.db`, keeps the last 14, and copies offsite with `rclone` when `BACKUP_RCLONE_REMOTE` is set.
 - Env: `NODE_ENV`, `PORT`, `PUBLIC_URL` (for links in emails), `DATABASE_PATH`, `SMTP_URL`, `MAIL_FROM`, `BACKUP_RCLONE_REMOTE` (optional).
-- No CI/CD in v1: the image is built and deployed by hand on the VPS (`compose.prod.yaml`, `Caddyfile`, `.env` live there). Migrations run on app start.
-- TLS via reverse proxy (Caddy) in front of the container, on a subdomain of an owned domain (`PUBLIC_URL`).
+- No CI/CD in v1: the image is built and deployed by hand on the VPS (`compose.prod.yaml`, `.env` live there). Migrations run on app start.
+- TLS via reverse proxy (Apache on the VPS) in front of the container, on a subdomain of an owned domain (`PUBLIC_URL`).
 - Dev: `docker compose` with server (watch), Vite dev server proxying `/api`, Mailpit.
 
 ## Emails

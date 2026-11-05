@@ -20,7 +20,7 @@ export interface AppOptions {
 const createApp = (deps: AppDeps, options: AppOptions = {}): Application => {
   const app: Application = express();
 
-  // Behind Caddy (docker network) req.ip must be the client, not the proxy,
+  // Behind the reverse proxy (via docker's bridge) req.ip must be the client, not the proxy,
   // for per-IP rate limits. Only loopback/private-network proxies are trusted.
   app.set('trust proxy', 'loopback, uniquelocal');
 

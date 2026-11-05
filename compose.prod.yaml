@@ -1,4 +1,5 @@
-# Production stack on the VPS: the app behind Caddy (automatic HTTPS).
+# Production stack on the VPS: the app behind the host's reverse proxy (Apache),
+# which terminates TLS and forwards to 127.0.0.1:8080.
 #   cp .env.example .env   # then fill it in
 #   docker compose -f compose.prod.yaml up -d --build
 # See README.md, "Deployment".
@@ -19,9 +20,10 @@ services:
   app:
     <<: *app
     build: .
-    # Not published: only Caddy reaches it, over the compose network.
-    expose:
-      - '8080'
+    # Published on loopback only: the host's reverse proxy reaches it, the
+    # internet does not.
+    ports:
+      - '127.0.0.1:8080:8080'
 
   # Daily retention and backups (server/src/jobs/daily.ts) at 03:00 UTC, see
   # crontab. Same image and /data volume as the app; backups go to
@@ -37,24 +39,5 @@ services:
     healthcheck:
       disable: true
 
-  caddy:
-    image: caddy:2.11.7-alpine
-    restart: unless-stopped
-    depends_on:
-      - app
-    ports:
-      - '80:80'
-      - '443:443'
-      - '443:443/udp'
-    environment:
-      # The site address is the app's public origin, e.g. https://santa.example.com.
-      PUBLIC_URL: ${PUBLIC_URL:?set PUBLIC_URL in .env}
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
-
 volumes:
   santa-data:
-  caddy-data:
-  caddy-config:

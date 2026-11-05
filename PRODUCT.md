@@ -39,7 +39,7 @@ Run a family Secret Santa from start to finish: gather the group, share wishlist
 - Draw rules: at least 3 non-declined participants, and every non-managed participant must be invited. Exclusion pairs apply in both directions. After the draw, membership and exclusions are locked. The draw can be redone as a whole, re-emailing everyone, until the exchange date. A caretaker and their managed participant never draw each other.
 - Wishlist visibility: before the draw, only the owner and their caretaker can see a wishlist; after it, their Santa can too. Children's wishlists are visible to all participants.
 - Locale: Polish only (`pl`), for both UI and email copy.
-- Stack: Vue 3 + Vite + Tailwind v4 client, and an Express + SQLite server, shipped as one Docker image behind Caddy.
+- Stack: Vue 3 + Vite + Tailwind v4 client, and an Express + SQLite server, shipped as one Docker image behind a reverse proxy (Apache on the VPS).
 
 ## Brand Commitments
 
