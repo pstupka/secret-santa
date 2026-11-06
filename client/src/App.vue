@@ -36,7 +36,18 @@ const signOut = async () => {
         >
           <AppLogo :compact="auth.isSignedIn" />
         </RouterLink>
-        <nav v-if="auth.isSignedIn" class="flex items-center gap-1 text-sm">
+        <nav
+          v-if="auth.isSignedIn"
+          class="flex min-w-0 items-center gap-1 text-sm"
+        >
+          <span
+            v-if="auth.me"
+            class="hidden max-w-[16rem] truncate px-2.5 text-pine-100 sm:inline"
+            :title="$t('nav.signedInAs', { email: auth.me.email })"
+          >
+            <span class="sr-only">{{ $t('nav.signedInAsLabel') }} </span>
+            {{ auth.me.email }}
+          </span>
           <RouterLink
             :to="{ name: 'events' }"
             class="rounded-sm px-2.5 py-2 font-bold whitespace-nowrap text-white underline-offset-4 hover:underline focus-visible:outline-gold-300"

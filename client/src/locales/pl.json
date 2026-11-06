@@ -6,6 +6,8 @@
   "nav": {
     "home": "Strona główna",
     "myEvents": "Moje wydarzenia",
+    "signedInAs": "Zalogowano jako {email}",
+    "signedInAsLabel": "Zalogowano jako",
     "signOut": "Wyloguj"
   },
   "common": {
