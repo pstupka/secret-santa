@@ -5,12 +5,16 @@ Secret Santa web service
 
 One Docker image runs the API and serves the built client (with an SPA
 fallback for client routes) on `127.0.0.1:8080`; Apache on the VPS terminates
-TLS and proxies to it. Deployment is
-manual: no CI, the image is built on the VPS from a checkout of this repo.
+TLS and proxies to it. Every push to `master` is checked (lint, typecheck,
+tests) and built into `ghcr.io/pstupka/secret-santa`, tagged `latest` and with
+the commit SHA (`.github/workflows/image.yml`). Deploying is manual: pull the
+image on the VPS. The VPS holds no checkout, only `/opt/secret-santa/` with
+`compose.yaml` (a copy of `compose.prod.yaml`) and `.env`.
 
 | File                | Purpose                                                           |
 | ------------------- | ----------------------------------------------------------------- |
 | `Dockerfile`        | Multi-stage build: client, server, production-only runtime image. |
+| `.github/workflows/image.yml` | CI: checks, then builds and pushes the image to GHCR.   |
 | `compose.prod.yaml` | `app` (the image, `/data` volume, `127.0.0.1:8080`) and `cron`.   |
 | `crontab`           | Schedule for the `cron` service (daily job at 03:00 UTC).          |
 | `.env.example`      | Settings to copy into `.env` on the VPS (never committed).        |
@@ -50,7 +54,7 @@ e.g. `RCLONE_CONFIG_B2_TYPE=b2`, `RCLONE_CONFIG_B2_ACCOUNT`,
 once by running the job by hand:
 
 ```sh
-docker compose -f compose.prod.yaml exec cron node dist/jobs/daily.js
+docker compose exec cron node dist/jobs/daily.js
 ```
 
 To restore, stop the app, copy a snapshot over `/data/secret-santa.db` (and
@@ -60,9 +64,10 @@ remove any `secret-santa.db-wal`/`-shm` next to it), then start the app again.
 
 1. Point a DNS A/AAAA record for the subdomain (e.g. `santa.example.com`) at
    the VPS.
-2. Install Docker with the Compose plugin, then clone the repo on the VPS.
-3. `cp .env.example .env` and fill it in.
-4. `docker compose -f compose.prod.yaml up -d --build`
+2. Install Docker with the Compose plugin, then create `/opt/secret-santa/`
+   with `compose.prod.yaml` from this repo saved as `compose.yaml`.
+3. Create `.env` there from `.env.example`, fill it in and `chmod 600 .env`.
+4. `docker compose pull && docker compose up -d --wait`
 5. Add an Apache vhost proxying to the app (`a2enmod proxy proxy_http headers`),
    then get a certificate with `certbot --apache -d santa.example.com`:
 
@@ -81,27 +86,36 @@ remove any `secret-santa.db-wal`/`-shm` next to it), then start the app again.
 
    certbot copies it into an `:443` vhost with the certificate and turns the
    `:80` one into a redirect to HTTPS.
-6. Check: `docker compose -f compose.prod.yaml ps` shows `app` as `healthy` and
+6. Check: `docker compose ps` shows `app` as `healthy` and
    `cron` as running, and
    `https://santa.example.com/api/health` answers `{"status":"OK",...}`.
 
 ### Update
 
+After the `Image` workflow has passed for the commit to deploy, in
+`/opt/secret-santa/`:
+
 ```sh
-git pull
-docker compose -f compose.prod.yaml up -d --build
+docker compose exec cron node dist/jobs/daily.js   # snapshot before migrations
+docker compose pull
+docker compose up -d --wait
 docker image prune -f
 ```
 
 The app restarts on the new image and applies any new migrations on start.
+When `compose.prod.yaml` changed in the repo, copy it over `compose.yaml` first.
+
+To roll back, run a previous commit's image:
+`IMAGE_TAG=<commit-sha> docker compose up -d --wait`. Plain `docker compose up`
+goes back to `latest`.
 
 ### Useful commands
 
 ```sh
-docker compose -f compose.prod.yaml logs -f app       # app logs
-docker compose -f compose.prod.yaml logs cron         # daily job runs
-docker compose -f compose.prod.yaml restart app       # restart the app only
-docker build -t secret-santa .                        # build the image alone
+docker compose logs -f app       # app logs
+docker compose logs cron         # daily job runs
+docker compose restart app       # restart the app only
+docker build -t secret-santa .      # build the image locally (from the repo)
 ```
 
 ## Development

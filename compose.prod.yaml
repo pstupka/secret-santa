@@ -1,13 +1,19 @@
 # Production stack on the VPS: the app behind the host's reverse proxy (Apache),
-# which terminates TLS and forwards to 127.0.0.1:8080.
-#   cp .env.example .env   # then fill it in
-#   docker compose -f compose.prod.yaml up -d --build
+# which terminates TLS and forwards to 127.0.0.1:8080. CI pushes the image to
+# GHCR on every push to master (.github/workflows/image.yml); on the VPS, as
+# compose.yaml next to .env:
+#   docker compose pull && docker compose up -d --wait
 # See README.md, "Deployment".
+
+# Fixed project name, so the volume stays secret-santa_santa-data whatever the
+# folder on the VPS is called.
+name: secret-santa
 
 # Shared by every service running the app image (app, and cron with its own
 # command on the same /data volume).
 x-app: &app
-  image: secret-santa:latest
+  # A commit SHA pins a version (rollback): IMAGE_TAG=<sha> docker compose up -d
+  image: ghcr.io/pstupka/secret-santa:${IMAGE_TAG:-latest}
   env_file: .env
   environment:
     NODE_ENV: production
@@ -19,7 +25,6 @@ x-app: &app
 services:
   app:
     <<: *app
-    build: .
     # Published on loopback only: the host's reverse proxy reaches it, the
     # internet does not.
     ports:
@@ -30,8 +35,6 @@ services:
   # /data/backups and, when BACKUP_RCLONE_REMOTE is set, offsite via rclone.
   cron:
     <<: *app
-    # The image is built by the app service.
-    pull_policy: never
     depends_on:
       - app
     command: ['supercronic', '/app/crontab']
