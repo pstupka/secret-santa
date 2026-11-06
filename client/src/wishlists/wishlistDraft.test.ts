@@ -21,7 +21,6 @@ const childWishlist: Wishlist = {
   participantId: 'ania',
   participantName: 'Ania',
   childName: 'Staś',
-  notes: null,
   createdAt: '2026-10-16T10:00:00.000Z',
   updatedAt: '2026-10-16T10:00:00.000Z',
   items: [
@@ -55,7 +54,6 @@ describe('wishlist draft', () => {
   test('edits a saved wishlist with its item ids', () => {
     expect(wishlistDraftOf(childWishlist)).toEqual({
       childName: 'Staś',
-      notes: '',
       items: [
         {
           key: 'i1',
@@ -164,7 +162,6 @@ describe('wishlist draft', () => {
       ]);
 
       expect(createWishlistInput(draft, { isChild: false })).toEqual({
-        notes: null,
         items: [
           {
             title: 'Szalik',
@@ -176,11 +173,10 @@ describe('wishlist draft', () => {
     });
 
     test('creates a child wishlist', () => {
-      const draft = { ...draftWith([]), childName: ' Staś ', notes: 'Lat 5' };
+      const draft = { ...draftWith([]), childName: ' Staś ' };
 
       expect(createWishlistInput(draft, { isChild: true })).toEqual({
         childName: 'Staś',
-        notes: 'Lat 5',
         items: [],
       });
     });
@@ -192,7 +188,6 @@ describe('wishlist draft', () => {
 
       expect(updateWishlistInput(draft, { isChild: true })).toEqual({
         childName: 'Staś',
-        notes: null,
         items: [
           { id: 'i2', title: 'Książka', url: null, notes: 'o dinozaurach' },
           {
@@ -206,11 +201,10 @@ describe('wishlist draft', () => {
       });
     });
 
-    test('clears the notes of an own wishlist', () => {
-      const draft = { ...draftWith([]), notes: '  ' };
+    test('updates an own wishlist without a child name', () => {
+      const draft = { ...draftWith([]), childName: 'Staś' };
 
       expect(updateWishlistInput(draft, { isChild: false })).toEqual({
-        notes: null,
         items: [],
       });
     });

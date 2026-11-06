@@ -4,7 +4,6 @@ import type { CreateWishlistInput, UpdateWishlistInput, Wishlist } from '@/api';
 export const MAX_ITEMS_PER_WISHLIST = 100;
 export const MAX_CHILD_WISHLISTS = 10;
 export const MAX_CHILD_NAME_LENGTH = 100;
-export const MAX_WISHLIST_NOTES_LENGTH = 2000;
 export const MAX_ITEM_TITLE_LENGTH = 200;
 export const MAX_ITEM_URL_LENGTH = 2000;
 export const MAX_ITEM_NOTES_LENGTH = 1000;
@@ -24,7 +23,6 @@ export interface WishlistItemDraft {
 export interface WishlistDraft {
   // Only for a child wishlist.
   childName: string;
-  notes: string;
   items: WishlistItemDraft[];
 }
 
@@ -41,13 +39,11 @@ export const emptyItemDraft = (): WishlistItemDraft => ({
 // A new wishlist starts with one empty gift idea to fill in.
 export const emptyWishlistDraft = (): WishlistDraft => ({
   childName: '',
-  notes: '',
   items: [emptyItemDraft()],
 });
 
 export const wishlistDraftOf = (wishlist: Wishlist): WishlistDraft => ({
   childName: wishlist.childName ?? '',
-  notes: wishlist.notes ?? '',
   items: wishlist.items.map((item) => ({
     key: item.id,
     id: item.id,
@@ -142,7 +138,6 @@ export const createWishlistInput = (
   { isChild }: { isChild: boolean },
 ): CreateWishlistInput => ({
   ...(isChild && { childName: draft.childName.trim() }),
-  notes: draft.notes.trim() || null,
   items: itemInputs(draft).map(({ title, url, notes }) => ({
     title,
     url,
@@ -157,6 +152,5 @@ export const updateWishlistInput = (
   { isChild }: { isChild: boolean },
 ): UpdateWishlistInput => ({
   ...(isChild && { childName: draft.childName.trim() }),
-  notes: draft.notes.trim() || null,
   items: itemInputs(draft),
 });

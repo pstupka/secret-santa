@@ -47,7 +47,6 @@ const wishlist = (overrides: Partial<Wishlist>): Wishlist => ({
   participantId: 'ania',
   participantName: 'Ania',
   childName: null,
-  notes: null,
   createdAt: '2026-10-16T10:00:00.000Z',
   updatedAt: '2026-10-16T10:00:00.000Z',
   items: [],
@@ -187,7 +186,10 @@ describe('wishlists store', () => {
 
     test('updates a wishlist as a caretaker', async () => {
       const babciaOwn = wishlist({ id: 'b', participantId: 'babcia' });
-      const updated = { ...babciaOwn, notes: 'Rozmiar M' };
+      const updated = {
+        ...babciaOwn,
+        items: [{ id: 'szal', title: 'Szal', url: null, notes: null }],
+      };
       const { events, wishlists, fetch } = await setup(
         { body: [babciaOwn] },
         { body: updated },
@@ -195,7 +197,7 @@ describe('wishlists store', () => {
       events.actAs('babcia');
       await wishlists.loadWishlists();
 
-      await wishlists.updateWishlist('b', { notes: 'Rozmiar M' });
+      await wishlists.updateWishlist('b', { items: [{ title: 'Szal' }] });
 
       expect(lastRequest(fetch)).toMatchObject({
         url: '/api/events/event-1/wishlists/b',

@@ -13,7 +13,6 @@ const wishlist = (overrides: Partial<Wishlist>): Wishlist => ({
   participantId: 'ania',
   participantName: 'Ania',
   childName: null,
-  notes: null,
   createdAt: '2026-10-16T10:00:00.000Z',
   updatedAt: '2026-10-16T10:00:00.000Z',
   items: [],

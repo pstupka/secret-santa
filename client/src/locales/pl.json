@@ -201,7 +201,6 @@
     "wishlist": {
       "title": "Lista życzeń: {name}",
       "empty": "{name} nie ma jeszcze listy życzeń. Zajrzyj tu później.",
-      "noItems": "Na liście nie ma jeszcze pomysłów na prezent.",
       "link": "Otwórz link ({host})"
     },
     "print": {
@@ -226,7 +225,6 @@
     "lead": "Ta strona nie istnieje albo została przeniesiona."
   },
   "wishlist": {
-    "notes": "Uwagi",
     "empty": "Lista jest jeszcze pusta.",
     "openLink": "Otwórz link",
     "childOf": "Rodzic: {name}"
@@ -264,8 +262,6 @@
     "edit": "Edycja listy życzeń",
     "childName": "Imię dziecka",
     "childNamePlaceholder": "np. Staś",
-    "notes": "Uwagi do listy",
-    "notesPlaceholder": "np. rozmiar ubrań, ulubione kolory",
     "items": "Pomysły na prezent",
     "itemsHint": "Kolejność ma znaczenie – najbardziej wymarzone prezenty umieść na górze.",
     "noItems": "Brak pomysłów. Dodaj pierwszy poniżej.",

@@ -106,7 +106,6 @@ export interface Wishlist {
   participantName: string;
   // null = the participant's own wishlist; otherwise a child wishlist.
   childName: string | null;
-  notes: string | null;
   createdAt: string;
   updatedAt: string;
   // In the owner's order.
@@ -130,7 +129,6 @@ export interface WishlistItemInput {
 // participant's own wishlist (at most one), otherwise a child wishlist.
 export interface CreateWishlistInput {
   childName?: string;
-  notes?: string | null;
   items?: WishlistItemInput[];
 }
 
@@ -139,7 +137,6 @@ export interface CreateWishlistInput {
 // kept (with its claim), items left out are removed.
 export interface UpdateWishlistInput {
   childName?: string;
-  notes?: string | null;
   items?: (WishlistItemInput & { id?: string })[];
 }
 

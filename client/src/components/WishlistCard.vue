@@ -2,9 +2,9 @@
 import type { Wishlist, WishlistItem } from '@/api';
 import WishlistItemList from './WishlistItemList.vue';
 
-// A read-only wishlist: heading, the owner's notes and the gift ideas.
+// A read-only wishlist: heading and the gift ideas.
 // Slots: `actions` (next to the heading, e.g. edit / delete), default
-// (between the notes and the items, e.g. a notice) and `item` (per item, e.g.
+// (between the heading and the items, e.g. a notice) and `item` (per item, e.g.
 // claim buttons).
 defineProps<{
   wishlist: Wishlist;
@@ -29,14 +29,6 @@ defineSlots<{
         </p>
       </div>
       <slot name="actions" />
-    </div>
-    <div v-if="wishlist.notes" class="mt-3">
-      <p class="text-sm font-bold text-stone-600">
-        {{ $t('wishlist.notes') }}
-      </p>
-      <p class="mt-0.5 break-words whitespace-pre-line text-stone-700">
-        {{ wishlist.notes }}
-      </p>
     </div>
     <slot />
     <WishlistItemList :items="wishlist.items" class="mt-4">

@@ -12,7 +12,6 @@ import {
   MAX_ITEM_TITLE_LENGTH,
   MAX_ITEM_URL_LENGTH,
   MAX_ITEMS_PER_WISHLIST,
-  MAX_WISHLIST_NOTES_LENGTH,
   moveItem,
   validateWishlistDraft,
   wishlistDraftOf,
@@ -22,7 +21,7 @@ import {
 } from '@/wishlists/wishlistDraft';
 
 // Form for a new or an existing wishlist: the child's name (child wishlists
-// only), notes and the gift ideas, which can be added, removed and
+// only) and the gift ideas, which can be added, removed and
 // reordered. Emits `submit` with a valid draft; the parent saves it and
 // passes `saving` / `error` back.
 const props = defineProps<{
@@ -120,23 +119,6 @@ const submit = () => {
       >
         {{ $t('wishlistEditor.errors.childNameRequired') }}
       </p>
-    </div>
-
-    <div>
-      <label :for="fieldId('wishlist', 'notes')" class="field-label">
-        {{ $t('wishlistEditor.notes') }}
-        <span class="font-normal text-stone-600">
-          ({{ $t('common.optional') }})
-        </span>
-      </label>
-      <textarea
-        :id="fieldId('wishlist', 'notes')"
-        v-model="draft.notes"
-        rows="2"
-        class="field-input"
-        :maxlength="MAX_WISHLIST_NOTES_LENGTH"
-        :placeholder="$t('wishlistEditor.notesPlaceholder')"
-      />
     </div>
 
     <fieldset>
