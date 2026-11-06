@@ -98,8 +98,7 @@
     "signedInAs": "Zalogowano jako {email}",
     "loading": "Wczytywanie wydarzeń…",
     "empty": "Nie bierzesz jeszcze udziału w żadnym wydarzeniu.",
-    "emptyLead": "Utwórz własne wydarzenie albo poczekaj na zaproszenie od organizatora.",
-    "createEvent": "Utwórz wydarzenie",
+    "emptyLead": "Gdy organizator Cię zaprosi, wydarzenie pojawi się tutaj.",
     "exchangeOn": "Wymiana prezentów: {date}",
     "declined": "Nie bierzesz udziału"
   },

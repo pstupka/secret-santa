@@ -34,21 +34,10 @@ onMounted(load);
 
 <template>
   <div>
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h1 class="text-3xl font-bold sm:text-4xl">{{ $t('events.title') }}</h1>
-        <p v-if="auth.me" class="mt-2 text-stone-600">
-          {{ $t('events.signedInAs', { email: auth.me.email }) }}
-        </p>
-      </div>
-      <RouterLink
-        v-if="events.myEvents?.length"
-        :to="{ name: 'new-event' }"
-        class="btn-secondary"
-      >
-        {{ $t('events.createEvent') }}
-      </RouterLink>
-    </div>
+    <h1 class="text-3xl font-bold sm:text-4xl">{{ $t('events.title') }}</h1>
+    <p v-if="auth.me" class="mt-2 text-stone-600">
+      {{ $t('events.signedInAs', { email: auth.me.email }) }}
+    </p>
 
     <div v-if="error" class="alert-error mt-8" role="alert">
       <p>{{ error }}</p>
@@ -77,9 +66,6 @@ onMounted(load);
         {{ $t('events.empty') }}
       </p>
       <p class="mt-2 text-stone-600">{{ $t('events.emptyLead') }}</p>
-      <RouterLink :to="{ name: 'new-event' }" class="btn-primary mt-6">
-        {{ $t('events.createEvent') }}
-      </RouterLink>
     </section>
 
     <ul v-else-if="events.myEvents" class="mt-8 space-y-4">

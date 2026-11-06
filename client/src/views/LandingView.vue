@@ -50,15 +50,16 @@ const exampleRevealed = ref(false);
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <RouterLink
+            v-if="!auth.isSignedIn"
             :to="{ name: 'new-event' }"
             class="btn-primary w-full px-7 sm:w-auto"
           >
             {{ $t('landing.createEvent') }}
           </RouterLink>
           <RouterLink
-            v-if="auth.isSignedIn"
+            v-else
             :to="{ name: 'events' }"
-            class="btn-secondary w-full sm:w-auto"
+            class="btn-primary w-full px-7 sm:w-auto"
           >
             {{ $t('landing.goToMyEvents') }}
           </RouterLink>
